@@ -5,27 +5,69 @@ let readFilePath = path.resolve(__dirname, '../dist/static/');
 let readFilePathIndexHtml = path.resolve(__dirname, '../dist/index.html');
 let writeFilePathPublic = 'D:\\VS2012Projects\\SVN\\JDHR\\JDCRM.Web\\';
 let writeFilePath = writeFilePathPublic + 'static\\';
-let writeFilePathIndexHtml = writeFilePathPublic + 'Views\\Mobile\\index.cshtml';
+let writeFileBakPath = writeFilePathPublic + 'static-bak\\';
+let writeFilePathIndexHtml = writeFilePathPublic + 'Views\\Mobile\\';
+let writeFileBakPathHtml = writeFilePathPublic + 'Views\\Mobile-bak\\';
 
 console.log('项目打包路径：' + readFilePath);
 console.log('项目部署路径：' + writeFilePath);
 
-// 删除原来的文件
-deleteFolder(writeFilePath);
+let date = new Date();
+let filePath = date.getTime();
+let bakPath = writeFileBakPath + filePath;
+let bakPathHtml = writeFileBakPathHtml + filePath;
 
-// 判断项目部署路径是否存在，不存在则创建
-fs.exists(writeFilePath, function (exists) {
+// **************开始发布**************
+// 备份原来的文件
+// 备份static
+fs.exists(writeFileBakPath, function (exists) {
     if (!exists) {
-        fs.mkdir(writeFilePath);
-        // 复制打包后的文件至项目部署路径
-        copyFolder(readFilePath, writeFilePath, function(err) {
+        fs.mkdir(writeFileBakPath);
+    }
+    fs.exists(bakPath, function (exists) {
+        if (!exists) {
+            fs.mkdir(bakPath);
+        }
+        // copy static Folder
+        copyFolder(writeFilePath, bakPath, function(err) {
             if (!err) {
-                console.log('copy ok');
-                // 写入index.cshtml文件
-                AddIndexHtml();
+                console.log('bak static Folder ok');
+                // 备份index.cshtml文件
+                fs.exists(writeFileBakPathHtml, function (exists) {
+                    if (!exists) {
+                        fs.mkdir(writeFileBakPathHtml);
+                    }
+                    fs.exists(bakPathHtml, function (exists) {
+                        if (!exists) {
+                            fs.mkdir(bakPathHtml);
+                        }
+                        // copy Mobile Folder
+                        copyFolder(writeFilePathIndexHtml, bakPathHtml, function (err) {
+                            if (!err) {
+                                console.log('bak Mobile Folder ok');
+                                // 删除原来的文件
+                                deleteFolder(writeFilePath);
+                                // 判断项目部署路径是否存在，不存在则创建，并复制文件及文件夹
+                                fs.exists(writeFilePath, function (exists) {
+                                    if (!exists) {
+                                        fs.mkdir(writeFilePath);
+                                        // 复制打包后的文件至项目部署路径
+                                        copyFolder(readFilePath, writeFilePath, function(err) {
+                                            if (!err) {
+                                                console.log('copy static Folder success');
+                                                // 写入index.cshtml文件
+                                                AddIndexHtml();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+                });
             }
         });
-    }
+    });
 });
 
 // 写入index.cshtml文件
@@ -35,13 +77,14 @@ function AddIndexHtml() {
             return console.error(err);
         }
         console.log("index.html读取成功");
-        console.log("index.html开始写入...");
+        console.log("index.cshtml开始写入...");
         var resultBuffer = encoding.convert(data, "GBK"); // GB2312
-        fs.writeFile(writeFilePathIndexHtml, resultBuffer, function (err) {
+        fs.writeFile(writeFilePathIndexHtml + 'index.cshtml', resultBuffer, function (err) {
             if (err) {
                 return console.error(err);
             }
-            console.log("index.html文件写入成功");
+            console.log("index.cshtml文件写入成功");
+            console.log("自动发布已完成");
         });
     });
 }
@@ -90,7 +133,9 @@ function copyFolder(srcDir, tarDir, cb) {
     fs.readdir(srcDir, function(err, files) {
         var count = 0;
         function checkEnd() {
-            ++count === files.length && cb && cb();
+            if (files) {
+                ++count === files.length && cb && cb();
+            }
         }
         if (err) {
             checkEnd();
