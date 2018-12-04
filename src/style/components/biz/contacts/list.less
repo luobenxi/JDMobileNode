@@ -1,0 +1,46 @@
+@import (reference) "../../../config";
+
+.JdContactsUserListBox {
+    .list {
+        width: 100%;
+        text-align: left;
+        float: left;
+        position: relative;
+        overflow: hidden;
+        .list_user {
+            p {
+                background: #E4E7ED;
+                font-weight: 600;
+                .paddingLeft(10);
+                .heightSingle(24);
+                .lineHeight(24);
+            }
+            li {
+                .fontSize(16);
+                .lineHeight(30);
+                .user-item {
+                    img{
+                        .widthSingle(30);
+                        .heightSingle(30);
+                        .lineHeight(30);
+                    }
+                    .name {
+                        .fontSize(15);
+                        display: flex;
+                        align-items: center;
+                    }
+                }
+            }
+        }
+    }
+    .list_index {
+        position: fixed;
+        top: 50%;
+        right: 0;
+        list-style: none;
+        .fontSize(15);
+    }
+    .list_index li {
+        .padding2(0.6, 8);
+    }
+}

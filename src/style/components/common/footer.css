@@ -1,0 +1,11 @@
+/*********** screen配置 ***********/
+#jd-footer .footer-menu-box {
+  height: 1.33333333rem;
+}
+#jd-footer .footer-menu-box .van-tabbar-item .van-tabbar-item__icon {
+  font-size: 0.50666667rem;
+}
+#jd-footer .footer-menu-box .van-tabbar-item .van-tabbar-item__text {
+  font-size: 0.34666667rem;
+}
+/*# sourceMappingURL=footer.css.map */

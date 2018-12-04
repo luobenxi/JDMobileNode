@@ -1,0 +1,18 @@
+#error_wrapper {
+  padding-top: 0.53333333rem;
+  text-align: center;
+}
+#error_wrapper .content {
+  font-size: 0.42666667rem;
+  color: #909399;
+  font-weight: 600;
+}
+#error_wrapper .back {
+  font-size: 0.4rem;
+  color: #606266;
+  margin-top: 0.26666667rem;
+}
+#error_wrapper .back span {
+  color: #409EFF;
+}
+/*# sourceMappingURL=error.css.map */

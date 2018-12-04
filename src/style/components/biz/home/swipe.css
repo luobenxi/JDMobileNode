@@ -1,0 +1,14 @@
+/*********** screen配置 ***********/
+.swipe .van-swipe {
+  cursor: pointer;
+}
+.swipe .van-swipe-item {
+  color: #fff;
+  font-size: 0.53333333rem;
+  text-align: center;
+}
+.swipe .van-swipe-item img {
+  line-height: 4.26666667rem;
+  height: 4.26666667rem;
+}
+/*# sourceMappingURL=swipe.css.map */

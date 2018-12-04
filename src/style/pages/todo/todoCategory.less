@@ -1,0 +1,40 @@
+@import "../../config";
+
+.todoCategoryBox {
+    .menu-item {
+        position: relative;
+        .todoCount{
+            position: absolute;
+            background-color:#FF0000;
+            color: #ffffff;
+            text-align: center;
+            .width(16);
+            .heightSingle(16);
+            .right(8);
+            .top(8);
+            .borderRadius(8);
+            .fontSize(12);
+        }
+    }
+    .title {
+        font-weight: 600;
+        text-align: center;
+        margin: 10px auto;
+        font-size: 16px;
+    }
+    .van-col {
+        text-align: center;
+        .heightSingle(90);
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .van-icon {
+        display: block;
+        .fontSize(28);
+        .margin2(15, 0);
+        color: #409EFF;
+    }
+    span {
+        .fontSize(14);
+    }
+}

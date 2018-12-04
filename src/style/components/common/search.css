@@ -1,0 +1,11 @@
+/*********** screen配置 ***********/
+#jd-search {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding-right: 0.26666667rem;
+}
+#jd-search .btn {
+  margin-left: 0.10666667rem;
+}
+/*# sourceMappingURL=search.css.map */

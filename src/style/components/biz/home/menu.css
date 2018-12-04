@@ -1,0 +1,33 @@
+.menu-box .menu {
+  display: flex;
+  flex-wrap: wrap;
+}
+.menu-box .menu .firstMenuTitle {
+  text-align: left !important;
+  height: 0.66666667rem !important;
+  border-top: solid 1px #eee;
+  font-weight: 600;
+  font-size: 0.37333333rem;
+  color: #909399;
+  padding-left: 0.16rem;
+  padding-top: 0.16rem;
+}
+.menu-box .menu .menu-item:active {
+  background: #E4E7ED;
+}
+.menu-box .menu .van-col {
+  text-align: center;
+  height: 2.4rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+.menu-box .menu .van-icon {
+  display: block;
+  font-size: 0.74666667rem;
+  margin: 0.4rem 0rem;
+  color: #409EFF;
+}
+.menu-box .menu span {
+  font-size: 0.37333333rem;
+}
+/*# sourceMappingURL=menu.css.map */

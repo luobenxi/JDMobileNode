@@ -1,0 +1,17 @@
+#login-box {
+  text-align: center;
+  background-color: #ffffff;
+}
+#login-box .logo {
+  padding: 1.81333333rem;
+}
+#login-box .login-btn {
+  margin: 0.53333333rem 0.10666667rem;
+}
+#login-box .login-btn .btn-font {
+  font-size: 0.4rem;
+}
+#login-box .loading-box {
+  margin: 0.26666667rem auto;
+}
+/*# sourceMappingURL=login.css.map */

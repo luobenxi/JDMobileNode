@@ -1,0 +1,14 @@
+/*********** screen配置 ***********/
+.jd-back-top {
+  text-align: center;
+  height: 1.04rem;
+  width: 1.04rem;
+  line-height: 1.04rem;
+  border-radius: 50%;
+  background-color: #DCDFE6;
+  position: fixed;
+  bottom: 11%;
+  right: 8%;
+  z-index: 999;
+}
+/*# sourceMappingURL=backTop.css.map */

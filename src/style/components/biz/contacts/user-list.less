@@ -1,0 +1,40 @@
+@import (reference) "../../../config";
+
+.JdContactsUserList {
+    .user-item {
+        .row {
+            .fontSize(15);
+            display: flex;
+            align-items: center;
+            vertical-align: middle;
+            .FullName {
+                .marginRight(4);
+            }
+            img{
+                .widthSingle(24);
+                .heightSingle(24);
+                .lineHeight(24);
+                .marginRight(6);
+            }
+        }
+    }
+    .call-btn {
+        .fontSize(16);
+    }
+    .Photo {
+        text-align: center;
+        border-bottom: solid 1px #F2F6FC;
+        img {
+            .widthSingle(80);
+            .heightSingle(100);
+            .marginAuto(8);
+        }
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .heightSingle(40);
+            .padding(8);
+        }
+    }
+}

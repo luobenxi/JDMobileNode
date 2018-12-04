@@ -1,0 +1,17 @@
+/*********** screen配置 ***********/
+.empty {
+  color: #909399;
+  text-align: center;
+  margin-top: 0.4rem;
+  font-size: 0.37333333rem;
+}
+.sub-btn {
+  margin: 0.53333333rem 0.26666667rem;
+}
+.sub-btn .btn-item {
+  margin-top: 0.26666667rem;
+}
+.loading-box {
+  margin: 0.8rem auto;
+}
+/*# sourceMappingURL=common.css.map */

@@ -1,0 +1,64 @@
+[
+    {
+        "displayName": "工作",
+        "icon": "",
+        "key": "work",
+        "subMenu": [
+            {
+                "displayName": "待办事项",
+                "icon": "",
+                "key": "to-do",
+                "subMenu": []
+            },
+            {
+                "displayName": "我的请假",
+                "icon": "records",
+                "key": "my-qingjia",
+                "subMenu": []
+            },
+            {
+                "displayName": "我的休假",
+                "icon": "completed",
+                "key": "my-xiujia",
+                "subMenu": []
+            },
+            {
+                "displayName": "我的加班",
+                "icon": "completed",
+                "key": "my-jiaban",
+                "subMenu": []
+            }
+        ]
+    },
+    {
+        "displayName": "我的",
+        "key": "my",
+        "icon": "",
+        "subMenu": [
+            {
+              "displayName": "我的已办事项",
+              "icon": "",
+              "key": "doneCategory",
+              "subMenu": []
+            },
+            {
+                "displayName": "个人中心",
+                "icon": "",
+                "key": "user-info",
+                "subMenu": []
+            },
+            {
+                "displayName": "修改密码",
+                "icon": "",
+                "key": "change-pwd",
+                "subMenu": []
+            },
+            {
+              "displayName": "修改工资查询密码",
+              "icon": "",
+              "key": "change-salary-pwd",
+              "subMenu": []
+            }
+        ]
+    }
+]

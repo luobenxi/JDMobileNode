@@ -1,0 +1,12 @@
+/*********** screen配置 ***********/
+.AnnualLeaveList-box .title {
+  font-weight: 600;
+}
+.AnnualLeaveList-box .sub {
+  margin-left: 0.53333333rem;
+}
+.AnnualLeaveList-box .loading-box {
+  color: #333;
+  margin: 15px auto;
+}
+/*# sourceMappingURL=AnnualLeaveList.css.map */

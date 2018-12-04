@@ -1,0 +1,35 @@
+.JdContactsUserList .user-item .row {
+  font-size: 0.4rem;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
+.JdContactsUserList .user-item .row .FullName {
+  margin-right: 0.10666667rem;
+}
+.JdContactsUserList .user-item .row img {
+  width: 0.64rem;
+  height: 0.64rem;
+  line-height: 0.64rem;
+  margin-right: 0.16rem;
+}
+.JdContactsUserList .call-btn {
+  font-size: 0.42666667rem;
+}
+.JdContactsUserList .Photo {
+  text-align: center;
+  border-bottom: solid 1px #F2F6FC;
+}
+.JdContactsUserList .Photo img {
+  width: 2.13333333rem;
+  height: 2.66666667rem;
+  margin: 0.21333333rem auto;
+}
+.JdContactsUserList .Photo div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.06666667rem;
+  padding: 0.21333333rem;
+}
+/*# sourceMappingURL=user-list.css.map */

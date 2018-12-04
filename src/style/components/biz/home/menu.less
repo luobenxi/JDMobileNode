@@ -1,0 +1,40 @@
+@import (reference) "../../../config";
+
+@parentBox: menu-box;
+.@{parentBox} {
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        .firstMenuTitle {
+            text-align: left !important;
+            //.marginTop(5);
+            .heightImportant(25);
+            border-top: solid 1px #eee;
+            font-weight: 600;
+            .fontSize(14);
+            color: #909399;
+            .paddingLeft(6);
+            .paddingTop(6);
+        }
+        .menu-item {
+            &:active {
+                background: #E4E7ED;
+            }
+        }
+        .van-col {
+            text-align: center;
+            .heightSingle(90);
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .van-icon {
+            display: block;
+            .fontSize(28);
+            .margin2(15, 0);
+            color: #409EFF;
+        }
+        span {
+            .fontSize(14);
+        }
+    }
+}

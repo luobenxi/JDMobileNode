@@ -1,0 +1,39 @@
+.JdContactsUserListBox .list {
+  width: 100%;
+  text-align: left;
+  float: left;
+  position: relative;
+  overflow: hidden;
+}
+.JdContactsUserListBox .list .list_user p {
+  background: #E4E7ED;
+  font-weight: 600;
+  padding-left: 0.26666667rem;
+  height: 0.64rem;
+  line-height: 0.64rem;
+}
+.JdContactsUserListBox .list .list_user li {
+  font-size: 0.42666667rem;
+  line-height: 0.8rem;
+}
+.JdContactsUserListBox .list .list_user li .user-item img {
+  width: 0.8rem;
+  height: 0.8rem;
+  line-height: 0.8rem;
+}
+.JdContactsUserListBox .list .list_user li .user-item .name {
+  font-size: 0.4rem;
+  display: flex;
+  align-items: center;
+}
+.JdContactsUserListBox .list_index {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  list-style: none;
+  font-size: 0.4rem;
+}
+.JdContactsUserListBox .list_index li {
+  padding: 0.016rem 0.21333333rem;
+}
+/*# sourceMappingURL=list.css.map */

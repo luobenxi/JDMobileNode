@@ -1,0 +1,17 @@
+/*********** screen配置 ***********/
+.news .news-title {
+  font-size: 0.4rem;
+  color: #303133;
+  font-weight: 600;
+}
+.news .van-cell-group {
+  height: 1.17333333rem;
+  display: flex;
+  align-items: center;
+}
+.news .news-item {
+  font-size: 0.37333333rem;
+  letter-spacing: 0.03333333rem;
+  color: #606266;
+}
+/*# sourceMappingURL=news.css.map */

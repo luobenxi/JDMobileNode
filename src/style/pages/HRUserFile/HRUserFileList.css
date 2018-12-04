@@ -1,0 +1,16 @@
+/*********** screen配置 ***********/
+.HRUserFile-box .user-head {
+  width: 3.41333333rem;
+  height: 4.16rem;
+  border: solid 1px #EBEEF5;
+}
+.HRUserFile-box .index-box {
+  text-align: left;
+  border-bottom: solid 1px #EBEEF5;
+  font-size: 0.37333333rem;
+  padding: 0.13333333rem 0.32rem;
+}
+.HRUserFile-box .borderBox {
+  border-bottom: solid 6px #F2F6FC;
+}
+/*# sourceMappingURL=HRUserFileList.css.map */

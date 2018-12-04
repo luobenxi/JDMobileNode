@@ -1,0 +1,38 @@
+/*********** screen配置 ***********/
+.todoCategoryBox .menu-item {
+  position: relative;
+}
+.todoCategoryBox .menu-item .todoCount {
+  position: absolute;
+  background-color: #FF0000;
+  color: #ffffff;
+  text-align: center;
+  width: 0.42666667rem;
+  height: 0.42666667rem;
+  right: 0.21333333rem;
+  top: 0.21333333rem;
+  border-radius: 0.21333333rem;
+  font-size: 0.32rem;
+}
+.todoCategoryBox .title {
+  font-weight: 600;
+  text-align: center;
+  margin: 10px auto;
+  font-size: 16px;
+}
+.todoCategoryBox .van-col {
+  text-align: center;
+  height: 2.4rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+.todoCategoryBox .van-icon {
+  display: block;
+  font-size: 0.74666667rem;
+  margin: 0.4rem 0rem;
+  color: #409EFF;
+}
+.todoCategoryBox span {
+  font-size: 0.37333333rem;
+}
+/*# sourceMappingURL=todoCategory.css.map */
