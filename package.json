@@ -8,6 +8,7 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js",
+    "auto-publish": "node build/auto-publish.js",
     "add-app": "node build/add-app.js",
     "del-app": "node build/del-app.js",
     "del-app-process-test": "node build/del-app-process-test.js"
@@ -16,6 +17,7 @@
     "axios": "^0.16.2",
     "babel-polyfill": "^6.26.0",
     "better-scroll": "^1.13.2",
+    "encoding": "^0.1.12",
     "es6-promise": "^4.2.5",
     "fastclick": "^1.0.6",
     "lib-flexible": "^0.3.2",
