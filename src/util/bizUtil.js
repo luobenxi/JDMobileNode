@@ -1,3 +1,7 @@
+import PublicApi from '../services/PublicApiService';
+
+const publicApi = new PublicApi();
+
 class BizUtil {
     SplitDateToArr(date) {
         let arr = date.split('-');
@@ -7,6 +11,19 @@ class BizUtil {
             DDay: arr[2]
         };
         return dataArr;
+    }
+    GetAskTypeOption() {
+        let list = [];
+        publicApi.GetAskForLeaveTypeList().then((res) => {
+            res.data.map((item) => {
+                let temp = Object.assign({}, {
+                    id: item.ID,
+                    text: item.LeaveName,
+                });
+                list.push(temp);
+            });
+        });
+        return list;
     }
     GetAmPmTypeOption() {
         return [

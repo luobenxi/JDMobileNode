@@ -36,6 +36,9 @@ import OutCompanySave from '../pages/OutCompany/Save';
 import OutCompanySubmitConfirm from '../pages/OutCompany/SubmitConfirm';
 // 个人档案
 import HRUserFilePersonal from '../pages/HRUserFile/HRUserFileList';
+// 请假
+import AskForLeaveList from '../pages/AskForLeave/AskForLeaveList';
+import AskForLeaveAdd from '../pages/AskForLeave/Add';
 Vue.use(Router);
 
 const router = new Router({
@@ -142,6 +145,14 @@ const router = new Router({
         {
             path: '/HRUserFilePersonalApi/GetHRUserFilePersonal',
             component: HRUserFilePersonal
+        },
+        {
+            path: '/AskForLeaveApi/PersonAskForLeaveList',
+            component: AskForLeaveList
+        },
+        {
+            path: '/AskForLeaveApi/Add',
+            component: AskForLeaveAdd
         }
     ],
     // mode: 'history'
