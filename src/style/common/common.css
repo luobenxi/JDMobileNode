@@ -10,8 +10,12 @@
 }
 .sub-btn .btn-item {
   margin-top: 0.26666667rem;
+  margin-bottom: 0.26666667rem;
 }
 .loading-box {
   margin: 0.8rem auto;
+}
+.loading-box-input {
+  margin: 0rem auto;
 }
 /*# sourceMappingURL=common.css.map */

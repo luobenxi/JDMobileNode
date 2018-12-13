@@ -8,9 +8,11 @@
 <script>
     import { mapActions } from 'vuex';
     import footer from '../components/common/footer';
-    import MUtil from '../util/mm.js';
+    import MUtil from '../util/mm';
+    import BizUtil from '../util/bizUtil';
 
     const _mm = new MUtil();
+    const _bizUtil = new BizUtil();
 
     export default {
         name: 'JdLayout',
@@ -79,7 +81,7 @@
             [footer.name]: footer,
         },
         mounted() {
-            _mm.checkIsLogin();
+            _bizUtil.checkIsLogin();
             let Cookie = _mm.getCookie(_mm.CookieKeys_UserInfo());
             // 判断是否登录
             if (Cookie) {

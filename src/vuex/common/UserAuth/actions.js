@@ -23,6 +23,22 @@ const LoginCheckHandle = (
     });
 });
 
+const LoginOutHandle = (
+    { commit }
+) => new Promise((resolve, reject) => {
+    _user.LoginOutHandle().then((res) => {
+        if (res.success) {
+            // 退出登录成功
+            resolve(res);
+        } else {
+            // 退出登录失败
+            reject(res.msg || '');
+        }
+    }).catch((err) => {
+        reject(err);
+    });
+});
+
 const GetUserInfo = (
     { commit }
 ) => new Promise((resolve, reject) => {
@@ -128,6 +144,7 @@ const GetUserListByDepartID = (
 
 export default {
     LoginCheckHandle,
+    LoginOutHandle,
     GetUserInfo,
     GetMyAuthList,
     UpdateUserPwd,

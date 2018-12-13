@@ -1,0 +1,38 @@
+/*********** screen配置 ***********/
+/* loading */
+.ajax-loading {
+  display: none;
+}
+.ajax-loading .loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0rem 0.26666667rem;
+  height: 1.6rem;
+  line-height: 1.6rem;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 0.10666667rem;
+  text-align: center;
+  z-index: 9999;
+  font-size: 0.37333333rem;
+  color: #fff;
+}
+.ajax-loading .loading img {
+  width: 0.66666667rem;
+  vertical-align: middle;
+}
+.ajax-loading .loading span {
+  margin-left: 0.05333333rem;
+}
+.ajax-loading .overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 9998;
+  background: #ffffff;
+  opacity: 0.1;
+}
+/*# sourceMappingURL=loading.css.map */

@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div id="jd-search">
         <van-field v-model="keyword" :icon="inputIcon" @click-icon="clickIconClear" :placeholder="placeholder" />
         <van-button class="btn" :type="btnType" size="small" @click="SearchHandle">{{btnText}}</van-button>

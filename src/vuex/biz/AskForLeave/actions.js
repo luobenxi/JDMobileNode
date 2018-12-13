@@ -1,8 +1,5 @@
 import AskForLeave from '../../../services/AskForLeaveService';
-import {
-    SET_AskForLeave_LIST
-} from '../../mutation-types';
-
+import { SET_ASK_FOR_LEAVE_LIST } from '../../mutation-types';
 const _api = new AskForLeave();
 
 // 获取请假列表
@@ -11,7 +8,7 @@ const GetAskForLeaveList = (
     SubData
 ) => new Promise((resolve, reject) => {
     _api.GetAskForLeaveList(SubData).then((res) => {
-        commit(SET_AskForLeave_LIST, res.data);
+        commit(SET_ASK_FOR_LEAVE_LIST, res.data);
         resolve(res.data);
     }).catch(err => {
         reject(err || '');
@@ -24,6 +21,18 @@ const GetAskForLeaveByKey = (
     SubData
 ) => new Promise((resolve, reject) => {
     _api.GetAskForLeaveByKey(SubData).then((res) => {
+        resolve(res.data);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+// 根据流程明细ID获取一条请假单详情信息
+const GetAskForLeaveDetailByWfDetailId = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.GetAskForLeaveDetailByWfDetailId(SubData).then((res) => {
         resolve(res.data);
     }).catch(err => {
         reject(err || '');
@@ -57,6 +66,7 @@ const DeleteAskForLeaveByKey = (
 export default {
     GetAskForLeaveList,
     GetAskForLeaveByKey,
+    GetAskForLeaveDetailByWfDetailId,
     SaveAskForLeave,
 	DeleteAskForLeaveByKey,
 };

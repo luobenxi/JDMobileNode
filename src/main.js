@@ -9,6 +9,7 @@ import es6Promise from 'es6-promise';
 import Meta from 'vue-meta';
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import './style/common/loading.css';
 
 Vue.use(Vant);
 Vue.use(Meta);

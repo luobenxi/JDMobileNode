@@ -1,13 +1,13 @@
 <template>
     <div id="jd-list">
         <van-cell-group v-if="itemList && itemList.length">
-            <van-cell v-for="item in itemList" :key="item[colNameMap.key]" @click="itemClickHandle(item)" v-if="isLink" is-link>
+            <van-cell v-for="(item, index) in itemList" :key="item[colNameMap.key] + index" @click="itemClickHandle(item)" v-if="isLink" is-link>
                 <div style="display: flex; justify-content: space-between">
                     <span v-for="colItem in colNameMap.colName">{{item[colItem]}}</span>
                     <span v-if="rightText">{{rightText}}</span>
                 </div>
             </van-cell>
-            <van-cell v-for="item in itemList" :key="item[colNameMap.key]" @click="itemClickHandle(item)" v-if="!isLink">
+            <van-cell v-for="(item, index) in itemList" :key="item[colNameMap.key] + index" @click="itemClickHandle(item)" v-if="!isLink">
                 <div style="display: flex; justify-content: space-between">
                     <span v-for="colItem in colNameMap.colName">{{item[colItem]}}</span>
                     <span v-if="rightText">{{rightText}}</span>

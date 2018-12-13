@@ -117,7 +117,6 @@ export default {
             'GetOutCompanyByKey',
             'OutCompanySave',
             'DeleteOutCompanyByKey',
-            'GetUserInfo',
         ]),
         chooseDate() {
             this.pickerIsShow = true;
@@ -232,23 +231,13 @@ export default {
                 }
             });
         },
-        getUserInfoFromDb() {
-            let userStr = _mm.getStorage('user.info');
-            if (!userStr) {
-                this.GetUserInfo().then((user) => {
-                    _mm.setStorage('user.info', user);
-                    this.from = Object.assign({}, {
-                        DepartName: user.DepartName,
-                        InsertUserFullName: user.FullName
-                    });
-                });
-            } else {
-                let user = JSON.parse(userStr);
+        getUserInfoFromUtil() {
+            _bizUtil.getAllUserInfoFromApiOrLocalPromise().then((userInfo) => {
                 this.from = Object.assign({}, {
-                    DepartName: user.DepartName,
-                    InsertUserFullName: user.FullName
+                    DepartName: userInfo.user.DepartName,
+                    InsertUserFullName: userInfo.user.FullName,
                 });
-            }
+            });
         },
         DataInit(ID) {
             this.GetOutCompanyByKey(ID).then((res) => {
@@ -278,7 +267,7 @@ export default {
                 this.DataInit(params.ID);
             } else {
                 //Add
-                this.getUserInfoFromDb();
+                this.getUserInfoFromUtil();
             }
         }
     },

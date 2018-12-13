@@ -1,158 +1,139 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-// components
-import Layout from '../pages/layout';
-import Login from '../pages/login';
-import ErrorPage from '../pages/error';
-// 首页标签组件
-import Home from '../pages/home/home';
-import todoList from '../pages/todo/todoList';
-import TodoCategory from '../pages/todo/todoCategory';
-import My from '../pages/my/my.vue';
-// 已办
-import DoneCategory from '../pages/todo/doneCategory';
-// 通讯录
-import Contacts from '../pages/contacts/contacts';
-import ContactsUser from '../pages/contacts/contacts-user';
-import myContacts from '../pages/contacts/my-contacts';
-// 菜单
-import Menu from '../pages/menu/menu';
-// 个人相关
-import ChangePwd from '../pages/my/change-pwd';
-import ChangeSalaryPwd from '../pages/Salary/change-salary-pwd';
-import UserInfo from '../pages/my/user-info';
-// 工资
-import SalaryPassValid from '../pages/Salary/SalaryPassValid';
-import SalaryBill from '../pages/Salary/SalaryBill';
-import SalaryBillDetail from '../pages/Salary/SalaryBillDetail';
-// 年假
-import AnnualLeaveList from '../pages/AnnualLeave/AnnualLeaveList';
-// 考勤
-import PersonAbnormalList from '../pages/Attendance/PersonAbnormalList';
-import ConfirmReason from '../pages/Attendance/ConfirmReason';
-// 公出
-import OutCompanyList from '../pages/OutCompany/OutCompanyList';
-import OutCompanySave from '../pages/OutCompany/Save';
-import OutCompanySubmitConfirm from '../pages/OutCompany/SubmitConfirm';
-// 个人档案
-import HRUserFilePersonal from '../pages/HRUserFile/HRUserFileList';
-// 请假
-import AskForLeaveList from '../pages/AskForLeave/AskForLeaveList';
-import AskForLeaveAdd from '../pages/AskForLeave/Add';
+
+// 非按需加载
+// import Layout from '../pages/layout';
+// 按需加载方式一，官方推荐使用的方式
+// const AskForLeaveList = () => import('../pages/AskForLeave/AskForLeaveList');
+// 按需加载方式二
+// const AskForLeaveList = resolve => require(['../pages/AskForLeave/AskForLeaveList'], resolve);
+
 Vue.use(Router);
 
 const router = new Router({
     routes: [
         {
             path: '/login',
-            component: Login,
+            component: () => import('../pages/login')
         },
         {
             path: '/',
             redirect: '/home',
-            component: Layout,
+            component: () => import('../pages/layout'),
             children: [
                 {
                     path: '/home',
-                    component: Home
+                    component: () => import('../pages/home/home')
                 },
                 {
                     path: '/contacts',
-                    component: Contacts
+                    component: () => import('../pages/contacts/contacts')
                 },
                 {
                     path: '/todoCategory',
-                    component: TodoCategory
+                    component: () => import('../pages/todo/todoCategory')
                 },
                 {
                     path: '/my',
-                    component: My
+                    component: () => import('../pages/my/my')
                 },
                 {
                     path: '/error',
-                    component: ErrorPage
+                    component: () => import('../pages/error')
                 }
             ]
         },
         {
             path: '/doneCategory',
-            component: DoneCategory
+            component: () => import('../pages/todo/doneCategory')
         },
         {
             path: '/todoList/:CategoryName/:active',
-            component: todoList
+            component: () => import('../pages/todo/todoList')
         },
         {
             path: '/user-info',
-            component: UserInfo
+            component: () => import('../pages/my/user-info')
         },
         {
             path: '/sub-menu/:ParentID',
-            component: Menu
+            component: () => import('../pages/menu/menu')
         },
         {
             path: '/change-pwd',
-            component: ChangePwd
+            component: () => import('../pages/my/change-pwd')
         },
         {
             path: '/change-salary-pwd',
-            component: ChangeSalaryPwd
+            component: () => import('../pages/Salary/change-salary-pwd')
         },
         {
             path: '/my-contacts',
-            component: myContacts
+            component: () => import('../pages/contacts/my-contacts')
         },
         {
             path: '/contacts-user/:DepartID',
-            component: ContactsUser
+            component: () => import('../pages/contacts/contacts-user')
         },
         {
             path: '/SalaryApi/SalaryPassValid',
-            component: SalaryPassValid
+            component: () => import('../pages/Salary/SalaryPassValid')
         },
         {
             path: '/SalaryApi/SalaryBill',
-            component: SalaryBill
+            component: () => import('../pages/Salary/SalaryBill')
         },
         {
             path: '/SalaryApi/SalaryBillDetail',
-            component: SalaryBillDetail
+            component: () => import('../pages/Salary/SalaryBillDetail')
         },
         {
             path: '/AnnualLeaveApi/AnnualLeaveList',
-            component: AnnualLeaveList
+            component: () => import('../pages/AnnualLeave/AnnualLeaveList')
         },
         {
             path: '/AttendanceApi/PersonAbnormalList',
-            component: PersonAbnormalList
+            component: () => import('../pages/Attendance/PersonAbnormalList')
         },
         {
             path: '/AttendanceApi/ConfirmAbnormalReason/:ID',
-            component: ConfirmReason
+            component: () => import('../pages/Attendance/ConfirmReason')
         },
         {
             path: '/OutCompanyApi/OutCompanyList',
-            component: OutCompanyList
+            component: () => import('../pages/OutCompany/OutCompanyList')
         },
         {
             path: '/OutCompanyApi/Save/:ID?',
-            component: OutCompanySave
+            component: () => import('../pages/OutCompany/Save')
         },
         {
             path: '/OutCompanyApi/SubmitConfirm/:ID?',
-            component: OutCompanySubmitConfirm
+            component: () => import('../pages/OutCompany/SubmitConfirm')
         },
         {
             path: '/HRUserFilePersonalApi/GetHRUserFilePersonal',
-            component: HRUserFilePersonal
+            component: () => import('../pages/HRUserFile/HRUserFileList')
         },
         {
             path: '/AskForLeaveApi/PersonAskForLeaveList',
-            component: AskForLeaveList
+            component: () => import('../pages/AskForLeave/AskForLeaveList')
         },
         {
-            path: '/AskForLeaveApi/Add',
-            component: AskForLeaveAdd
+            path: '/AskForLeaveApi/Save/:ID?',
+            component: () => import('../pages/AskForLeave/Save')
+        },
+        {
+            path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
+            component: () => import('../pages/AskForLeave/PersonAskForLeaveApproval')
+        },
+        {
+            path: '/AskForLeave/PersonAskForLeaveApprovalHR/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
+            component: () => import('../pages/AskForLeave/PersonAskForLeaveApprovalHR')
+        },
+        {
+            path: '/AskForLeave/PersonAskForLeaveView/:ID?',
+            component: () => import('../pages/AskForLeave/PersonAskForLeaveView')
         }
     ],
     // mode: 'history'

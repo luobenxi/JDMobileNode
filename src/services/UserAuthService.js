@@ -1,12 +1,15 @@
 import { ApiPreFix } from '../vuex/mutation-types';
-import MUtil from '../util/mm.js';
+import AjaxUtil from '../axios/index';
 
-const _mm = new MUtil();
+const _mm = new AjaxUtil();
 
 // 该方式在使用时需要实例化，如 const _user = new User();
 class User {
     LoginCheckHandle(data) {
         return _mm.requestGet(`${ApiPreFix}/LoginApi/LoginCheckHandle?username=${data.username}&password=${data.password}`);
+    }
+    LoginOutHandle() {
+        return _mm.requestGet(`${ApiPreFix}/LoginApi/LoginOutHandle`);
     }
     GetUserInfo() {
         return _mm.requestGet(`${ApiPreFix}/UserSystemApi/GetUserInfo`);
@@ -32,6 +35,9 @@ class User {
     }
     GetUserListByDepartID(data) {
         return _mm.requestGet(`${ApiPreFix}/UserContactsApi/GetUserListByDepartID?DepartID=${data.DepartID}&FullName=${data.FullName}`);
+    }
+    GetWeiXinOpenIDUrl() {
+        return _mm.requestGet(`${ApiPreFix}/LoginApi/GetWeiXinOpenIDUrl`);
     }
 }
 

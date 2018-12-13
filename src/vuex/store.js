@@ -8,7 +8,9 @@ import SalaryStore from './biz/Salary/store';
 import AnnualLeaveStore from './biz/AnnualLeave/store';
 import AttendanceStore from './biz/Attendance/store';
 import OutCompanyStore from './biz/OutCompany/store';
-import HRUserFilePersonal from './biz/HRUserFile/store';
+import HRUserFilePersonalStore from './biz/HRUserFile/store';
+import AskForLeaveStore from './biz/AskForLeave/store';
+import WorkFlowStore from './biz/WorkFlow/store';
 
 Vue.use(Vuex);
 
@@ -21,7 +23,9 @@ export default new Vuex.Store({
         AnnualLeaveStore,
         AttendanceStore,
         OutCompanyStore,
-        HRUserFilePersonal,
+        HRUserFilePersonalStore,
+        AskForLeaveStore,
+        WorkFlowStore,
     },
     strict: process.env.NODE_ENV !== 'production',
 });

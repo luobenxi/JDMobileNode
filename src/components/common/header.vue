@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div id="jd-header">
         <van-nav-bar
             v-if="leftArrow"

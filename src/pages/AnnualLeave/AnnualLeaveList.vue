@@ -18,6 +18,12 @@
                     <van-col>{{from.FullName}}</van-col>
                 </van-row>
             </van-cell>
+            <van-cell>
+                <van-row gutter="10">
+                    <van-col :span="12">员工职务</van-col>
+                    <van-col>{{from.PostName}}</van-col>
+                </van-row>
+            </van-cell>
             <van-collapse v-model="activeNamesJiaBan" v-if="active === 0">
                 <van-collapse-item title="上年度剩余加班" name="1">
                     <van-cell>
@@ -103,8 +109,10 @@
     import {mapActions, mapGetters} from 'vuex';
     import header from '../../components/common/header.vue';
     import MUtil from '../../util/mm.js';
+    import BizUtil from '../../util/bizUtil';
 
     const _mm = new MUtil();
+    const _bizUtil = new BizUtil();
 
     export default {
         components: {
@@ -122,28 +130,18 @@
         methods: {
             ...mapActions([
                 'GetPersonWorkAnnualLeaveList',
-                'GetUserInfo',
             ]),
         },
         mounted() {
             _mm.checkIsLogin();
             this.GetPersonWorkAnnualLeaveList().then((res) => {
-                let userStr = _mm.getStorage('user.info');
-                if (!userStr) {
-                    this.GetUserInfo().then((user) => {
-                        _mm.setStorage('user.info', user);
-                        this.from = Object.assign({}, this.from, res.data, {
-                            DepartName: user.DepartName,
-                            FullName: user.FullName
-                        });
-                    });
-                } else {
-                    let user = JSON.parse(userStr);
+                _bizUtil.getAllUserInfoFromApiOrLocalPromise().then((userInfo) => {
                     this.from = Object.assign({}, this.from, res.data, {
-                        DepartName: user.DepartName,
-                        FullName: user.FullName
+                        DepartName: userInfo.user.DepartName,
+                        FullName: userInfo.user.FullName,
+                        PostName: userInfo.userFile.PostName,
                     });
-                }
+                });
             });
         }
     }

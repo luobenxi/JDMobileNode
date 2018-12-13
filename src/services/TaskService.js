@@ -1,7 +1,7 @@
 import { ApiPreFix } from '../vuex/mutation-types';
-import MUtil from '../util/mm.js';
+import AjaxUtil from '../axios/index';
 
-const _mm = new MUtil();
+const _mm = new AjaxUtil();
 
 class Task {
     GetHRWorks(data) {

@@ -68,6 +68,14 @@ export default {
     methods: {
         ...mapActions([
             'SetTaskList',
+            'GetHRWorks',
+            'GetUserTasks',
+            'GetBMTask', // 雷宝清的 API
+            'SetTodoCategoryList',
+            'SetDoneCategoryList',
+
+            'GetWorkFlowsDoUrl',
+            'GetWorkFlowsViewUrl',
         ]),
         ShowAllPage() {
             if (this.ListPageUrl) {
@@ -87,7 +95,33 @@ export default {
             this.getTaskListHandle(item);
         },
         clickHandle(item) {
-            window.open(item.TaskUrl);
+            // window.open(item.TaskUrl);
+            let  wfId = _mm.getSpecialUrlParam(item.TaskUrl, 'wfId');
+            let  wfDetailId = _mm.getSpecialUrlParam(item.TaskUrl, 'wfDetailId');
+            let  activeId = _mm.getSpecialUrlParam(item.TaskUrl, 'activeId');
+            let  keyId = _mm.getSpecialUrlParam(item.TaskUrl, 'keyId');
+            if (!wfDetailId || !activeId) {
+                _mm.errorDialog('参数为空');
+                return false;
+            }
+            let data = {
+                wfId,
+                wfDetailId,
+                activeId,
+                keyId
+            };
+            if (item.Status === '62') {
+                // 流程处理
+                this.GetWorkFlowsDoUrl(data).then(res => {
+                    console.log(res.data);
+                    this.$router.push(res.data);
+                });
+            } else {
+                this.GetWorkFlowsViewUrl(data).then(res => {
+                    console.log(res.data);
+                    // this.$router.push(res.data);
+                });
+            }
         },
         getTaskList() {
             this.getTaskListHandle(this.active);
@@ -105,13 +139,66 @@ export default {
                     return item.CategoryName === this.CategoryName;
                 });
             }
-            this.SetTaskList(currentList[0].itemList);
-            this.ListPageUrl = currentList[0].ListPageUrl;
+            if (currentList.length) {
+                this.SetTaskList(currentList[0].itemList);
+                this.ListPageUrl = currentList[0].ListPageUrl;
+            } else {
+                // 当页面刷新时，重新初始化 待办/已办 事项数据
+                this.getTodoListHandle(0); // 待办事项
+                this.getDoneListHandle(1); // 已办事项
+            }
             this.loading = false;
             this.finished = true;
         },
         onLoad() {
             this.$refs.TaskList.queryHandler();
+        },
+        // 待办事项处理
+        getTodoListHandle(status) {
+            this.GetHRWorks(status).then((res) => {
+                this.GetUserTasks(status).then((res2) => {
+                    this.GetBMTask(status).then((res3) => {
+                        let categoryArr = [];
+                        let count = res.total + res2.total; // 待办数字累加
+                        if (res.CategoryName) {
+                            categoryArr.push(res);
+                        }
+                        if (res2.CategoryName) {
+                            categoryArr.push(res2);
+                        }
+                        if (res3 && res3 !== null) {
+                            res3.map((item) => {
+                                categoryArr.push(item);
+                                count = count + item.total;
+                            });
+                        }
+                        this.SetTodoCategoryList(categoryArr); // 设置getter
+                        this.getTaskListHandle(this.active);
+                    });
+                });
+            });
+        },
+        // 已办事项处理
+        getDoneListHandle(status) {
+            this.GetHRWorks(status).then((res) => {
+                this.GetUserTasks(status).then((res2) => {
+                    this.GetBMTask(status).then((res3) => {
+                        let categoryArr = [];
+                        if (res.CategoryName) {
+                            categoryArr.push(res);
+                        }
+                        if (res2.CategoryName) {
+                            categoryArr.push(res2);
+                        }
+                        if (res3 && res3 !== null) {
+                            res3.map((item) => {
+                                categoryArr.push(item);
+                            });
+                        }
+                        this.SetDoneCategoryList(categoryArr); // 设置getter
+                    });
+                });
+            });
         },
     },
     mounted() {

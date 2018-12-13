@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="jd-back-top" @click="goTop" @scroll="handleScroll" v-if="isShowBtn">顶部</div>
 </template>
 

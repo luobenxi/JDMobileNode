@@ -39,7 +39,7 @@ export default {
     methods: {
         categoryClickHandle(item) {
             this.$router.push(`/todoList/${item.CategoryName}/0`); // 0 = 待办
-        }
+        },
     }
 }
 </script>

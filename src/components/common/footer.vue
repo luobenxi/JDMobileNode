@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div id="jd-footer">
         <van-tabbar v-model="active" class="footer-menu-box">
             <van-tabbar-item icon="home" to="/home">首页</van-tabbar-item>

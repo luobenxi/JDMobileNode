@@ -60,13 +60,12 @@
 </template>
 
 <script>
-    import {
-        mapActions
-    } from 'vuex';
     import header from '../../components/common/header.vue';
     import MUtil from '../../util/mm.js';
+    import BizUtil from '../../util/bizUtil';
 
     const _mm = new MUtil();
+    const _bizUtil = new BizUtil();
 
     export default {
         name: 'JdUserInfo',
@@ -80,16 +79,13 @@
             [header.name]: header
         },
         methods: {
-            ...mapActions([
-                'GetUserInfo',
-            ]),
         },
         mounted() {
             _mm.checkIsLogin();
-            this.GetUserInfo().then(res => {
-                this.from = Object.assign({}, res, {
-                    IsAble: Boolean(res.IsAble),
-                    LoginCount: parseInt(res.LoginCount),
+            _bizUtil.getAllUserInfoFromApiOrLocalPromise().then((userInfo) => {
+                this.from = Object.assign({}, userInfo.user, {
+                    IsAble: Boolean(userInfo.user.IsAble),
+                    LoginCount: parseInt(userInfo.user.LoginCount),
                 });
             });
         }

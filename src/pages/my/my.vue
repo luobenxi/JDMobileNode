@@ -17,7 +17,7 @@
 
 <script>
 import { Dialog } from 'vant';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import header from '../../components/common/header';
 import MUtil from '../../util/mm.js';
 
@@ -41,6 +41,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions([
+            'LoginOutHandle',
+        ]),
         menuClickHandle(item) {
             this.$router.push('/' + item.key || '/');
         },
@@ -51,7 +54,12 @@ export default {
             }).then(() => {
                 // _mm.removeStorage('user.token');
                 // _mm.removeStorage('user.info');
-                window.location.href = _mm.GetLoginPageUrl();
+                this.LoginOutHandle().then(res => {
+                    _mm.successTips(res.msg);
+                    setTimeout(() => {
+                        window.location.href = _mm.GetLoginPageUrl();
+                    }, 800);
+                });
             }).catch(() => {
             });
         },
