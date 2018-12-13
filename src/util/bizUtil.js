@@ -42,6 +42,24 @@ class BizUtil {
         return list;
     }
 
+    GetAskTypeOptionPromise() {
+        let list = [];
+        return new Promise((resolve, reject) => {
+            publicApi.GetAskForLeaveTypeList().then((res) => {
+                res.data.map((item) => {
+                    let temp = Object.assign({}, {
+                        id: item.ID,
+                        text: item.LeaveName,
+                    });
+                    list.push(temp);
+                });
+                resolve(list);
+            }).catch(err => {
+                reject(err);
+            });
+        });
+    }
+
     GetAmPmTypeOption() {
         return [
             {

@@ -124,6 +124,14 @@ const router = new Router({
             component: () => import('../pages/AskForLeave/Save')
         },
         {
+            path: '/AskForLeave/PersonAskForLeaveSubmit/:ID?',
+            component: () => import('../pages/AskForLeave/PersonAskForLeaveSubmit') // 提交前确认页面
+        },
+        {
+            path: '/AskForLeave/PersonAskForLeaveProcess/:ID?',
+            component: () => import('../pages/AskForLeave/PersonAskForLeaveProcess') // 审批中
+        },
+        {
             path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
             component: () => import('../pages/AskForLeave/PersonAskForLeaveApproval')
         },

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <jd-header :title="title"></jd-header>
+        <jd-header title="我的请假单"></jd-header>
         <PersonAskForLeaveCommon
                 :from="from"
                 :dateDetailList="dateDetailList"
@@ -8,9 +8,12 @@
                 :workFlowsDetailList="workFlowsDetailList"
         >
         </PersonAskForLeaveCommon>
-        <div class="sub-btn" v-if="IsShowBtn">
-            <van-button type="danger" class="btn-item" block @click="ApproveRefuseHandle">销假申请</van-button>
+        <div class="sub-btn">
+            <van-button type="danger" class="btn-item" v-if="fromStatus==='62'" block @click="WithDrawHandle">撤 回</van-button>
+            <van-button type="primary" class="btn-item" v-if="fromStatus==='62'" plain block @click="GoBack">返 回</van-button>
         </div>
+        <!--开始审批组件-->
+        <ApproveWithDraw :popupIsShow="ApproveWithDrawIsShow" :model="model" :ParamID="ParamID"></ApproveWithDraw>
     </div>
 </template>
 
@@ -20,9 +23,9 @@
     } from 'vuex';
     import header from '../../components/common/header';
     import PersonAskForLeaveCommon from './PersonAskForLeaveCommon';
+    import ApproveWithDraw from '../../components/biz/Approve/ApproveWithDraw';
     import MUtil from '../../util/mm';
     import BizUtil from '../../util/bizUtil';
-    import { Dialog } from 'vant';
 
     const _mm = new MUtil();
     const _bizUtil = new BizUtil();
@@ -30,32 +33,21 @@
     export default {
         data () {
             return {
-                title: '请假单详情',
-                from: {
-                    ID: '',
-                    Reason: '', // 原因
-                },
-                IsShowBtn: true, // 按钮组是否显示
-                wfDetailId: '', // 流程详情ID
-                model: {}, // 存放一条记录
-                fromStatus: '61',
-                uploadFinishList: [],
-                dateDetailList: [],
-                workFlowsDetailList: [],
-
-                ApproveFinishIsShow: false, // 审批结束
-                ApproveRefuseIsShow: false, // 审批拒绝
-                ApproveReturnIsShow: false, // 审批退回
-                ApproveStepsList: [], // 步骤审批用户列表
+                ID: '', // ID
+                fromStatus: '62',
+                ApproveWithDrawIsShow: false, // 审批撤回
                 ParamID: {}, // 数据参数ID
+                model: {}, // 存放一条记录
 
-                pickerIsShow: false,
-                AskTypeOption: _bizUtil.GetAskTypeOption(),
-                AmPmTypeOption: _bizUtil.GetAmPmTypeOption(),
+                from: {},
+                dateDetailList: [],
+                uploadFinishList: [],
+                workFlowsDetailList: [],
             }
         },
         components: {
             [header.name]: header,
+            [ApproveWithDraw.name]: ApproveWithDraw,
             [PersonAskForLeaveCommon.name]: PersonAskForLeaveCommon,
         },
         computed: {
@@ -64,13 +56,15 @@
             ...mapActions([
                 'GetAskForLeaveByKey',
             ]),
-            ApproveRefuseHandle() {
-                this.ApproveRefuseIsShow = !this.ApproveRefuseIsShow;
+            WithDrawHandle() {
+                this.ApproveWithDrawIsShow = !this.ApproveWithDrawIsShow;
+            },
+            GoBack() {
+                this.$router.push(`/AskForLeaveApi/PersonAskForLeaveList`);
             },
             paramsInit() {
                 let params = this.$route.params;
                 if (params.ID !== undefined) {
-                    // Edit
                     let ID = params.ID;
                     this.GetAskForLeaveByKey(ID).then((res) => {
                         this.model = res.model;
@@ -78,13 +72,6 @@
                         this.dateDetailList = res.detailList;// 请假单明细
                         this.uploadFinishList = res.attachList;// 请假单附件列表
                         this.workFlowsDetailList = res.workFlowsDetailList;// 审批信息
-                        let CurrentUserID = res.CurrentUserID;
-                        let CurrentUserArr = res.workFlowsDetailList.filter((item) => {
-                            return item.ExecPersons === CurrentUserID;
-                        });
-                        let IsShowBtn = CurrentUserArr.length === 1 ? CurrentUserArr[0].IsCurrent : 'True'; // 控制按钮组是否显示
-                        this.IsShowBtn = IsShowBtn === 'False'; // 控制按钮组是否显示
-                        this.fromStatus = res.model.Status; // 状态
                     });
                 }
             },

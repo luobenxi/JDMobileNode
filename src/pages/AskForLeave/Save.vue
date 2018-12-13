@@ -56,8 +56,6 @@
                 </JdDatetimePicker>
             </van-popup>
         </div>
-        <!--开始审批组件-->
-        <ApproveStart :popupIsShow="ApproveStartIsShow" :ApproveStepsList="ApproveStepsList" :model="model" :ParamID="ParamID"></ApproveStart>
     </div>
 </template>
 
@@ -68,7 +66,6 @@ import {
 import header from '../../components/common/header';
 import upload from '../../components/common/upload';
 import JdDatetimePicker from '../../components/common/datetimePicker';
-import ApproveStart from '../../components/biz/Approve/ApproveStart';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
 import { Dialog } from 'vant';
@@ -84,16 +81,11 @@ export default {
                 ID: '',
                 Reason: '', // 原因
             },
-            model: {}, // 存放一条记录
             fromStatus: '61',
             PageLoading: false,
             UploadFinishList: [],
             DateDetailArr: [],
             DateArr: [],
-
-            ApproveStartIsShow: false, // 开始审批
-            ApproveStepsList: [], // 步骤审批用户列表
-            ParamID: {}, // 数据参数ID
 
             pickerIsShow: false,
             AskTypeOption: _bizUtil.GetAskTypeOption(),
@@ -104,7 +96,6 @@ export default {
         [header.name]: header,
         [upload.name]: upload,
         [JdDatetimePicker.name]: JdDatetimePicker,
-        [ApproveStart.name]: ApproveStart,
     },
     computed: {
     },
@@ -113,7 +104,6 @@ export default {
             'SaveAskForLeave',
             'GetAskForLeaveByKey',
             'DeleteAskForLeaveByKey',
-            'GetWorkFlowApproveUserList', // 获取流程审批人列表
         ]),
         getUploadFinishList(list) {
             this.UploadFinishList = list;
@@ -155,7 +145,7 @@ export default {
                 _mm.errorDialog('请选择请假时间');
                 return;
             }
-            if (this.from.Reason === undefined) {
+            if (this.from.Reason === undefined || !this.from.Reason) {
                 _mm.errorDialog('请输入请假原因');
                 return;
             }
@@ -174,7 +164,7 @@ export default {
                 if (res.success) {
                     _mm.confirmDialog(res.msg, () => {
                         this.$router.push(`/AskForLeaveApi/Save/${res.data}`);
-                        this.$router.go(0); // 刷新当前页面
+                        this.paramsInit();
                     });
                 } else {
                     _mm.errorDialog(res.msg);
@@ -199,24 +189,7 @@ export default {
                 _mm.errorDialog('参数为空');
                 return;
             }
-            // 获取流程审批人列表
-            let data = {
-                FormID: '1',
-                KeyID: this.model.ID,
-                DepartID: this.model.DepartID,
-                WorkTitle: this.model.Title,
-                InsertUserID: this.model.InsertUserID,
-                IsReSubmit: 'false'
-            };
-            if (data.KeyID === undefined) {
-                _mm.errorDialog('参数KeyID为空');
-                return;
-            }
-            this.GetWorkFlowApproveUserList(data).then(res => {
-                this.ApproveStepsList = res.UserList; // 数据赋值
-                this.ParamID = res.ParamID; // 数据赋值
-                this.ApproveStartIsShow = !this.ApproveStartIsShow; // 显示弹出层
-            });
+            this.$router.push(`/AskForLeave/PersonAskForLeaveSubmit/${ID}`);
         },
         DeleteHandle() {
             let ID = this.from.ID;
@@ -232,8 +205,9 @@ export default {
                 this.DeleteAskForLeaveByKey(ID).then((res) => {
                     this.PageLoading = false;
                     if (res.success) {
-                        _mm.successDialog(res.msg);
-                        this.$router.push(`/AskForLeaveApi/PersonAskForLeaveList`);
+                        _mm.confirmDialog(res.msg, () => {
+                            this.$router.push(`/AskForLeaveApi/PersonAskForLeaveList`);
+                        });
                     } else {
                         _mm.errorDialog(res.msg);
                     }
@@ -259,10 +233,10 @@ export default {
                         Reason: res.model.Reson,
                         ID: res.model.ID, // ID赋值
                     });
-                    this.model = res.model; // model赋值一条记录
                     this.PageLoading = false;
                     this.fromStatus = res.model.Status; // 状态
                     // 请假单明细
+                    this.DateDetailArr = [];
                     res.detailList.map((item) => {
                         this.DateDetailArr.push({
                             Date: _mm.formatStrDate(item.TheDay),
@@ -271,6 +245,7 @@ export default {
                         });
                     });
                     // 请假单附件列表
+                    this.UploadFinishList = [];
                     res.attachList.map((item) => {
                         this.UploadFinishList.push({
                             SavePath: item.FilePath,

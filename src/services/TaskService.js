@@ -1,17 +1,17 @@
 import { ApiPreFix } from '../vuex/mutation-types';
 import AjaxUtil from '../axios/index';
 
-const _mm = new AjaxUtil();
+const ajax = new AjaxUtil();
 
 class Task {
     GetHRWorks(data) {
-        return _mm.requestGet(`${ApiPreFix}/HomeApi/GetHRWorks?Status=${data}`);
+        return ajax.requestGet(`${ApiPreFix}/HomeApi/GetHRWorks?Status=${data}`);
     }
     GetUserTasks(data) {
-        return _mm.requestGet(`${ApiPreFix}/HomeApi/GetUserTasks?Status=${data}`);
+        return ajax.requestGet(`${ApiPreFix}/HomeApi/GetUserTasks?Status=${data}`);
     }
     GetBMTask(data) {
-        return _mm.requestGet(`${ApiPreFix}/BM/Tool/GetFlowAllListsJson?Status=${data}`);
+        return ajax.requestGet(`${ApiPreFix}/BM/Tool/GetFlowAllListsJson?Status=${data}`);
     }
 }
 

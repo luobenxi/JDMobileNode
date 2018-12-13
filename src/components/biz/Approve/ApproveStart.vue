@@ -60,6 +60,11 @@
                     }
                 ]
             },
+            // 提交成功跳转URL
+            submitSuccessJumpUrl: {
+                type: String,
+                default: () => ''
+            },
         },
         data() {
             return {
@@ -89,7 +94,11 @@
                 });
                 this.ApproveStart(data).then(res => {
                     _mm.confirmDialog(res.msg, () => {
-                        this.$router.go(0); // 刷新当前页面
+                        if (this.submitSuccessJumpUrl) {
+                            this.$router.push(this.submitSuccessJumpUrl);
+                        } else {
+                            this.$router.go(0); // 刷新当前页面
+                        }
                     });
                 }).catch(err => {
                     _mm.errorDialog(err.msg);
