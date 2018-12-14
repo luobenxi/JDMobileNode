@@ -6,6 +6,7 @@ import menus from '../../../menus.json';
 import {
     SET_AUTHORITIES,
     ALL_USER_LIST,
+    SET_CURRENT_USER_INFO,
 } from '../../mutation-types';
 
 const initState = {
@@ -15,7 +16,8 @@ const initState = {
         paging: {},
         itemList: []
     },
-    AllUserList: []
+    AllUserList: [],
+    UserInfo: {},
 };
 
 const mutations = {
@@ -24,6 +26,10 @@ const mutations = {
     },
     [ALL_USER_LIST](state, data) {
         Vue.set(state, 'AllUserList', data);
+    },
+    [SET_CURRENT_USER_INFO](state, data) {
+        let userInfo = Object.assign({}, data, data.user, data.userFile);
+        Vue.set(state, 'UserInfo', userInfo);
     },
 };
 

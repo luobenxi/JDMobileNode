@@ -29,7 +29,7 @@ axios.interceptors.response.use(
                 // 无操作权限
                 window.location.href = '/#/error';
             }
-            return Promise.resolve(res.data);
+            return Promise.resolve(res.data); // 返回http响应体中的data
         } else {
             return Promise.reject(res.statusText || '网络错误');
         }

@@ -1,4 +1,5 @@
 import PublicApi from '../../../services/PublicApiService';
+import { SET_ASK_FOR_TYPE_LIST } from '../../mutation-types';
 
 const api = new PublicApi();
 
@@ -17,6 +18,7 @@ const GetAskForLeaveTypeList = (
     { commit }
 ) => new Promise((resolve, reject) => {
     api.GetAskForLeaveTypeList().then((res) => {
+        commit(SET_ASK_FOR_TYPE_LIST, res.data);
         resolve(res.data);
     }).catch((err) => {
         reject(err);

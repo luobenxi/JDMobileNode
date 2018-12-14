@@ -9,6 +9,7 @@ export const SET_AUTHORITIES = 'SET_AUTHORITIES';
 
 // 用户
 export const ALL_USER_LIST = 'ALL_USER_LIST';
+export const SET_CURRENT_USER_INFO = 'SET_CURRENT_USER_INFO';
 
 // 工资
 export const SET_SALARY_PASS_VALID = 'SET_SALARY_PASS_VALID';
@@ -21,6 +22,7 @@ export const SET_OUT_COMPANY_LIST = 'SET_OUT_COMPANY_LIST';
 
 // 请假
 export const SET_ASK_FOR_LEAVE_LIST = 'SET_ASK_FOR_LEAVE_LIST';
+export const SET_ASK_FOR_TYPE_LIST = 'SET_ASK_FOR_TYPE_LIST';
 
 // 任务
 export const TASK_CATEGORY_LIST = 'TASK_CATEGORY_LIST';

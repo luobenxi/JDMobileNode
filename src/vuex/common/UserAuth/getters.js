@@ -7,9 +7,11 @@ const menus = state => state.menus.map(menu => (
     )).filter(menu => menu.subMenu.length > 0);
 const MyAuthList = state => state.MyAuthList;
 const AllUserList = state => state.AllUserList;
+const UserInfo = state => state.UserInfo;
 
 export default {
     menus,
     MyAuthList,
     AllUserList,
+    UserInfo,
 };

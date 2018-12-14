@@ -48,9 +48,11 @@
     import BizUtil from '../../util/bizUtil';
     import list from '../../components/common/list';
     import JdDatetimePicker from '../../components/common/datetimePicker';
+    import AjaxUtil from '../../axios/index';
 
     const _mm = new MUtil();
     const _bizUtil = new BizUtil();
+    const ajax = new AjaxUtil();
 
     export default {
         data () {
@@ -151,6 +153,5 @@
 <style lang="less" scoped>
     @import "../../style/common/common";
     #AskForLeaveListBox {
-
     }
 </style>

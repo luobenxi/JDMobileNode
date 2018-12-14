@@ -30,15 +30,15 @@ class BizUtil {
 
     GetAskTypeOption() {
         let list = [];
-        publicApi.GetAskForLeaveTypeList().then((res) => {
-            res.data.map((item) => {
-                let temp = Object.assign({}, {
-                    id: item.ID,
-                    text: item.LeaveName,
-                });
-                list.push(temp);
-            });
-        });
+        // publicApi.GetAskForLeaveTypeList().then((res) => {
+        //     res.data.map((item) => {
+        //         let temp = Object.assign({}, {
+        //             id: item.ID,
+        //             text: item.LeaveName,
+        //         });
+        //         list.push(temp);
+        //     });
+        // });
         return list;
     }
 

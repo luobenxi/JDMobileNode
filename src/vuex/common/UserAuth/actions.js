@@ -2,6 +2,7 @@ import User from '../../../services/UserAuthService';
 import {
     SET_AUTHORITIES,
     ALL_USER_LIST,
+    SET_CURRENT_USER_INFO,
 } from '../../mutation-types';
 
 const _user = new User();
@@ -39,11 +40,13 @@ const LoginOutHandle = (
     });
 });
 
+// 获取当前用户信息，并存入store
 const GetUserInfo = (
     { commit }
 ) => new Promise((resolve, reject) => {
     _user.GetUserInfo().then((res) => {
         if (res.success) {
+            commit(SET_CURRENT_USER_INFO, res.data);
             resolve(res.data);
         } else {
             reject(res.msg || '');

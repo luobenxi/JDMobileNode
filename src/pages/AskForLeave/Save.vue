@@ -21,7 +21,7 @@
                 <van-col span="6">{{item.Date}}</van-col>
                 <van-col span="6">
                     <select v-model="item.AskType" class="select-css">
-                        <option v-for="itemOption in AskTypeOption" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
+                        <option v-for="itemOption in AskForLeaveTypeList" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
                     </select>
                 </van-col>
                 <van-col span="6">
@@ -46,26 +46,22 @@
             <van-button type="danger" class="btn-item" v-if="from.ID && fromStatus === '61'" plain block @click="DeleteHandle">删 除</van-button>
         </div>
         <van-loading class="loading-box" v-if="PageLoading" color="#909399"/>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true" @click-overlay="clickOverlay">
-                <JdDatetimePicker
-                    @onCancel="onCancel"
-                    @onConfirm="onConfirm"
-                    type="date"
-                >
-                </JdDatetimePicker>
-            </van-popup>
-        </div>
+        <JdDatetimePickerPopup
+            :popupIsShow="pickerIsShow"
+            type="date"
+            @onConfirm="onConfirm"
+        ></JdDatetimePickerPopup>
     </div>
 </template>
 
 <script>
 import {
-    mapActions
+    mapActions,
+    mapGetters
 } from 'vuex';
 import header from '../../components/common/header';
 import upload from '../../components/common/upload';
-import JdDatetimePicker from '../../components/common/datetimePicker';
+import JdDatetimePickerPopup from '../../components/common/datetimePickerPopup';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
 import { Dialog } from 'vant';
@@ -86,21 +82,25 @@ export default {
             UploadFinishList: [],
             DateDetailArr: [],
             DateArr: [],
-
             pickerIsShow: false,
-            AskTypeOption: _bizUtil.GetAskTypeOption(),
             AmPmTypeOption: _bizUtil.GetAmPmTypeOption(),
         }
     },
     components: {
         [header.name]: header,
         [upload.name]: upload,
-        [JdDatetimePicker.name]: JdDatetimePicker,
+        [JdDatetimePickerPopup.name]: JdDatetimePickerPopup,
     },
     computed: {
+        ...mapGetters([
+            'AskForLeaveTypeList',
+            'UserInfo',
+        ])
     },
     methods: {
         ...mapActions([
+            'GetAskForLeaveTypeList',
+            'GetUserInfo',
             'SaveAskForLeave',
             'GetAskForLeaveByKey',
             'DeleteAskForLeaveByKey',
@@ -109,13 +109,7 @@ export default {
             this.UploadFinishList = list;
         },
         chooseDate() {
-            this.pickerIsShow = true;
-        },
-        clickOverlay() {
-            this.pickerIsShow = false;
-        },
-        onCancel() {
-            this.pickerIsShow = false;
+            this.pickerIsShow = !this.pickerIsShow;
         },
         onConfirm(val) {
             let valStr = _mm.formatDate(val);
@@ -128,7 +122,6 @@ export default {
                 });
                 this.DateArr.push(valStr);
             }
-            this.pickerIsShow = false;
         },
         deleteItem(index) {
             Dialog.confirm({
@@ -171,18 +164,6 @@ export default {
                 }
             });
         },
-        getUserInfoFromUtil() {
-            _bizUtil.getAllUserInfoFromApiOrLocalPromise().then((userInfo) => {
-                this.from = Object.assign({}, this.from, {
-                    DepartName: userInfo.user.DepartName,
-                    FullName: userInfo.user.FullName,
-                    DocNumb: userInfo.userFile.DocNumb,
-                    PostName: userInfo.userFile.PostName,
-                    EntrantDate: _mm.formatDate(userInfo.userFile.EntrantDate),
-                });
-            });
-        },
-        // 提交申请
         SubmitApplyHandle() {
             let ID = this.from.ID;
             if (!ID) {
@@ -256,11 +237,31 @@ export default {
             } else {
                 //Add
                 this.title = '填写请假单';
+                // 获取用户信息，并存入store
+                let UserInfoKeysLength = Object.keys(this.UserInfo).length;
+                if (!UserInfoKeysLength) {
+                    this.GetUserInfo().then(() => {
+                        this.setPageUserInfo(this.UserInfo);
+                    });
+                } else {
+                    this.setPageUserInfo(this.UserInfo);
+                }
             }
         },
+        setPageUserInfo(userInfo) {
+            this.from = Object.assign({}, this.from, {
+                DepartName: userInfo.user.DepartName,
+                FullName: userInfo.FullName,
+                DocNumb: userInfo.DocNumb,
+                PostName: userInfo.PostName,
+                EntrantDate: _mm.formatDate(userInfo.EntrantDate),
+            });
+        }
     },
     mounted() {
-        this.getUserInfoFromUtil();
+        if (!this.AskForLeaveTypeList.length) {
+            this.GetAskForLeaveTypeList();
+        }
         this.paramsInit();
     }
 }

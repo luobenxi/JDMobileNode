@@ -14,6 +14,7 @@
 </template>
 
 <script>
+    // 不带弹出层的时间选择组件
     export default {
         name: "JdDatetimePicker",
         props: {
@@ -47,5 +48,4 @@
 </script>
 
 <style lang="less" scoped>
-
 </style>
