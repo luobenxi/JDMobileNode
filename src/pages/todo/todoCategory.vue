@@ -38,8 +38,10 @@ export default {
     },
     methods: {
         categoryClickHandle(item) {
-            this.$router.push(`/todoList/${item.CategoryName}/0`); // 0 = 待办
-        },
+            let url = `/todoList/${item.CategoryName}/0`; // 0 = 待办
+            _mm.setStorage(_mm.GetCurrentToDoCategoryUrlKey(), url); // 将当前处理的URL存入localStorage中
+            this.$router.push(url);
+        }
     }
 }
 </script>

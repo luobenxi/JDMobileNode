@@ -2,8 +2,7 @@
     <div class="contacts-child-box">
         <JdHeader :title="DepartName"></JdHeader>
         <JdSearch placeholder="请输入姓名进行查询" @getData="getKeyWordData"></JdSearch>
-        <JdContactsUserList v-if="!loading" :itemList="userList"></JdContactsUserList>
-        <van-loading class="loading-box" type="spinner" v-if="loading" color="#909399"/>
+        <JdContactsUserList :itemList="userList"></JdContactsUserList>
     </div>
 </template>
 
@@ -12,7 +11,7 @@
     import header from '../../components/common/header';
     import search from '../../components/common/search';
     import contactsUser from '../../components/biz/contacts/user-list';
-    import MUtil from '../../util/mm.js';
+    import MUtil from '../../util/mm';
 
     const _mm = new MUtil();
 
@@ -49,7 +48,6 @@
                     DepartID: DepartID,
                     FullName: this.FullName,
                 };
-                this.loading = true; // 开始加载
                 // 获取用户列表
                 this.GetUserListByDepartID(data).then((res) => {
                     this.userList = res.map((item) => {
@@ -57,7 +55,6 @@
                             Photo: item.Photo ? item.Photo : '../../../../static/images/user-head.png'
                         })
                     });
-                    this.loading = false; // 停止加载
                     if (this.FullName === '') {
                         // 未按照姓名查询，按部门ID查询用户列表
                         this.GetDepartTreeByPID(DepartID);

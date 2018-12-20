@@ -1,13 +1,13 @@
 <template>
     <div>
         <jd-header :title="title"></jd-header>
-        <PersonAskForLeaveCommon
+        <AskForLeaveCancelApprovalCommon
                 :from="from"
                 :dateDetailList="dateDetailList"
                 :uploadFinishList="uploadFinishList"
                 :workFlowsDetailList="workFlowsDetailList"
         >
-        </PersonAskForLeaveCommon>
+        </AskForLeaveCancelApprovalCommon>
         <div class="sub-btn" v-if="IsShowBtn">
             <van-button type="primary" class="btn-item" block @click="ApprovePassHandle">审批通过</van-button>
             <van-button type="danger" class="btn-item" block @click="ApproveRefuseHandle">拒绝并结束流程</van-button>
@@ -31,7 +31,7 @@
         mapActions
     } from 'vuex';
     import header from '../../components/common/header';
-    import PersonAskForLeaveCommon from './PersonAskForLeaveCommon';
+    import AskForLeaveCancelApprovalCommon from './AskForLeaveCancelApprovalCommon';
     import ApprovePass from '../../components/biz/Approve/ApprovePass';
     import ApproveRefuse from '../../components/biz/Approve/ApproveRefuse';
     import ApproveReturn from '../../components/biz/Approve/ApproveReturn';
@@ -45,7 +45,7 @@
     export default {
         data () {
             return {
-                title: '请假单审批',
+                title: '销假单审批',
                 from: {
                     ID: '',
                     Reason: '', // 原因
@@ -70,17 +70,15 @@
             [ApprovePass.name]: ApprovePass,
             [ApproveRefuse.name]: ApproveRefuse,
             [ApproveReturn.name]: ApproveReturn,
-            [PersonAskForLeaveCommon.name]: PersonAskForLeaveCommon,
+            [AskForLeaveCancelApprovalCommon.name]: AskForLeaveCancelApprovalCommon,
         },
         computed: {
         },
         methods: {
             ...mapActions([
-                'GetAskForLeaveDetailByWfDetailId',
-                'GetWorkFlowApproveUserList', // 获取流程审批人列表
-                'ApprovePass', // ApprovePass
-                'GetApprovePassUserList', // GetApprovePassUserList
-
+                'GetAskForLeaveCancelByWfDetailId', // 销假单
+                'ApprovePass', // 审批通过
+                'GetApprovePassUserList', // 获取审批人列表
                 'ApproveReturn', // 审批退回
             ]),
             // 审批通过
@@ -162,9 +160,9 @@
                 if (params.wfDetailId !== undefined) {
                     let wfDetailId = params.wfDetailId;
                     this.wfDetailId = wfDetailId;
-                    this.GetAskForLeaveDetailByWfDetailId(wfDetailId).then((res) => {
+                    this.GetAskForLeaveCancelByWfDetailId(wfDetailId).then((res) => {
                         this.model = res.model;
-                        this.from = Object.assign({}, res.model, res.userInfo);// 请假单信息
+                        this.from = res.model; // 请假单信息
                         this.dateDetailList = res.detailList;// 请假单明细
                         this.uploadFinishList = res.attachList;// 请假单附件列表
                         this.workFlowsDetailList = res.workFlowsDetailList;// 审批信息

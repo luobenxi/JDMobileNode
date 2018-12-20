@@ -28,6 +28,18 @@ class WorkFlow {
     ApproveFinish(data) {
         return ajax.requestPost(`${ApiPreFix}/WorkFlowApi/ApproveFinish`, data);
     }
+    ApproveWithDraw(data) {
+        return ajax.requestPost(`${ApiPreFix}/WorkFlowApi/ApproveWithDraw`, data);
+    }
+    ApproveRefuse(data) {
+        return ajax.requestPost(`${ApiPreFix}/WorkFlowApi/ApproveRefuse`, data);
+    }
+    ApproveReturn(data) {
+        return ajax.requestGet(`${ApiPreFix}/WorkFlowApi/ApproveReturn?wfDetailId=${data}`);
+    }
+    ApproveReturnPost(data) {
+        return ajax.requestPost(`${ApiPreFix}/WorkFlowApi/ApproveReturn`, data);
+    }
 }
 
 export default WorkFlow;

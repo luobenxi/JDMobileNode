@@ -16,11 +16,14 @@
             <van-button type="danger" class="btn-item" block plain @click="ApproveReturnHandle">退回之前审批人</van-button>
         </div>
         <!--审批结束组件-->
-        <ApproveFinish :popupIsShow="ApproveFinishIsShow" :ApproveStepsList="ApproveStepsList" :ParamID="ParamID"></ApproveFinish>
+        <ApproveFinish :popupIsShow="ApproveFinishIsShow" :ApproveStepsList="ApproveStepsList" :ParamID="ParamID"
+        @successOperation="JumpPageHandle"></ApproveFinish>
         <!--审批拒绝-->
-        <ApproveRefuse :popupIsShow="ApproveRefuseIsShow"></ApproveRefuse>
+        <ApproveRefuse :popupIsShow="ApproveRefuseIsShow" :ParamID="ParamID"
+        @successOperation="JumpPageHandle"></ApproveRefuse>
         <!--审批退回-->
-        <ApproveReturn :popupIsShow="ApproveReturnIsShow"></ApproveReturn>
+        <ApproveReturn :popupIsShow="ApproveReturnIsShow" :ApproveStepsList="ApproveStepsList" :ParamID="ParamID"
+        @successOperation="JumpPageHandle"></ApproveReturn>
     </div>
 </template>
 
@@ -61,10 +64,6 @@
                 ApproveReturnIsShow: false, // 审批退回
                 ApproveStepsList: [], // 步骤审批用户列表
                 ParamID: {}, // 数据参数ID
-
-                pickerIsShow: false,
-                AskTypeOption: _bizUtil.GetAskTypeOption(),
-                AmPmTypeOption: _bizUtil.GetAmPmTypeOption(),
             }
         },
         components: {
@@ -82,6 +81,7 @@
                 'GetWorkFlowApproveUserList', // 获取流程审批人列表
                 'ApprovePass', // ApprovePass
                 'GetApprovePassUserList', // GetApprovePassUserList
+                'ApproveReturn' // 审批退回
             ]),
             // 审批结束
             ApproveFinishHandle() {
@@ -96,11 +96,47 @@
                 this.ParamID = ParamID; // 参数赋值
                 this.ApproveFinishIsShow = !this.ApproveFinishIsShow;
             },
+            JumpPageHandle() {
+                let url = _mm.getStorage(_mm.GetCurrentToDoCategoryUrlKey());
+                if (url) {
+                    this.$router.push(url, () => {
+                        this.$router.go(0);
+                    });
+                } else {
+                    this.paramsInit();
+                }
+            },
             ApproveRefuseHandle() {
+                this.ParamID = {
+                    ID: this.wfDetailId
+                };
                 this.ApproveRefuseIsShow = !this.ApproveRefuseIsShow;
             },
             ApproveReturnHandle() {
-                this.ApproveReturnIsShow = !this.ApproveReturnIsShow;
+                let wfDetailId = this.wfDetailId;
+                if (!wfDetailId) {
+                    _mm.errorDialog('参数错误，请联系管理员');
+                    return;
+                }
+                this.ApproveReturn(wfDetailId).then((res) => {
+                    if (res.data.WorkFlowDetails.length) {
+                        this.ParamID = {
+                            wfDetailId: this.wfDetailId
+                        };
+                        // 是否是否为第一个审批人
+                        this.ApproveStepsList = res.data.WorkFlowDetails.filter((item) => {
+                            // 审批人和插入人 !== 当前用户
+                            return item.ExecPersons !== res.data.CurrentUserID && item.InsertUserID !== res.data.CurrentUserID;
+                        });
+                        if (this.ApproveStepsList.length === 0) {
+                            _mm.errorDialog('您是第一位审批人，没有上一位审批人，无法退回。您可以拒绝直接退给发起人。');
+                        } else {
+                            this.ApproveReturnIsShow = !this.ApproveReturnIsShow;
+                        }
+                    } else {
+                        _mm.errorDialog('您是第一位审批人，没有上一位审批人，无法退回。您可以拒绝直接退给发起人。');
+                    }
+                });
             },
             paramsInit() {
                 let params = this.$route.params;
@@ -118,7 +154,7 @@
                         let CurrentUserArr = res.workFlowsDetailList.filter((item) => {
                             return item.ExecPersons === CurrentUserID;
                         });
-                        let IsShowBtn = CurrentUserArr.length === 1 ? CurrentUserArr[0].IsCurrent : 'True'; // 控制按钮组是否显示
+                        let IsShowBtn = CurrentUserArr.length === 1 ? CurrentUserArr[0].IsCurrent : CurrentUserArr[CurrentUserArr.length - 1].IsCurrent; // 控制按钮组是否显示
                         this.IsShowBtn = IsShowBtn === 'False'; // 控制按钮组是否显示
                         this.fromStatus = res.model.Status; // 状态
                     });

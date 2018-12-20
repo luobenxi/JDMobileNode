@@ -41,9 +41,9 @@
             <jd-upload :InitFileList="UploadFinishList" @getData="getUploadFinishList"></jd-upload>
         </van-cell>
         <div class="sub-btn" v-if="!PageLoading">
-            <van-button type="primary" class="btn-item" v-if="fromStatus === '61'" block @click="SaveHandle">保 存</van-button>
-            <van-button type="primary" class="btn-item" v-if="from.ID && fromStatus==='61'" plain block @click="SubmitApplyHandle">提交申请</van-button>
-            <van-button type="danger" class="btn-item" v-if="from.ID && fromStatus === '61'" plain block @click="DeleteHandle">删 除</van-button>
+            <van-button type="primary" class="btn-item" v-if="ArrowStatus.indexOf(fromStatus) !== -1" block @click="SaveHandle">保 存</van-button>
+            <van-button type="primary" class="btn-item" v-if="from.ID && ArrowStatus.indexOf(fromStatus) !== -1" plain block @click="SubmitApplyHandle">提交申请</van-button>
+            <van-button type="danger" class="btn-item" v-if="from.ID && ArrowStatus.indexOf(fromStatus) !== -1" plain block @click="DeleteHandle">删 除</van-button>
         </div>
         <van-loading class="loading-box" v-if="PageLoading" color="#909399"/>
         <JdDatetimePickerPopup
@@ -77,6 +77,7 @@ export default {
                 ID: '',
                 Reason: '', // 原因
             },
+            ArrowStatus: ['61', '64', '68'], // 未提交、已拒绝、撤回
             fromStatus: '61',
             PageLoading: false,
             UploadFinishList: [],
@@ -170,7 +171,9 @@ export default {
                 _mm.errorDialog('参数为空');
                 return;
             }
-            this.$router.push(`/AskForLeave/PersonAskForLeaveSubmit/${ID}`);
+            _mm.confirmDialog('提交申请之前是否确定点击了保存按钮？', () => {
+                this.$router.push(`/AskForLeave/PersonAskForLeaveSubmit/${ID}`);
+            }, true);
         },
         DeleteHandle() {
             let ID = this.from.ID;

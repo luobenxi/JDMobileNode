@@ -1,17 +1,20 @@
 <template>
     <div id="jd-table-list">
-        <van-cell>
+        <van-cell v-if="colNameMap.length && itemList.length">
             <van-row v-if="title">
-                <van-col :span="24" class="title">{{title}}</van-col>
+                <van-col :span="24" class="table-title">{{title}}</van-col>
             </van-row>
             <van-row class="row">
                 <van-col span="24">
                     <table>
-                        <tr v-if="colNameMap.length">
+                        <tr v-if="itemList.length">
                             <th v-for="column in colNameMap" :width="column.width">{{column.displayName}}</th>
                         </tr>
-                        <tr v-if="itemList.length" v-for="(item, index) in itemList" :key="index">
-                            <td v-for="column in colNameMap" :width="column.width">{{item[column.key]}}</td>
+                        <tr v-if="colNameMap.length" v-for="(item, index) in itemList" :key="index">
+                            <td :class="column.ellipsis ? 'ellipsis' : ''" :align="!column.align ? 'center' : column.align"
+                                v-if="colNameMap.length" v-for="column in colNameMap" :width="column.width">
+                                {{item[column.key]}}
+                            </td>
                         </tr>
                     </table>
                 </van-col>
@@ -24,9 +27,8 @@
 <script>
     export default {
         name: 'JdTableList',
-        data () {
-            return {
-            }
+        data() {
+            return {}
         },
         props: {
             title: {
@@ -42,25 +44,10 @@
                 default: () => []
             }
         },
-        methods: {
-        },
+        methods: {},
     }
 </script>
 
 <style lang="less" scoped>
-    #jd-table-list {
-        .title {
-            margin: -3px auto 2px auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse; // 边框合并
-            tr {
-                th, td {
-                    border: 1px solid #EBEEF5;
-                    text-align: center;
-                }
-            }
-        }
-    }
+    @import "../../style/common/common";
 </style>

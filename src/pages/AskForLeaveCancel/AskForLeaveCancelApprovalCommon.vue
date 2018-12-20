@@ -2,13 +2,13 @@
     <div class="PersonAskForLeaveCommon">
         <van-cell-group>
             <van-field v-model="pageFrom.DepartName" label="部门" disabled />
-            <van-field v-model="pageFrom.UserFullName" label="姓名" disabled />
+            <van-field v-model="pageFrom.FullName" label="姓名" disabled />
             <van-field v-model="pageFrom.DocNumb" label="编号" disabled />
             <van-field v-model="pageFrom.PostName" label="岗位" disabled />
             <van-field v-model="pageFrom.EntrantDate" label="入职日期" disabled />
-        </van-cell-group>
-        <van-cell-group>
-            <van-field v-model="pageFrom.Reason" disabled label="请假原因" type="textarea" placeholder="请输入请假原因" rows="2" autosize />
+            <van-field v-model="pageFrom.AskReason" disabled label="请假原因" type="textarea" placeholder="请输入请假原因" rows="2" autosize disabled />
+            <van-field v-model="pageFrom.AskInsertTime" label="提交时间" disabled />
+            <van-field v-model="pageFrom.CancelReason" label="销假原因" type="textarea" placeholder="请输入销假原因..." rows="2" autosize disabled />
         </van-cell-group>
         <van-cell>
             <van-row gutter="10">
@@ -23,25 +23,35 @@
                 <van-col :span="18" v-if="pageFrom.Status === null"><van-tag>{{pageFrom.StatusText}}</van-tag></van-col>
             </van-row>
         </van-cell>
-        <JdTableList :colNameMap="colNameMap" title="请假日期" :itemList="pageDateDetailList"></JdTableList>
+        <JdTableList v-if="false" :colNameMap="colNameMap" title="请假日期" :itemList="pageDateDetailList"></JdTableList>
+        <van-cell v-if="pageDateDetailList.length">
+            <van-row>
+                <van-col :span="24" class="table-title">请假日期</van-col>
+            </van-row>
+            <van-row class="row">
+                <van-col span="24">
+                    <table>
+                        <tr v-if="colNameMap.length">
+                            <th v-for="column in colNameMap" :width="column.width">{{column.displayName}}</th>
+                        </tr>
+                        <!--IsAble === 0 表示不可用-->
+                        <tr v-if="colNameMap.length && item.IsAble === 0" v-for="(item, index) in pageDateDetailList" :key="index">
+                            <td :class="column.ellipsis ? 'ellipsis' : column.lineThrough ? 'lineThrough' : ''" :align="!column.align ? 'center' : column.align"
+                                v-if="colNameMap.length" v-for="column in colNameMap" :width="column.width">
+                                {{item[column.key]}}
+                            </td>
+                        </tr>
+                        <tr v-if="colNameMap.length  && item.IsAble === 1" v-for="(item, index) in pageDateDetailList" :key="index">
+                            <td :class="column.ellipsis ? 'ellipsis' : ''" :align="!column.align ? 'center' : column.align"
+                                v-if="colNameMap.length" v-for="column in colNameMap" :width="column.width">
+                                {{item[column.key]}}
+                            </td>
+                        </tr>
+                    </table>
+                </van-col>
+            </van-row>
+        </van-cell>
         <JdTableList :colNameMap="colNameMapApprove" title="审批记录" :itemList="pageWorkFlowsDetailList"></JdTableList>
-        <van-cell v-if="false">
-            <van-row gutter="10">
-                <van-col :span="6">审批信息</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell v-if="false">
-            <van-row type="flex" justify="space-around" v-for="(item, index) in pageWorkFlowsDetailList" :key="index">
-                <van-col :span="12">{{index + 1}}.{{item.ActiveName}}</van-col>
-                <van-col :span="6">{{item.ExecPersonNames}}</van-col>
-                <!--已通过-->
-                <van-col :span="6" v-if="item.OperatorType === '63'" style="color: #67C23A">{{item.OperatorTypeText}}</van-col>
-                <!--已拒绝-->
-                <van-col :span="6" v-if="item.OperatorType === '64'" style="color: #F56C6C">{{item.OperatorTypeText}}</van-col>
-                <!--除了 已通过、已拒绝-->
-                <van-col :span="6" v-if="item.OperatorType !== '63' && item.OperatorType !== '64'">{{item.OperatorTypeText}}</van-col>
-            </van-row>
-        </van-cell>
         <van-cell>
             <van-row gutter="10">
                 <van-col :span="6">附件列表</van-col>
@@ -72,6 +82,7 @@
         {
             key: 'Date',
             displayName: '日期',
+            lineThrough: true,
         }, {
             key: 'AskTypeText',
             displayName: '请假类型',
@@ -79,8 +90,8 @@
             key: 'AmPmTypeText',
             displayName: '上午/下午',
         }, {
-            key: 'Hours',
-            displayName: '工时',
+            key: 'IsAbleText',
+            displayName: '状态',
         }
     ];
 
@@ -101,7 +112,7 @@
     ];
 
     export default {
-        name: "PersonAskForLeaveCommon",
+        name: "AskForLeaveCancelApprovalCommon",
         props: {
             dateDetailList: {
                 type: Array,
@@ -124,9 +135,7 @@
             return {
                 colNameMap,
                 colNameMapApprove,
-                pageFrom: {
-                    UserFullName: ''
-                },
+                pageFrom: {},
                 pageDateDetailList: [],
                 pageWorkFlowsDetailList: [],
                 pageUploadFinishList: [],
@@ -144,7 +153,6 @@
                 this.pageFrom = Object.assign({}, val, {
                     StatusText: _bizUtil.JDApproveStatusMap(val.Status),
                     EntrantDate: _mm.formatDate(val.EntrantDate),
-                    Reason: val.Reson
                 });
             },
             dateDetailList(val) {
@@ -158,7 +166,9 @@
                             Hours: item.Hours,
                             Date: _mm.formatStrDate(item.TheDay),
                             AskTypeText: tempAskType ? tempAskType.text : '',
-                            AmPmTypeText: tempAmPmType.text
+                            AmPmTypeText: tempAmPmType.text,
+                            IsAble: item.IsAble === 'False' ? 0 : 1,
+                            IsAbleText: item.IsAble === 'False' ? '已取消' : '正常'
                         });
                     });
                     this.pageDateDetailList = arr;

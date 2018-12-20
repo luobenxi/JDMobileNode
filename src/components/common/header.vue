@@ -6,13 +6,17 @@
             :left-text="leftText"
             left-arrow
             @click-left="onClickLeft"
-        />
+        >
+            <van-icon v-if="rightSearchArrow" @click="searchIconClick" name="search" slot="right"/>
+        </van-nav-bar>
         <van-nav-bar
             v-if="!leftArrow"
             :title="title"
             :left-text="leftText"
             @click-left="onClickLeft"
-        />
+        >
+            <van-icon v-if="rightSearchArrow" @click="searchIconClick" name="search" slot="right"/>
+        </van-nav-bar>
         <JdBackTop></JdBackTop>
     </div>
 </template>
@@ -23,17 +27,21 @@
     export default {
         name: 'JdHeader',
         props: {
-            leftArrow: {
-                type: Boolean,
-                default: () => true
-            },
             title: {
                 type: String,
                 default: () => '默认标题'
             },
+            leftArrow: {
+                type: Boolean,
+                default: () => true
+            },
             leftText: {
                 type: String,
                 default: () => ''
+            },
+            rightSearchArrow: {
+                type: Boolean,
+                default: () => false
             },
             backUrl: {
                 type: String,
@@ -50,6 +58,9 @@
                 } else {
                     this.$router.history.go(-1);
                 }
+            },
+            searchIconClick() {
+                this.$emit('searchIconClickHandle');
             }
         },
         components: {

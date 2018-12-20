@@ -65,6 +65,10 @@ class AjaxUtil {
                     resolve(res);
                 })
                 .catch((err) => {
+                    if (isShowLoading) {
+                        this.closeAjaxLoading(); // 关闭loading
+                    }
+                    _mm.errorDialog(err.statusText || '网络错误');
                     // 失败第二步执行
                     reject(err.statusText || '网络错误');
                 });
@@ -88,6 +92,10 @@ class AjaxUtil {
                 })
                 .catch((err) => {
                     // 请求失败
+                    if (isShowLoading) {
+                        this.closeAjaxLoading(); // 关闭loading
+                    }
+                    _mm.errorDialog(err.statusText || '网络错误');
                     reject(err.statusText || '网络错误');
                 });
         });
@@ -107,6 +115,10 @@ class AjaxUtil {
                     resolve(res);
                 })
                 .catch((err) => {
+                    if (isShowLoading) {
+                        this.closeAjaxLoading(); // 关闭loading
+                    }
+                    _mm.errorDialog(err.statusText || '网络错误');
                     reject(err.statusText || '网络错误');
                 });
         });
@@ -126,6 +138,10 @@ class AjaxUtil {
                     resolve(res);
                 })
                 .catch((err) => {
+                    if (isShowLoading) {
+                        this.closeAjaxLoading(); // 关闭loading
+                    }
+                    _mm.errorDialog(err.statusText || '网络错误');
                     reject(err.statusText || '网络错误');
                 });
         });
@@ -145,6 +161,10 @@ class AjaxUtil {
                     resolve(res);
                 })
                 .catch((err) => {
+                    if (isShowLoading) {
+                        this.closeAjaxLoading(); // 关闭loading
+                    }
+                    _mm.errorDialog(err.statusText || '网络错误');
                     reject(err.statusText || '网络错误');
                 });
         });

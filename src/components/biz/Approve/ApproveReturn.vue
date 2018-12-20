@@ -9,7 +9,7 @@
                     <van-col :span="6">上一步骤</van-col>
                     <van-col :span="18">
                         <van-radio-group v-model="ApproveUserID">
-                            <van-radio v-for="(item, index) in ApproveStepsList" :key="index" :name="item.UserID">{{item.DepartName}}({{item.FullName}})</van-radio>
+                            <van-radio v-for="(item, index) in ApproveStepsList" :key="index" :name="item.ID">{{item.ActiveName}}({{item.ExecPersonNames}})</van-radio>
                         </van-radio-group>
                     </van-col>
                 </van-row>
@@ -20,8 +20,7 @@
             <van-cell>
                 <van-row>
                     <van-col :span="24">
-                        <van-button type="danger" :disabled="IsLoading" block @click="ApproveReturnHandle">退 回</van-button>
-                        <van-loading class="loading-box" v-if="IsLoading" color="#909399"/>
+                        <van-button type="danger" block @click="ApproveReturnHandle">退 回</van-button>
                     </van-col>
                 </van-row>
             </van-cell>
@@ -31,6 +30,12 @@
 </template>
 
 <script>
+    import {
+        mapActions
+    } from 'vuex';
+    import MUtil from '../../../util/mm';
+    const _mm = new MUtil();
+
     export default {
         name: "ApproveReturn",
         props: {
@@ -42,45 +47,77 @@
                 type: Boolean,
                 default: () => false
             },
+            ParamID: {
+                type: Object,
+                default: () => {}
+            },
             ApproveStepsList: {
                 type: Array,
                 default: () => [
                     {
-                        UserID: '1',
-                        DepartName: '分管副总确认',
-                        FullName: '罗冬梅'
+                        ID: '1', // 步骤ID
+                        ActiveName: '分管副总确认',
+                        ExecPersonNames: '罗冬梅'
                     },
                     {
-                        UserID: '2',
-                        DepartName: '信息部部门经理',
-                        FullName: '杨云江'
+                        ID: '2',
+                        ActiveName: '信息部部门经理',
+                        ExecPersonNames: '杨云江'
                     }
                 ]
             },
         },
         data() {
             return {
-                IsLoading: false,
                 CurrentPopupIsShow: false,
-                ApproveUserID: '1',
+                ApproveUserID: '',
                 ApproveFrom: {
-                    Result: '退回'
+                    Result: ''
                 },
             }
         },
         watch: {
             popupIsShow() {
                 this.CurrentPopupIsShow = true;
+            },
+            ApproveStepsList() {
+                this.ApproveUserID = this.ApproveStepsList.length ? this.ApproveStepsList[0].ID : '';
             }
         },
         methods: {
+            ...mapActions([
+                'ApproveReturnPost'
+            ]),
             ApproveReturnHandle() {
-                console.log('审批退回');
-                this.IsLoading = true;
-                setTimeout(() => {
-                    this.IsLoading = false;
-                }, 2000);
+                if (!this.ParamID.wfDetailId) {
+                    _mm.errorDialog('参数错误，请联系管理员');
+                    return;
+                }
+                if (!this.ApproveUserID) {
+                    _mm.errorDialog('请选择退回步骤');
+                    return;
+                }
+                if (!this.ApproveFrom.Result) {
+                    _mm.errorDialog('请输入退回原因');
+                    return;
+                }
+                _mm.confirmDialog('你确定要退回请假单吗？', () => {
+                    this.PageApproveReturn();
+                }, true);
             },
+            PageApproveReturn() {
+                let data = {
+                    ID: this.ParamID.wfDetailId,
+                    remark: this.ApproveFrom.Result,
+                    detailId: this.ApproveUserID // 步骤ID
+                };
+                this.ApproveReturnPost(data).then((res) => {
+                    this.CurrentPopupIsShow = false;
+                    _mm.confirmDialog(res.msg, () => {
+                        this.$emit('successOperation');
+                    });
+                });
+            }
         }
     }
 </script>

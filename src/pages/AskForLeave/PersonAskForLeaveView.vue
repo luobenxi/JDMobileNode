@@ -1,6 +1,6 @@
 <template>
     <div>
-        <jd-header :title="title"></jd-header>
+        <jd-header :title="title" backUrl="/AskForLeaveApi/PersonAskForLeaveList"></jd-header>
         <PersonAskForLeaveCommon
                 :from="from"
                 :dateDetailList="dateDetailList"
@@ -8,8 +8,8 @@
                 :workFlowsDetailList="workFlowsDetailList"
         >
         </PersonAskForLeaveCommon>
-        <div class="sub-btn" v-if="IsShowBtn">
-            <van-button type="danger" class="btn-item" block @click="ApproveRefuseHandle">销假申请</van-button>
+        <div class="sub-btn" v-if="ArrowStatus.indexOf(fromStatus) !== -1">
+            <van-button type="danger" class="btn-item" block @click="ApproveCancelHandle">销假申请</van-button>
         </div>
     </div>
 </template>
@@ -31,14 +31,15 @@
         data () {
             return {
                 title: '请假单详情',
+                ID: '',
                 from: {
                     ID: '',
                     Reason: '', // 原因
                 },
-                IsShowBtn: true, // 按钮组是否显示
                 wfDetailId: '', // 流程详情ID
                 model: {}, // 存放一条记录
-                fromStatus: '61',
+                ArrowStatus: ['63'], // 已通过
+                fromStatus: '63',
                 uploadFinishList: [],
                 dateDetailList: [],
                 workFlowsDetailList: [],
@@ -64,26 +65,25 @@
             ...mapActions([
                 'GetAskForLeaveByKey',
             ]),
-            ApproveRefuseHandle() {
-                this.ApproveRefuseIsShow = !this.ApproveRefuseIsShow;
+            ApproveCancelHandle() {
+                if (!this.ID) {
+                    _mm.errorDialog('参数为空，请联系管理员');
+                    return;
+                }
+                this.$router.push(`/AskForLeave/AskForLeaveCancelEdit/${this.ID}`);
             },
             paramsInit() {
                 let params = this.$route.params;
                 if (params.ID !== undefined) {
                     // Edit
                     let ID = params.ID;
+                    this.ID = params.ID;
                     this.GetAskForLeaveByKey(ID).then((res) => {
                         this.model = res.model;
                         this.from = Object.assign({}, res.model, res.userInfo);// 请假单信息
                         this.dateDetailList = res.detailList;// 请假单明细
                         this.uploadFinishList = res.attachList;// 请假单附件列表
                         this.workFlowsDetailList = res.workFlowsDetailList;// 审批信息
-                        let CurrentUserID = res.CurrentUserID;
-                        let CurrentUserArr = res.workFlowsDetailList.filter((item) => {
-                            return item.ExecPersons === CurrentUserID;
-                        });
-                        let IsShowBtn = CurrentUserArr.length === 1 ? CurrentUserArr[0].IsCurrent : 'True'; // 控制按钮组是否显示
-                        this.IsShowBtn = IsShowBtn === 'False'; // 控制按钮组是否显示
                         this.fromStatus = res.model.Status; // 状态
                     });
                 }

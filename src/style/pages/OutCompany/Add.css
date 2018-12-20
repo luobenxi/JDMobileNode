@@ -13,4 +13,7 @@
 #OutCompanyAdd-box .DateArrRow .deleteText {
   color: red;
 }
+#OutCompanyAdd-box .DateArrRow .operationText {
+  color: #409EFF;
+}
 /*# sourceMappingURL=Add.css.map */

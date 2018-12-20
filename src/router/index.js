@@ -13,6 +13,10 @@ Vue.use(Router);
 const router = new Router({
     routes: [
         {
+            path: '/test',
+            component: () => import('../pages/Test/TestList')
+        },
+        {
             path: '/login',
             component: () => import('../pages/login')
         },
@@ -128,10 +132,6 @@ const router = new Router({
             component: () => import('../pages/AskForLeave/PersonAskForLeaveSubmit') // 提交前确认页面
         },
         {
-            path: '/AskForLeave/PersonAskForLeaveProcess/:ID?',
-            component: () => import('../pages/AskForLeave/PersonAskForLeaveProcess') // 审批中
-        },
-        {
             path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
             component: () => import('../pages/AskForLeave/PersonAskForLeaveApproval')
         },
@@ -142,6 +142,23 @@ const router = new Router({
         {
             path: '/AskForLeave/PersonAskForLeaveView/:ID?',
             component: () => import('../pages/AskForLeave/PersonAskForLeaveView')
+        },
+        // 销假相关
+        {
+            path: '/AskForLeave/AskForLeaveCancelEdit/:ID?',
+            component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelEdit')
+        },
+        {
+            path: '/AskForLeave/AskForLeaveCancelApprovalView/:ID?', // 销假单ID
+            component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelApprovalView')
+        },
+        {
+            path: '/AskForLeaveCancel/AskForLeaveCancelApproval/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
+            component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelApproval')
+        },
+        {
+            path: '/AskForLeaveCancel/AskForLeaveCancelApprovalHR/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
+            component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelApprovalHR')
         }
     ],
     // mode: 'history'

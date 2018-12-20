@@ -20,6 +20,12 @@
 </template>
 
 <script>
+    import {
+        mapActions
+    } from 'vuex';
+    import MUtil from '../../../util/mm';
+    const _mm = new MUtil();
+
     export default {
         name: "ApproveWithDraw",
         props: {
@@ -30,6 +36,10 @@
             popupIsShow: {
                 type: Boolean,
                 default: () => false
+            },
+            ParamID: {
+                type: Object,
+                default: () => {}
             },
         },
         data() {
@@ -46,9 +56,34 @@
             }
         },
         methods: {
+            ...mapActions([
+                'ApproveWithDraw',
+            ]),
             ApproveWithDrawHandle() {
-                console.log('审批撤回');
+                if (!this.ApproveFrom.Result) {
+                    _mm.errorDialog('请输入撤回原因');
+                    return;
+                }
+                _mm.confirmDialog('你确定要撤回请假单吗？', () => {
+                    this.PageApproveWithDraw();
+                }, true);
             },
+            PageApproveWithDraw() {
+                let data = {
+                    ID: this.ParamID.ID,
+                    remark: this.ApproveFrom.Result
+                };
+                if (!data.ID) {
+                    _mm.errorDialog('参数为空，请联系管理员');
+                    return;
+                }
+                this.ApproveWithDraw(data).then((res) => {
+                    this.CurrentPopupIsShow = false;
+                    _mm.confirmDialog(res.msg, () => {
+                        this.$emit('successOperation');
+                    });
+                });
+            }
         }
     }
 </script>

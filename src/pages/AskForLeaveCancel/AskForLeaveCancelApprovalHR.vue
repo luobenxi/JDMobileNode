@@ -1,22 +1,23 @@
 <template>
     <div>
         <jd-header :title="title"></jd-header>
-        <PersonAskForLeaveCommon
+        <AskForLeaveCancelApprovalCommon
                 :from="from"
                 :dateDetailList="dateDetailList"
                 :uploadFinishList="uploadFinishList"
                 :workFlowsDetailList="workFlowsDetailList"
         >
-        </PersonAskForLeaveCommon>
+        </AskForLeaveCancelApprovalCommon>
         <div class="sub-btn" v-if="IsShowBtn">
-            <van-button type="primary" class="btn-item" block @click="ApprovePassHandle">审批通过</van-button>
+            <!--保存-->
+            <!--<van-button type="primary" class="btn-item" block @click="SaveHandle">保 存</van-button>-->
+            <van-button type="primary" class="btn-item" block @click="ApproveFinishHandle">通过并结束流程</van-button>
             <van-button type="danger" class="btn-item" block @click="ApproveRefuseHandle">拒绝并结束流程</van-button>
             <van-button type="danger" class="btn-item" block plain @click="ApproveReturnHandle">退回之前审批人</van-button>
         </div>
-        <!--开始审批组件-->
-        <ApprovePass :popupIsShow="ApprovePassIsShow" :ApproveStepsList="ApproveStepsList" :ParamID="ParamID"
-        @successOperation="JumpPageHandle">
-        </ApprovePass>
+        <!--审批结束组件-->
+        <ApproveFinish :popupIsShow="ApproveFinishIsShow" :ApproveStepsList="ApproveStepsList" :ParamID="ParamID"
+        @successOperation="JumpPageHandle"></ApproveFinish>
         <!--审批拒绝-->
         <ApproveRefuse :popupIsShow="ApproveRefuseIsShow" :ParamID="ParamID"
         @successOperation="JumpPageHandle"></ApproveRefuse>
@@ -31,8 +32,8 @@
         mapActions
     } from 'vuex';
     import header from '../../components/common/header';
-    import PersonAskForLeaveCommon from './PersonAskForLeaveCommon';
-    import ApprovePass from '../../components/biz/Approve/ApprovePass';
+    import AskForLeaveCancelApprovalCommon from './AskForLeaveCancelApprovalCommon';
+    import ApproveFinish from '../../components/biz/Approve/ApproveFinish';
     import ApproveRefuse from '../../components/biz/Approve/ApproveRefuse';
     import ApproveReturn from '../../components/biz/Approve/ApproveReturn';
     import MUtil from '../../util/mm';
@@ -45,7 +46,7 @@
     export default {
         data () {
             return {
-                title: '请假单审批',
+                title: '销假单审批',
                 from: {
                     ID: '',
                     Reason: '', // 原因
@@ -53,12 +54,12 @@
                 IsShowBtn: true, // 按钮组是否显示
                 wfDetailId: '', // 流程详情ID
                 model: {}, // 存放一条记录
-                fromStatus: '62',
+                fromStatus: '61',
                 uploadFinishList: [],
                 dateDetailList: [],
                 workFlowsDetailList: [],
 
-                ApprovePassIsShow: false, // 审批通过
+                ApproveFinishIsShow: false, // 审批结束
                 ApproveRefuseIsShow: false, // 审批拒绝
                 ApproveReturnIsShow: false, // 审批退回
                 ApproveStepsList: [], // 步骤审批用户列表
@@ -67,52 +68,31 @@
         },
         components: {
             [header.name]: header,
-            [ApprovePass.name]: ApprovePass,
+            [AskForLeaveCancelApprovalCommon.name]: AskForLeaveCancelApprovalCommon,
+            [ApproveFinish.name]: ApproveFinish,
             [ApproveRefuse.name]: ApproveRefuse,
             [ApproveReturn.name]: ApproveReturn,
-            [PersonAskForLeaveCommon.name]: PersonAskForLeaveCommon,
         },
         computed: {
         },
         methods: {
             ...mapActions([
-                'GetAskForLeaveDetailByWfDetailId',
-                'GetWorkFlowApproveUserList', // 获取流程审批人列表
-                'ApprovePass', // ApprovePass
-                'GetApprovePassUserList', // GetApprovePassUserList
-
-                'ApproveReturn', // 审批退回
+                'GetAskForLeaveCancelByWfDetailId', // 销假单
+                'ApprovePass', // 审批通过
+                'ApproveReturn' // 审批退回
             ]),
-            // 审批通过
-            ApprovePassHandle() {
+            // 审批结束
+            ApproveFinishHandle() {
                 let wfDetailId = this.wfDetailId;
                 if (!wfDetailId) {
                     _mm.errorDialog('参数为空');
                     return;
                 }
-                this.ApprovePass(wfDetailId).then(res => {
-                    let data = {
-                        CreateUserID: res.CreateUserID,
-                        PrvUserID: res.PrvUserID,
-                        KeyID: res.model.KeyID,
-                        ActiveID: res.nextActives.length ? res.nextActives[0].ID : '',
-                    };
-                    let ParamID = {
-                        wfDetailID: wfDetailId,
-                        isSubmitNext: res.isSubmitNext,
-                        nextActiveId: data.ActiveID,
-                    };
-                    // 获取审批人列表
-                    this.GetApprovePassUserList(data).then(res => {
-                        if (res.success) {
-                            this.ApproveStepsList = res.data;
-                            this.ParamID = ParamID; // 参数赋值
-                            this.ApprovePassIsShow = !this.ApprovePassIsShow;
-                        } else {
-                            _mm.errorDialog(res.msg);
-                        }
-                    });
-                });
+                let ParamID = {
+                    wfDetailID: wfDetailId
+                };
+                this.ParamID = ParamID; // 参数赋值
+                this.ApproveFinishIsShow = !this.ApproveFinishIsShow;
             },
             JumpPageHandle() {
                 let url = _mm.getStorage(_mm.GetCurrentToDoCategoryUrlKey());
@@ -144,8 +124,7 @@
                         // 是否是否为第一个审批人
                         this.ApproveStepsList = res.data.WorkFlowDetails.filter((item) => {
                             // 审批人和插入人 !== 当前用户
-                            // return item.ExecPersons !== res.data.CurrentUserID && item.InsertUserID !== res.data.CurrentUserID && parseInt(item.QueueSort) < MaxQueueSort;
-                            return item.ExecPersons !== res.data.CurrentUserID;
+                            return item.ExecPersons !== res.data.CurrentUserID && item.InsertUserID !== res.data.CurrentUserID;
                         });
                         if (this.ApproveStepsList.length === 0) {
                             _mm.errorDialog('您是第一位审批人，没有上一位审批人，无法退回。您可以拒绝直接退给发起人。');
@@ -160,11 +139,12 @@
             paramsInit() {
                 let params = this.$route.params;
                 if (params.wfDetailId !== undefined) {
+                    // Edit
                     let wfDetailId = params.wfDetailId;
                     this.wfDetailId = wfDetailId;
-                    this.GetAskForLeaveDetailByWfDetailId(wfDetailId).then((res) => {
+                    this.GetAskForLeaveCancelByWfDetailId(wfDetailId).then((res) => {
                         this.model = res.model;
-                        this.from = Object.assign({}, res.model, res.userInfo);// 请假单信息
+                        this.from = res.model; // 请假单信息
                         this.dateDetailList = res.detailList;// 请假单明细
                         this.uploadFinishList = res.attachList;// 请假单附件列表
                         this.workFlowsDetailList = res.workFlowsDetailList;// 审批信息

@@ -11,6 +11,7 @@ import OutCompanyStore from './biz/OutCompany/store';
 import HRUserFilePersonalStore from './biz/HRUserFile/store';
 import AskForLeaveStore from './biz/AskForLeave/store';
 import WorkFlowStore from './biz/WorkFlow/store';
+import TestStore from './biz/Test/store';
 
 Vue.use(Vuex);
 
@@ -26,6 +27,7 @@ export default new Vuex.Store({
         HRUserFilePersonalStore,
         AskForLeaveStore,
         WorkFlowStore,
+        TestStore,
     },
     strict: process.env.NODE_ENV !== 'production',
 });

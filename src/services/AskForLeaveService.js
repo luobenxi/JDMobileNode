@@ -19,6 +19,20 @@ class AskForLeave {
 	DeleteAskForLeaveByKey(data) {
         return ajax.requestDelete(`${ApiPreFix}/AskForLeaveApi/DeleteAskForLeaveByKey?ID=${data}`);
     }
+    /**销假相关开始**/
+    AskForLeaveCancelSave(data) {
+        return ajax.requestGet(`${ApiPreFix}/AskForLeaveCancelApi/AskForLeaveCancelSave?askForLeaveID=${data}`);
+    }
+    AskForLeaveCancelSavePost(data) {
+        return ajax.requestPost(`${ApiPreFix}/AskForLeaveCancelApi/AskForLeaveCancelSave`, data);
+    }
+    GetAskForLeaveCancelByKey(data) {
+        return ajax.requestGet(`${ApiPreFix}/AskForLeaveCancelApi/GetAskForLeaveCancelByKey?cancelForLeaveID=${data}`);
+    }
+    GetAskForLeaveCancelByWfDetailId(data) {
+        return ajax.requestGet(`${ApiPreFix}/AskForLeaveCancelApi/GetAskForLeaveCancelByWfDetailId?wfDetailId=${data}`);
+    }
+    /**销假相关结束**/
 }
 
 export default AskForLeave;

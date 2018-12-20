@@ -63,10 +63,66 @@ const DeleteAskForLeaveByKey = (
     })
 });
 
+
+/******************销假相关开始****************/
+// 保存并获取销假单
+const AskForLeaveCancelSave = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.AskForLeaveCancelSave(SubData).then((res) => {
+        resolve(res.data);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+// 保存销假单
+const AskForLeaveCancelSavePost = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.AskForLeaveCancelSavePost(SubData).then((res) => {
+        resolve(res);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+// 根据销假申请单ID获取一条数据
+const GetAskForLeaveCancelByKey = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.GetAskForLeaveCancelByKey(SubData).then((res) => {
+        resolve(res.data);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+// 根据流程明细ID获取一条销假单详情信息
+const GetAskForLeaveCancelByWfDetailId = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.GetAskForLeaveCancelByWfDetailId(SubData).then((res) => {
+        resolve(res.data);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+/******************销假相关结束****************/
+
 export default {
     GetAskForLeaveList,
     GetAskForLeaveByKey,
     GetAskForLeaveDetailByWfDetailId,
     SaveAskForLeave,
 	DeleteAskForLeaveByKey,
+    AskForLeaveCancelSave,
+    AskForLeaveCancelSavePost,
+    GetAskForLeaveCancelByKey,
+    GetAskForLeaveCancelByWfDetailId,
 };

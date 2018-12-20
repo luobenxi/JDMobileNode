@@ -10,8 +10,7 @@
             <van-cell>
                 <van-row>
                     <van-col :span="24">
-                        <van-button type="danger" :disabled="IsLoading" block @click="ApproveRefuseHandle">拒 绝</van-button>
-                        <van-loading class="loading-box" v-if="IsLoading" color="#909399"/>
+                        <van-button type="danger" block @click="ApproveRefuseHandle">拒 绝</van-button>
                     </van-col>
                 </van-row>
             </van-cell>
@@ -21,6 +20,12 @@
 </template>
 
 <script>
+    import {
+        mapActions
+    } from 'vuex';
+    import MUtil from '../../../util/mm';
+    const _mm = new MUtil();
+
     export default {
         name: "ApproveRefuse",
         props: {
@@ -31,6 +36,10 @@
             popupIsShow: {
                 type: Boolean,
                 default: () => false
+            },
+            ParamID: {
+                type: Object,
+                default: () => {}
             },
             ApproveStepsList: {
                 type: Array,
@@ -50,10 +59,9 @@
         },
         data() {
             return {
-                IsLoading: false,
                 CurrentPopupIsShow: false,
                 ApproveFrom: {
-                    Result: '拒绝'
+                    Result: ''
                 },
             }
         },
@@ -63,13 +71,34 @@
             }
         },
         methods: {
+            ...mapActions([
+                'ApproveRefuse',
+            ]),
             ApproveRefuseHandle() {
-                console.log('审批拒绝');
-                this.IsLoading = true;
-                setTimeout(() => {
-                    this.IsLoading = false;
-                }, 2000);
+                if (!this.ApproveFrom.Result) {
+                    _mm.errorDialog('请输入拒绝原因');
+                    return;
+                }
+                _mm.confirmDialog('你确定要拒绝请假单吗？', () => {
+                    this.PageApproveRefuse();
+                }, true);
             },
+            PageApproveRefuse() {
+                let data = {
+                    ID: this.ParamID.ID,
+                    remark: this.ApproveFrom.Result
+                };
+                if (!data.ID) {
+                    _mm.errorDialog('参数为空，请联系管理员');
+                    return;
+                }
+                this.ApproveRefuse(data).then((res) => {
+                    this.CurrentPopupIsShow = false;
+                    _mm.confirmDialog(res.msg, () => {
+                        this.$emit('successOperation');
+                    });
+                });
+            }
         }
     }
 </script>

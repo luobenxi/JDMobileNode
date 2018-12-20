@@ -18,4 +18,28 @@
 .loading-box-input {
   margin: 0rem auto;
 }
+.table-title {
+  margin: -4px auto 3px auto;
+}
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+table tr th {
+  border: 1px solid #EBEEF5;
+  text-align: center;
+}
+table tr td {
+  border: 1px solid #EBEEF5;
+  padding-left: 3px;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lineThrough {
+  text-decoration: line-through;
+}
 /*# sourceMappingURL=common.css.map */

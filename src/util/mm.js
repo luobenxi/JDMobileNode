@@ -83,17 +83,19 @@ class MUtil {
     }
 
     // 确认消息提示，需要手动关闭，包含确认按钮和点击确认按钮后要执行的回调函数
-    confirmDialog(Msg, thenCallBack) {
+    confirmDialog(Msg, thenCallBack, IsShowCancelButton = false) {
         Dialog.confirm({
             title: '提示',
             message: Msg,
-            showCancelButton: false // 不显示取消按钮
+            showCancelButton: IsShowCancelButton // 不显示取消按钮
         }).then(() => {
             if (typeof thenCallBack === 'function') {
                 thenCallBack(); // 执行回调
             } else {
                 this.errorDialog('成功回调参数类型异常');
             }
+        }).catch(err => {
+            console.log('cancel');
         });
     }
 
@@ -198,6 +200,11 @@ class MUtil {
     // 移动端员工自助URL
     GetEmployeeSelfHelpUrl() {
         return '/sub-menu/b2ba1a15-6ef5-4ad6-b732-3bca5318ab8c';
+    }
+
+    // 当前处理的分类URL Key
+    GetCurrentToDoCategoryUrlKey() {
+        return 'CurrentToDoCategoryUrl';
     }
 
     FileSizeUnitConvent(limit) {

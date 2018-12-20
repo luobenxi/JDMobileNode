@@ -63,8 +63,9 @@
                     remark: this.ApproveFrom.Result,
                 });
                 this.ApproveFinish(data).then(res => {
+                    this.CurrentPopupIsShow = false;
                     _mm.confirmDialog(res.msg, () => {
-                        this.$router.go(0); // 刷新当前页面
+                        this.$emit('successOperation');
                     });
                 }).catch(err => {
                     _mm.errorDialog(err.msg);

@@ -114,15 +114,14 @@
             clickItemHandle(item) {
                 let Status = parseInt(item.Status);
                 let url = '';
-                if (Status === 61) {
-                    // 未提交，跳转到编辑页面
+                if (Status === 61 || Status === 68) {
+                    // 未提交或者撤回，跳转到编辑页面
                     url = `/AskForLeaveApi/Save/${item.ID}`;
-                } else if (Status === 62) {
-                    // 审批中，跳转到审批中页面
-                    url = `/AskForLeave/PersonAskForLeaveProcess/${item.ID}`;
                 } else if (Status === 63) {
                     // 已通过，跳转到查看页面
                     url = `/AskForLeave/PersonAskForLeaveView/${item.ID}`;
+                } else {
+                    url = `/AskForLeave/PersonAskForLeaveSubmit/${item.ID}`;
                 }
                 this.$router.push(url);
             },

@@ -8,7 +8,7 @@
                 <van-row>
                     <van-col :span="6">下一步骤</van-col>
                     <van-col :span="18">
-                        <van-radio-group v-model="ApproveUserID" disabled>
+                        <van-radio-group v-model="ApproveUserID">
                             <van-radio v-for="(item, index) in ApproveStepsList" :key="index" :name="item.ID">{{item.FullName}}</van-radio>
                         </van-radio-group>
                     </van-col>
@@ -60,11 +60,6 @@
                     }
                 ]
             },
-            // 提交成功跳转URL
-            submitSuccessJumpUrl: {
-                type: String,
-                default: () => ''
-            },
         },
         data() {
             return {
@@ -86,6 +81,7 @@
                 'ApproveStart',
             ]),
             ApproveStartHandle() {
+                // 整理参数
                 let data = Object.assign({}, this.ParamID, {
                     KeyID: this.model.ID,
                     WorkTitle: this.model.Title,
@@ -93,12 +89,9 @@
                     IsReSubmit: 'false',
                 });
                 this.ApproveStart(data).then(res => {
+                    this.CurrentPopupIsShow = false;
                     _mm.confirmDialog(res.msg, () => {
-                        if (this.submitSuccessJumpUrl) {
-                            this.$router.push(this.submitSuccessJumpUrl);
-                        } else {
-                            this.$router.go(0); // 刷新当前页面
-                        }
+                        this.$emit('successOperation');
                     });
                 }).catch(err => {
                     _mm.errorDialog(err.msg);

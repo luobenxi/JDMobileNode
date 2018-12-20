@@ -92,6 +92,50 @@ const ApproveFinish = (
     })
 });
 
+const ApproveWithDraw = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.ApproveWithDraw(SubData).then((res) => {
+        resolve(res);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+const ApproveRefuse = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.ApproveRefuse(SubData).then((res) => {
+        resolve(res);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+const ApproveReturn = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.ApproveReturn(SubData).then((res) => {
+        resolve(res);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
+const ApproveReturnPost = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.ApproveReturnPost(SubData).then((res) => {
+        resolve(res);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
 export default {
     GetWorkFlowApproveUserList,
     ApproveStart,
@@ -101,4 +145,8 @@ export default {
     GetApprovePassUserList,
     ApprovePassPost,
     ApproveFinish,
+    ApproveWithDraw,
+    ApproveRefuse,
+    ApproveReturn,
+    ApproveReturnPost,
 };

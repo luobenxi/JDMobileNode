@@ -124,7 +124,7 @@ class BizUtil {
             case '66':
                 text = '挂起';
                 break;
-            case '67':
+            case '68':
                 text = '撤回';
                 break;
             case null:

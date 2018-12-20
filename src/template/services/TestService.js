@@ -1,20 +1,20 @@
 import { ApiPreFix } from '../vuex/mutation-types';
-import MUtil from '../util/mm.js';
+import AjaxMUtil from '../axios/index';
 
-const _mm = new MUtil();
+const ajax = new AjaxMUtil();
 
 class Test {
     GetTestList(data) {
-        return _mm.requestGet(`${ApiPreFix}/TestApi/GetTestList`);
+        return ajax.requestGet(`${ApiPreFix}/TestApi/GetTestList`);
     }
     GetTestByKey(data) {
-        return _mm.requestGet(`${ApiPreFix}/TestApi/GetTestByKey?ID=${data}`);
+        return ajax.requestGet(`${ApiPreFix}/TestApi/GetTestByKey?ID=${data}`);
     }
     SaveTest(data) {
-        return _mm.requestPost(`${ApiPreFix}/TestApi/SaveTest`, data);
+        return ajax.requestPost(`${ApiPreFix}/TestApi/SaveTest`, data);
     }
 	DeleteTestByKey(data) {
-        return _mm.requestDelete(`${ApiPreFix}/TestApi/DeleteTestByKey?ID=${data}`);
+        return ajax.requestDelete(`${ApiPreFix}/TestApi/DeleteTestByKey?ID=${data}`);
     }
 }
 
