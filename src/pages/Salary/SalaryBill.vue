@@ -6,39 +6,17 @@
             <van-tab title="年终奖"></van-tab>
             <van-tab title="年度调薪"></van-tab>
         </van-tabs>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">
-                    <van-button size="small" @click="chooseDate">选择时间</van-button>
-                </van-col>
-                <van-col class="currentDateStrBox">
-                    {{currentDateStr}}
-                </van-col>
-            </van-row>
-        </van-cell>
+        <JdDatetimePickerSwitch :showDate="currentDateStr" @changeDate="changeDateHandle"></JdDatetimePickerSwitch>
         <JdSalaryMonthBill :from="from" v-if="active === 0 && isShow" @SalaryDetailEmit="SalaryDetail"></JdSalaryMonthBill>
         <JdYearBonusBill :from="from" v-if="active === 1 && isShow"></JdYearBonusBill>
         <JdSalaryChangeBill :from="from" v-if="active === 2 && isShow"></JdSalaryChangeBill>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true" @click-overlay="clickOverlay">
-                <van-row>
-                    <van-col :span="24">
-                        <van-datetime-picker
-                            v-model="currentDate"
-                            type="year-month"
-                            :formatter="formatter"
-                            @cancel="onCancel" @confirm="onConfirm"
-                        />
-                    </van-col>
-                </van-row>
-            </van-popup>
-        </div>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import header from '../../components/common/header.vue';
+import JdDatetimePickerSwitch from '../../components/common/datetimePickerSwitch';
 import SalaryMonthBill from '../../components/biz/Salary/SalaryMonthBill';
 import YearBonusBill from '../../components/biz/Salary/YearBonusBill';
 import SalaryChangeBill from '../../components/biz/Salary/SalaryChangeBill';
@@ -52,7 +30,6 @@ export default {
             backUrl: _mm.GetEmployeeSelfHelpUrl(),
             currentDate: new Date(),
             currentDateStr: _mm.formatMonth(this.GetOneMonthBeforeDate()),
-            pickerIsShow: false,
             active: 0,
             from: {},
             isShow: 0,
@@ -65,6 +42,7 @@ export default {
     },
     components: {
         [header.name]: header,
+        [JdDatetimePickerSwitch.name]: JdDatetimePickerSwitch,
         [SalaryMonthBill.name]: SalaryMonthBill,
         [YearBonusBill.name]: YearBonusBill,
         [SalaryChangeBill.name]: SalaryChangeBill,
@@ -109,18 +87,8 @@ export default {
                 this.InitSalaryChangeBill();
             }
         },
-        chooseDate() {
-            this.pickerIsShow = true;
-        },
-        clickOverlay() {
-            this.pickerIsShow = false;
-        },
-        onCancel() {
-            this.pickerIsShow = false;
-        },
-        onConfirm() {
-            this.pickerIsShow = false;
-            this.currentDateStr = _mm.formatMonth(this.currentDate);
+        changeDateHandle(val) {
+            this.currentDateStr = _mm.formatMonth(val);
             if (this.active === 0) {
                 // 月工资
                 this.InitSalaryBill();
@@ -132,14 +100,6 @@ export default {
                 this.currentDateStr = this.GetCurrentDateArr().YYear; // 只显示年
                 this.InitSalaryChangeBill();
             }
-        },
-        formatter(type, value) {
-            if (type === 'year') {
-                return `${value}年`;
-            } else if (type === 'month') {
-                return `${value}月`
-            }
-            return value;
         },
         InitSalaryBill() {
             let data = this.GetCurrentDateArr();

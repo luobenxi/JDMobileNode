@@ -13,7 +13,7 @@
             <van-button type="danger" class="btn-item" block @click="ApproveRefuseHandle">拒绝并结束流程</van-button>
             <van-button type="danger" class="btn-item" block plain @click="ApproveReturnHandle">退回之前审批人</van-button>
         </div>
-        <!--开始审批组件-->
+        <!--审批通过组件-->
         <ApprovePass :popupIsShow="ApprovePassIsShow" :ApproveStepsList="ApproveStepsList" :ParamID="ParamID"
         @successOperation="JumpPageHandle">
         </ApprovePass>

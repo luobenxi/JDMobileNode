@@ -3,12 +3,7 @@
         <van-row gutter="10">
             <van-col :span="6">{{leftText}}</van-col>
             <van-col :span="10">
-                <van-uploader :after-read="onRead" v-if="isMultiple"
-                              accept="image/gif, image/jpeg, image/jpg, image/png" multiple>
-                    <van-icon name="photograph"/>
-                </van-uploader>
-                <van-uploader :after-read="onRead" v-if="!isMultiple"
-                              accept="image/gif, image/jpeg, image/jpg, image/png">
+                <van-uploader :after-read="onRead" accept="image/gif, image/jpeg, image/jpg, image/png" :multiple="isMultiple">
                     <van-icon name="photograph"/>
                 </van-uploader>
             </van-col>
@@ -21,8 +16,7 @@
                 <van-col span="18">
                     <img :src="item.SavePath" alt="图片" style="width: 100%">
                 </van-col>
-                <van-col class="deleteText" span="6"
-                         style="display: flex; align-items: center; justify-content: center">
+                <van-col class="deleteText" span="6" style="display: flex; align-items: center; justify-content: center">
                     <span @click="deleteFileItem(item.name, index)">删除</span>
                 </van-col>
             </van-row>
@@ -54,7 +48,7 @@
                 type: String,
                 default: () => '附件类型说明'
             },
-            // 是否支持多选
+            // 是否支持多选，默认支持多选
             isMultiple: {
                 type: Boolean,
                 default: () => true

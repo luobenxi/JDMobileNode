@@ -144,7 +144,18 @@ class MUtil {
 
     formatTime(originTime) {
         if (!originTime) return '';
+        if (typeof originTime === 'string') {
+            originTime = new Date(originTime);
+        }
         return moment(originTime).format('YYYY-MM-DD HH:mm:ss');
+    }
+
+    formatTimeOnly(originTime) {
+        if (!originTime) return '';
+        if (typeof originTime === 'string') {
+            originTime = new Date(originTime);
+        }
+        return moment(originTime).format('HH:mm:ss');
     }
 
     formatDate(originTime) {
@@ -180,6 +191,36 @@ class MUtil {
             i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
             j = (j = i.length) > 3 ? j % 3 : 0;
         return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+    }
+
+    addDateYear(date, num) {
+        let sDate = new Date(date);
+        num = parseInt(num);
+        let sYear = sDate.getFullYear();
+        let sMonth = sDate.getMonth();
+        let sDay = sDate.getDate();
+        return new Date(sYear + num, sMonth, sDay);
+    }
+
+    addDateMonth(date, num) {
+        let sDate = new Date(date);
+        num = parseInt(num);
+        let sYear = sDate.getFullYear();
+        let sMonth = sDate.getMonth() + 1;
+        let sDay = sDate.getDate();
+        let eYear = sYear;
+        let eMonth = sMonth + num; // 添加的月份数
+        let eDay = sDay;
+        if (eMonth > 12) {
+            eYear++;
+            eMonth -= 12;
+        }
+        return new Date(eYear, eMonth - 1, eDay);
+    }
+
+    addDateDay(date, num) {
+        // 未实现
+        return new Date(date);
     }
 
     // 判断一个值是否在一个数组中存在，如果存在返回true，否则返回false，等同于 includes

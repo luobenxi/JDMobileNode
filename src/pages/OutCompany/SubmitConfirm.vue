@@ -1,72 +1,26 @@
 <template>
-    <div id="OutCompanyAdd-box">
+    <div>
         <jd-header :title="title"></jd-header>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">姓名</van-col>
-                <van-col>{{from.InsertUserFullName}}</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">部门</van-col>
-                <van-col>{{from.DepartName}}</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">职务</van-col>
-                <van-col>{{from.PostName}}</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">状态</van-col>
-                <van-col>{{from.StatusText}}</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">公出原因</van-col>
-                <van-col>{{from.ChangeCateText}}</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">公出时间</van-col>
-                <van-col :span="18">
-                    <van-row v-if="DateDetailArr.length" v-for="item in DateDetailArr" :key="item.Date">
-                        <van-col span="12">{{item.Date}}</van-col>
-                        <van-col span="12">{{item.AmPmTypeText}}</van-col>
-                    </van-row>
-                </van-col>
-            </van-row>
-        </van-cell>
-        <van-cell-group>
-            <van-field
-                v-model="from.Remark"
-                label="备注"
-                type="textarea"
-                disabled
-                placeholder="备注信息"
-                rows="2"
-                autosize
-            />
-        </van-cell-group>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6" style="color: red">审批人</van-col>
-                <van-col>
-                    <van-radio-group v-model="ApprovalUserID">
-                        <van-radio name="1">杨云江</van-radio>
-                    </van-radio-group>
-                </van-col>
-            </van-row>
-        </van-cell>
+        <OutCompanyCommon
+            :model="model"
+            :detailList="detailList"
+            :workFlowList="workFlowList"
+        >
+        </OutCompanyCommon>
         <div class="sub-btn">
-            <van-button type="danger" class="btn-item" v-if="from.ID" plain block @click="SubmitApplyHandle">确认提交</van-button>
-            <van-button type="primary" class="btn-item" v-if="from.ID" plain block @click="backEdit">返回修改</van-button>
+            <van-button type="primary" class="btn-item"  v-if="ArrowStatus.indexOf(fromStatus) !== -1" block @click="SubmitApplyHandle">确认提交</van-button>
+            <van-button type="danger" class="btn-item" v-if="ArrowStatus.indexOf(fromStatus) !== -1" plain block @click="backEdit">返回修改</van-button>
+            <van-button type="primary" class="btn-item" plain block @click="backList">返回列表</van-button>
         </div>
+        <!--开始审批组件-->
+        <ApproveStart
+            :popupIsShow="ApproveStartIsShow"
+            :ApproveStepsList="ApproveStepsList"
+            :model="model"
+            :ParamID="ParamID"
+            @successOperation="JumpPageHandle"
+        >
+        </ApproveStart>
     </div>
 </template>
 
@@ -74,11 +28,11 @@
 import {
     mapActions
 } from 'vuex';
-import header from '../../components/common/header.vue';
-import JdDatetimePicker from '../../components/common/datetimePicker';
+import header from '../../components/common/header';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
-import { Dialog } from 'vant';
+import OutCompanyCommon from './Common';
+import ApproveStart from '../../components/biz/Approve/ApproveStart';
 
 const _mm = new MUtil();
 const _bizUtil = new BizUtil();
@@ -87,72 +41,63 @@ export default {
     data () {
         return {
             title: '公出备案单确认',
-            from: {
-                ID: '',
-                InsertUserFullName: '',
-                DepartName: '',
-                DepartID: '',
-                Company: '',
-                ChangeCate: '',
-                ChangeCateText: '',
-                Remark: '',
-            },
-            ApprovalUserID: '1',
-            DateDetailArr: [],
-            ChangeCateOption: [],
-            AmPmTypeOption: _bizUtil.GetAmPmTypeOption()
+            ArrowStatus: ['61', '64', '68'], // 未提交、已拒绝、撤回
+            fromStatus: '61', // 状态
+
+            model: {},
+            detailList: [],
+            workFlowList: [],
+
+            ApproveStartIsShow: false, // 开始审批
+            ApproveStepsList: [], // 步骤审批用户列表
+            ParamID: {},
         }
     },
     components: {
         [header.name]: header,
-        [JdDatetimePicker.name]: JdDatetimePicker,
-    },
-    computed: {
+        [OutCompanyCommon.name]: OutCompanyCommon,
+        [ApproveStart.name]: ApproveStart,
     },
     methods: {
         ...mapActions([
-            'GetDictListByParent',
             'GetOutCompanyByKey',
+            'GetWorkFlowApproveUserList',
         ]),
         SubmitApplyHandle() {
-            console.log(this.from);
+            // 获取流程审批人列表
+            let data = {
+                FormID: '19',
+                KeyID: this.model.ID,
+                DepartID: this.model.DepartID,
+                WorkTitle: this.model.Title,
+                InsertUserID: this.model.InsertUserID,
+                IsReSubmit: 'false'
+            };
+            if (data.KeyID === undefined) {
+                _mm.errorDialog('参数KeyID为空');
+                return;
+            }
+            this.GetWorkFlowApproveUserList(data).then(res => {
+                this.ApproveStepsList = res.UserList; // 数据赋值
+                this.ParamID = res.ParamID; // 数据赋值
+                this.ApproveStartIsShow = !this.ApproveStartIsShow; // 显示弹出层
+            });
+        },
+        JumpPageHandle() {
+            this.$router.push(`/OutCompanyApi/View/${this.model.ID}`);
         },
         backEdit() {
-            this.$router.push(`/OutCompanyApi/Save/${this.from.ID}`);
+            this.$router.push(`/OutCompanyApi/Save/${this.model.ID}`);
         },
-        InitDictListByParent() {
-            let data = {
-                ParentID: 542 // 字典表ID=542的记录为公出原因
-            };
-            this.GetDictListByParent(data).then((res) => {
-                if (res) {
-                    if (res.length > 0) {
-                        this.ChangeCateOption = res.map((item) => {
-                            return Object.assign({}, {
-                                id: parseInt(item.ID),
-                                text: item.DictName,
-                            });
-                        });
-                    }
-                }
-            });
+        backList() {
+            this.$router.push(`/OutCompanyApi/OutCompanyList`);
         },
         DataInit(ID) {
             this.GetOutCompanyByKey(ID).then((res) => {
-                let ChangeCateText = this.ChangeCateOption.filter((item) => { return item.id === parseInt(res.model.ChangeCate) });
-                this.from = Object.assign({}, res.model, {
-                    ChangeCate: parseInt(res.model.ChangeCate),
-                    ChangeCateText: ChangeCateText ? ChangeCateText[0].text : '',
-                    StatusText: res.StatusText
-                });
-                res.detailList.map((item) => {
-                    let tempAmPmType = this.AmPmTypeOption.filter((item2) => { return item2.id === parseInt(item.AMPM) });
-                    this.DateDetailArr.push({
-                        Date: _mm.formatStrDate(item.TheDay),
-                        AmPmType: parseInt(item.AMPM),
-                        AmPmTypeText: tempAmPmType ? tempAmPmType[0].text : '',
-                    });
-                });
+                this.model = Object.assign({}, res.model);
+                this.detailList = res.detailList;
+                this.workFlowList = res.workFlowList;
+                this.fromStatus = res.model.Status;
             });
         },
         paramsInit() {
@@ -163,7 +108,6 @@ export default {
         }
     },
     mounted() {
-        this.InitDictListByParent();
         this.paramsInit();
     }
 }
@@ -171,5 +115,4 @@ export default {
 
 <style lang="less" scoped>
     @import "../../style/common/common";
-    @import "../../style/pages/OutCompany/Add";
 </style>

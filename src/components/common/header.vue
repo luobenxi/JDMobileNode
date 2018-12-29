@@ -1,18 +1,9 @@
 <template>
     <div id="jd-header">
         <van-nav-bar
-            v-if="leftArrow"
             :title="title"
             :left-text="leftText"
-            left-arrow
-            @click-left="onClickLeft"
-        >
-            <van-icon v-if="rightSearchArrow" @click="searchIconClick" name="search" slot="right"/>
-        </van-nav-bar>
-        <van-nav-bar
-            v-if="!leftArrow"
-            :title="title"
-            :left-text="leftText"
+            :left-arrow="leftArrow"
             @click-left="onClickLeft"
         >
             <van-icon v-if="rightSearchArrow" @click="searchIconClick" name="search" slot="right"/>

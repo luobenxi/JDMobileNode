@@ -21,6 +21,10 @@ export const SET_ATTENDANCE_ABNORMAL_LIST = 'SET_ATTENDANCE_ABNORMAL_LIST';
 export const SET_OUT_COMPANY_LIST = 'SET_OUT_COMPANY_LIST';
 
 // 请假
+export const SET_OverTimeWork_LIST = 'SET_OverTimeWork_LIST';
+export const SET_OverTimeWork_TYPE_LIST = 'SET_OverTimeWork_TYPE_LIST';
+
+// 请假
 export const SET_ASK_FOR_LEAVE_LIST = 'SET_ASK_FOR_LEAVE_LIST';
 export const SET_ASK_FOR_TYPE_LIST = 'SET_ASK_FOR_TYPE_LIST';
 

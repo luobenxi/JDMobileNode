@@ -42,4 +42,7 @@ table tr td {
 .lineThrough {
   text-decoration: line-through;
 }
+.operationText {
+  color: #409EFF;
+}
 /*# sourceMappingURL=common.css.map */

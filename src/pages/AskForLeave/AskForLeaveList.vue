@@ -1,40 +1,24 @@
 <template>
     <div id="AskForLeaveListBox">
         <jd-header title="我的请假单" :backUrl="backUrl"></jd-header>
-        <van-cell>
-            <van-row gutter="10" type="flex" justify="space-between">
-                <van-col :span="6">
-                    <van-button size="small" @click="chooseDate">选择年份</van-button>
-                </van-col>
-                <van-col class="currentDateStrBox">
-                    {{currentDateStr}}
-                </van-col>
-                <van-col :span="6">
-                    <van-button size="small" type="primary" @click="Add">添加</van-button>
-                </van-col>
-            </van-row>
-        </van-cell>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true" @click-overlay="clickOverlay">
-                <JdDatetimePicker
-                        @onCancel="onCancel"
-                        @onConfirm="onConfirm"
-                >
-                </JdDatetimePicker>
-            </van-popup>
-        </div>
+        <JdDatetimePickerSwitch :showDate="currentDateStr" switchType="year" @changeDate="changeDateHandle">
+            <van-button size="small" slot="rightTopBtn" type="primary" @click="Add">添加</van-button>
+        </JdDatetimePickerSwitch>
         <van-list
-                v-model="loading"
-                :finished="finished"
-                @load="onLoad">
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad">
             <jd-list
-                    ref="AskForLeaveList"
-                    :colNameMap="colNameMap"
-                    :itemList="itemList"
-                    :originPaging="AskForLeaveList.paging"
-                    @clickCallBack="clickItemHandle"
-                    @getData="getTodoList"
-            >
+                ref="AskForLeaveList"
+                :colNameMap="colNameMap"
+                :itemList="itemList"
+                :originPaging="AskForLeaveList.paging"
+                @clickCallBack="clickItemHandle"
+                @getData="getTodoList"
+                >
+                <template slot="handlerColumn" slot-scope="scope">
+                    <JdStatusTextMap :Status="scope.item.Status"></JdStatusTextMap>
+                </template>
             </jd-list>
         </van-list>
         <div v-if="!AskForLeaveList.itemList" class="empty">暂无数据</div>
@@ -47,7 +31,8 @@
     import MUtil from '../../util/mm';
     import BizUtil from '../../util/bizUtil';
     import list from '../../components/common/list';
-    import JdDatetimePicker from '../../components/common/datetimePicker';
+    import statusTextMap from '../../components/common/statusTextMap';
+    import JdDatetimePickerSwitch from '../../components/common/datetimePickerSwitch';
     import AjaxUtil from '../../axios/index';
 
     const _mm = new MUtil();
@@ -59,12 +44,11 @@
             return {
                 backUrl: _mm.GetEmployeeSelfHelpUrl(),
                 currentDateStr: _mm.formatYear(new Date()),
-                pickerIsShow: false,
                 loading: false,
                 finished: false,
                 colNameMap: {
                     key: 'ID',
-                    colName: ['Title', 'StatusText', 'InsertTime'],
+                    colName: ['Title', 'InsertTime'], // 'InsertTime', 'StatusText'
                 }
             }
         },
@@ -79,7 +63,8 @@
         components: {
             [list.name]: list,
             [header.name]: header,
-            [JdDatetimePicker.name]: JdDatetimePicker,
+            [statusTextMap.name]: statusTextMap,
+            [JdDatetimePickerSwitch.name]: JdDatetimePickerSwitch,
         },
         methods: {
             ...mapActions([
@@ -88,25 +73,11 @@
             Add() {
                 this.$router.push(`/AskForLeaveApi/Save`);
             },
-            chooseDate() {
-                this.pickerIsShow = true;
-            },
-            clickOverlay() {
-                this.pickerIsShow = false;
-            },
-            onCancel(val) {
-                this.pickerIsShow = false;
-            },
-            onConfirm(val) {
-                this.currentDateStr = _mm.formatYear(val);
-                this.pickerIsShow = false;
-                this.$refs.AskForLeaveList.queryHandler();
-            },
             formatItemList() {
                 if (this.AskForLeaveList.itemList) {
                     return this.AskForLeaveList.itemList.map((item) => {
                         return Object.assign({}, item, {
-                            StatusText: _bizUtil.JDApproveStatusMap(item.Status)
+                            InsertTime: _mm.formatDate(item.InsertTime),
                         });
                     });
                 }
@@ -142,6 +113,10 @@
             },
             onLoad() {
                 this.$refs.AskForLeaveList.queryHandler();
+            },
+            changeDateHandle(val) {
+                this.currentDateStr = _mm.formatYear(val);
+                this.onLoad(); // 重新请求数据
             },
         },
         mounted() {

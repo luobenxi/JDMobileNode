@@ -5,6 +5,7 @@
                 @onCancel="onCancel"
                 @onConfirm="onConfirm"
                 :type="type"
+                :defaultDate="defaultDate"
             >
             </JdDatetimePicker>
         </van-popup>
@@ -20,6 +21,10 @@
             type: {
                 type: String,
                 default: () => 'year-month'
+            },
+            defaultDate: {
+                type: String,
+                default: () => ''
             },
             popupIsShow: {
                 type: Boolean,

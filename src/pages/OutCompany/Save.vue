@@ -8,7 +8,9 @@
         <van-cell v-if="from.ID">
             <van-row gutter="10">
                 <van-col :span="6">状态</van-col>
-                <van-col>{{from.StatusText}}</van-col>
+                <van-col>
+                    <JdStatusTextMap :Status="from.Status"></JdStatusTextMap>
+                </van-col>
             </van-row>
         </van-cell>
         <van-cell>
@@ -78,6 +80,7 @@ import header from '../../components/common/header.vue';
 import JdDatetimePicker from '../../components/common/datetimePicker';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
+import statusTextMap from '../../components/common/statusTextMap';
 import { Dialog } from 'vant';
 
 const _mm = new MUtil();
@@ -107,6 +110,7 @@ export default {
     },
     components: {
         [header.name]: header,
+        [statusTextMap.name]: statusTextMap,
         [JdDatetimePicker.name]: JdDatetimePicker,
     },
     computed: {
@@ -171,11 +175,10 @@ export default {
             });
             this.OutCompanySave(subData).then((res) => {
                 if (res.success) {
-                    _mm.successDialog(res.msg);
-                    this.$router.push(`/OutCompanyApi/Save/${res.data}`);
-                    setTimeout((_) => {
-                        this.$router.go(0); // 刷新当前页面
-                    }, 800);
+                    _mm.confirmDialog(res.msg, () => {
+                        this.$router.push(`/OutCompanyApi/Save/${res.data}`);
+                        this.paramsInit();
+                    });
                 } else {
                     _mm.errorDialog(res.msg);
                 }
@@ -216,7 +219,7 @@ export default {
         },
         InitDictListByParent() {
             let data = {
-                ParentID: 542 // 字典表ID=542的记录为公出原因
+                ParentID: _bizUtil.getOutCompanyReasonParentID()
             };
             this.GetDictListByParent(data).then((res) => {
                 if (res) {
@@ -241,15 +244,15 @@ export default {
         },
         DataInit(ID) {
             this.GetOutCompanyByKey(ID).then((res) => {
-                this.from = Object.assign({}, {
+                this.from = Object.assign({}, res.model, {
                     ID: res.model.ID,
                     DepartName: res.model.DepartName,
                     InsertUserFullName: res.model.InsertUserFullName,
                     ChangeCate: parseInt(res.model.ChangeCate),
                     Remark: res.model.Remark,
-                    StatusText: res.StatusText
                 });
                 this.oldFrom = Object.assign({}, this.from); //数据备份，为了比对是否有改动
+                this.DateDetailArr = [];
                 res.detailList.map((item) => {
                     this.DateDetailArr.push({
                         Date: _mm.formatStrDate(item.TheDay),

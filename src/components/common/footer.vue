@@ -2,8 +2,7 @@
     <div id="jd-footer">
         <van-tabbar v-model="active" class="footer-menu-box">
             <van-tabbar-item icon="home" to="/home">首页</van-tabbar-item>
-            <van-tabbar-item icon="records" to="/todoCategory" v-if="todoCount > 0" :info="todoCount">待办
-            </van-tabbar-item>
+            <van-tabbar-item icon="records" to="/todoCategory" v-if="todoCount > 0" :info="todoCount">待办</van-tabbar-item>
             <van-tabbar-item icon="records" to="/todoCategory" v-else>待办</van-tabbar-item>
             <van-tabbar-item icon="chat" to="/contacts">通讯录</van-tabbar-item>
             <van-tabbar-item icon="contact" to="/my">我的</van-tabbar-item>

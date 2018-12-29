@@ -1,10 +1,8 @@
 <template>
-    <div id="JdContactsDeptList">
+    <div class="JdContactsDeptList">
         <van-cell-group v-if="itemList && itemList.length">
             <van-cell v-for="item in itemList" :key="item.ID" @click="itemClickHandle(item)" is-link>
-                <div style="display: flex;">
-                    <span>{{item.DepartName}}</span>
-                </div>
+                <span>{{item.DepartName}}</span>
             </van-cell>
         </van-cell-group>
     </div>

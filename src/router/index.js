@@ -103,9 +103,10 @@ const router = new Router({
             path: '/AttendanceApi/ConfirmAbnormalReason/:ID',
             component: () => import('../pages/Attendance/ConfirmReason')
         },
+        // 公出相关
         {
             path: '/OutCompanyApi/OutCompanyList',
-            component: () => import('../pages/OutCompany/OutCompanyList')
+            component: () => import('../pages/OutCompany/List')
         },
         {
             path: '/OutCompanyApi/Save/:ID?',
@@ -116,9 +117,18 @@ const router = new Router({
             component: () => import('../pages/OutCompany/SubmitConfirm')
         },
         {
+            path: '/OutCompanyApi/View/:ID',
+            component: () => import('../pages/OutCompany/View')
+        },
+        {
+            path: '/OutCompany/OutCompanyApproval/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
+            component: () => import('../pages/OutCompany/OutCompanyApproval')
+        },
+        {
             path: '/HRUserFilePersonalApi/GetHRUserFilePersonal',
             component: () => import('../pages/HRUserFile/HRUserFileList')
         },
+        // 请假相关
         {
             path: '/AskForLeaveApi/PersonAskForLeaveList',
             component: () => import('../pages/AskForLeave/AskForLeaveList')
@@ -132,11 +142,11 @@ const router = new Router({
             component: () => import('../pages/AskForLeave/PersonAskForLeaveSubmit') // 提交前确认页面
         },
         {
-            path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
+            path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
             component: () => import('../pages/AskForLeave/PersonAskForLeaveApproval')
         },
         {
-            path: '/AskForLeave/PersonAskForLeaveApprovalHR/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
+            path: '/AskForLeave/PersonAskForLeaveApprovalHR/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
             component: () => import('../pages/AskForLeave/PersonAskForLeaveApprovalHR')
         },
         {
@@ -159,7 +169,16 @@ const router = new Router({
         {
             path: '/AskForLeaveCancel/AskForLeaveCancelApprovalHR/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
             component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelApprovalHR')
-        }
+        },
+        // 加班相关
+        {
+            path: '/OverTimeWork/PersonOverTimeWorkList',
+            component: () => import('../pages/OverTimeWork/List')
+        },
+        {
+            path: '/OverTimeWork/Save/:ID?',
+            component: () => import('../pages/OverTimeWork/Save')
+        },
     ],
     // mode: 'history'
     mode: 'hash'

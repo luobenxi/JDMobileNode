@@ -96,8 +96,7 @@ export default {
         ...mapGetters([
             'AskForLeaveTypeList',
             'UserInfo',
-        ])
-    },
+        ])},
     methods: {
         ...mapActions([
             'GetAskForLeaveTypeList',

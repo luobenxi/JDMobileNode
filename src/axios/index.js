@@ -44,7 +44,6 @@ axios.interceptors.response.use(
 );
 
 class AjaxUtil {
-    /***************************请求封装开始***************************/
     // 通用请求，暂未使用
     request(params, isShowLoading = true) {
         if (isShowLoading !== false) {
@@ -181,8 +180,6 @@ class AjaxUtil {
         let loading = document.getElementById('ajaxLoading');
         loading.style.display = 'none';
     }
-
-    /***************************请求结束***************************/
 }
 
 export default AjaxUtil;

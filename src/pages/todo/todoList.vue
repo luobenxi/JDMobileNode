@@ -126,7 +126,6 @@ export default {
             if (item.Status === '62') {
                 // 流程处理
                 this.GetWorkFlowsDoUrl(data).then(res => {
-                    // console.log(res.data);
                     let url = res.data.split('?')[0];
                     let wfDetailId = _mm.getSpecialUrlParam(res.data, 'wfDetailId');
                     let routesArr = this.GetAllRouterListNoParams(router.options.routes || []);

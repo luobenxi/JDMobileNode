@@ -7,12 +7,17 @@ const userAuthApi = new User();
 const publicApi = new PublicApi();
 
 class BizUtil {
+    getOutCompanyReasonParentID() {
+        return 542; // 字典表ID=542的记录为公出原因
+    }
+
     checkIsLogin() {
         let Cookie = _mm.getCookie(_mm.CookieKeys_UserInfo());
         if (!Cookie) {
             _mm.errorTips('请先登录');
             // 获取微信OpenID地址连接
             userAuthApi.GetWeiXinOpenIDUrl().then((res) => {
+                // 正式环境需要打开注释
                 window.location.href = res.data;
             });
         }

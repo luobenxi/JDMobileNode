@@ -53,7 +53,11 @@ const ApprovePass = (
     SubData
 ) => new Promise((resolve, reject) => {
     _api.ApprovePass(SubData).then((res) => {
-        resolve(res.data);
+        if (res.success) {
+            resolve(res.data);
+        } else {
+            reject(res.msg || '');
+        }
     }).catch(err => {
         reject(err || '');
     })

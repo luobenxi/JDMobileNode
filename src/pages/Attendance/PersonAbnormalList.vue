@@ -1,25 +1,7 @@
 <template>
-    <div id="attendance-box">
+    <div class="AttendanceBox">
         <jd-header title="我的考勤异常" :backUrl="backUrl"></jd-header>
-        <van-cell>
-            <van-row gutter="10">
-                <van-col :span="6">
-                    <van-button size="small" @click="chooseDate">选择时间</van-button>
-                </van-col>
-                <van-col class="currentDateStrBox">
-                    {{currentDateStr}}
-                </van-col>
-            </van-row>
-        </van-cell>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true" @click-overlay="clickOverlay">
-                <JdDatetimePicker
-                    @onCancel="onCancel"
-                    @onConfirm="onConfirm"
-                >
-                </JdDatetimePicker>
-            </van-popup>
-        </div>
+        <JdDatetimePickerSwitch :showDate="currentDateStr" @changeDate="changeDateHandle"></JdDatetimePickerSwitch>
         <van-list
             v-model="loading"
             :finished="finished"
@@ -31,7 +13,13 @@
                  :originPaging="AttendanceAbnormalList.paging"
                  @clickCallBack="clickHandle"
                  @getData="getTodoList"
-            >
+                >
+                <template slot="handlerColumn" slot-scope="scope">
+                    <span  v-if="scope.item.Status === '0'">未确认</span>
+                    <span  v-if="scope.item.Status === '1'">已确认</span>
+                    <van-tag  v-if="scope.item.Status === '0'" type="danger">确认</van-tag>
+                    <van-tag  v-if="scope.item.Status === '1'" type="success">查看</van-tag>
+                </template>
             </jd-list>
         </van-list>
         <div v-if="!AttendanceAbnormalList.itemList" class="empty">暂无数据</div>
@@ -44,7 +32,7 @@ import header from '../../components/common/header.vue';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
 import list from '../../components/common/list';
-import JdDatetimePicker from '../../components/common/datetimePicker';
+import JdDatetimePickerSwitch from '../../components/common/datetimePickerSwitch';
 
 const _mm = new MUtil();
 const bizMap = new BizUtil();
@@ -54,13 +42,11 @@ export default {
         return {
             backUrl: _mm.GetEmployeeSelfHelpUrl(),
             currentDateStr: _mm.formatMonth(new Date()),
-            // currentDateStr: '2018-09',
-            pickerIsShow: false,
             loading: false,
             finished: false,
             colNameMap: {
                 key: 'ID',
-                colName: ['FullName', 'AbnormalResult', 'Status'],
+                colName: ['FullName', 'AbnormalResult']
             }
         }
     },
@@ -75,26 +61,15 @@ export default {
     components: {
         [list.name]: list,
         [header.name]: header,
-        [JdDatetimePicker.name]: JdDatetimePicker,
+        [JdDatetimePickerSwitch.name]: JdDatetimePickerSwitch,
     },
     methods: {
         ...mapActions([
             'GetAttendanceAbnormalList'
         ]),
-        chooseDate() {
-            this.pickerIsShow = true;
-        },
-        clickOverlay() {
-            this.pickerIsShow = false;
-        },
-        onCancel(val) {
-            this.pickerIsShow = false;
-        },
-        onConfirm(val) {
+        changeDateHandle(val) {
             this.currentDateStr = _mm.formatMonth(val);
-            _mm.setStorage('AttendanceCurrentDate', this.currentDateStr);
-            this.pickerIsShow = false;
-            this.$refs.AttendanceAbnormalList.queryHandler();
+            this.$refs.AttendanceAbnormalList.queryHandler(); // 重新请求数据
         },
         formatItemList() {
             if (this.AttendanceAbnormalList.itemList) {
@@ -116,6 +91,7 @@ export default {
                     Date: ''
                 }
             };
+            _mm.setStorage('AttendanceCurrentDate', this.currentDateStr);
             this.GetAttendanceAbnormalList(condition).then(() => {
                 this.loading = false;
                 this.finished = true;

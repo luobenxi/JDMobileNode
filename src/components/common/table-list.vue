@@ -9,12 +9,16 @@
                     <table>
                         <tr v-if="itemList.length">
                             <th v-for="column in colNameMap" :width="column.width">{{column.displayName}}</th>
+                            <!-- 插入自定义列的Header -->
+                            <slot name="columnHeaderSlot"></slot>
                         </tr>
                         <tr v-if="colNameMap.length" v-for="(item, index) in itemList" :key="index">
                             <td :class="column.ellipsis ? 'ellipsis' : ''" :align="!column.align ? 'center' : column.align"
                                 v-if="colNameMap.length" v-for="column in colNameMap" :width="column.width">
                                 {{item[column.key]}}
                             </td>
+                            <!-- 插入自定义列的Body -->
+                            <slot name="columnBodySlot" :item="item"></slot>
                         </tr>
                     </table>
                 </van-col>
@@ -44,7 +48,6 @@
                 default: () => []
             }
         },
-        methods: {},
     }
 </script>
 

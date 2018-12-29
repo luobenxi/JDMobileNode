@@ -1,15 +1,12 @@
 <template>
     <div id="jd-list">
         <van-cell-group v-if="itemList && itemList.length">
-            <van-cell v-for="(item, index) in itemList" :key="item[colNameMap.key] + index" @click="itemClickHandle(item)" v-if="isLink" is-link>
-                <div style="display: flex; justify-content: space-between">
+            <!--常用-->
+            <van-cell v-for="(item, index) in itemList" :key="item[colNameMap.key] + index" @click="itemClickHandle(item)" :is-link="isLink">
+                <div class="row-item">
                     <span v-for="colItem in colNameMap.colName">{{item[colItem]}}</span>
-                    <span v-if="rightText">{{rightText}}</span>
-                </div>
-            </van-cell>
-            <van-cell v-for="(item, index) in itemList" :key="item[colNameMap.key] + index" @click="itemClickHandle(item)" v-if="!isLink">
-                <div style="display: flex; justify-content: space-between">
-                    <span v-for="colItem in colNameMap.colName">{{item[colItem]}}</span>
+                    <!-- 插入自定义列，name为插槽名称，item为与父组件传值的key -->
+                    <slot name="handlerColumn" :item="item"></slot>
                     <span v-if="rightText">{{rightText}}</span>
                 </div>
             </van-cell>
@@ -20,7 +17,7 @@
             :total-items="originPaging.total"
             :items-per-page="paging.pageSize"
             @change="pageChangeHandle"
-        />
+        ></van-pagination>
     </div>
 </template>
 
@@ -43,7 +40,7 @@
             },
             isLink: {
                 type: Boolean,
-                default: () => true
+                default: () => true, // 默认显示箭头
             },
             colNameMap: {
                 type: Object,
@@ -79,5 +76,5 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../../style/components/common/list.less";
+    @import "../../style/components/common/list";
 </style>

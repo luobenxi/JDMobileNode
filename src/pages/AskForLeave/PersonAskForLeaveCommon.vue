@@ -13,35 +13,20 @@
         <van-cell>
             <van-row gutter="10">
                 <van-col :span="6">状态</van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '61'"><van-tag>{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '62'"><van-tag type="primary">{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '63'"><van-tag type="success">{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '64'"><van-tag type="danger">{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '65'"><van-tag type="danger">{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '66'"><van-tag type="danger">{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === '68'"><van-tag>{{pageFrom.StatusText}}</van-tag></van-col>
-                <van-col :span="18" v-if="pageFrom.Status === null"><van-tag>{{pageFrom.StatusText}}</van-tag></van-col>
+                <van-col :span="18">
+                    <JdStatusTextMap :Status="pageFrom.Status"></JdStatusTextMap>
+                </van-col>
             </van-row>
         </van-cell>
         <JdTableList :colNameMap="colNameMap" title="请假日期" :itemList="pageDateDetailList"></JdTableList>
-        <JdTableList :colNameMap="colNameMapApprove" title="审批记录" :itemList="pageWorkFlowsDetailList"></JdTableList>
-        <van-cell v-if="false">
-            <van-row gutter="10">
-                <van-col :span="6">审批信息</van-col>
-            </van-row>
-        </van-cell>
-        <van-cell v-if="false">
-            <van-row type="flex" justify="space-around" v-for="(item, index) in pageWorkFlowsDetailList" :key="index">
-                <van-col :span="12">{{index + 1}}.{{item.ActiveName}}</van-col>
-                <van-col :span="6">{{item.ExecPersonNames}}</van-col>
-                <!--已通过-->
-                <van-col :span="6" v-if="item.OperatorType === '63'" style="color: #67C23A">{{item.OperatorTypeText}}</van-col>
-                <!--已拒绝-->
-                <van-col :span="6" v-if="item.OperatorType === '64'" style="color: #F56C6C">{{item.OperatorTypeText}}</van-col>
-                <!--除了 已通过、已拒绝-->
-                <van-col :span="6" v-if="item.OperatorType !== '63' && item.OperatorType !== '64'">{{item.OperatorTypeText}}</van-col>
-            </van-row>
-        </van-cell>
+        <JdTableList :colNameMap="colNameMapApprove" title="审批记录" :itemList="pageWorkFlowsDetailList">
+            <th slot="columnHeaderSlot">状态</th>
+            <template slot="columnBodySlot" slot-scope="scope">
+                <td align="center">
+                    <JdStatusTextMap :Status="scope.item.OperatorType"></JdStatusTextMap>
+                </td>
+            </template>
+        </JdTableList>
         <van-cell>
             <van-row gutter="10">
                 <van-col :span="6">附件列表</van-col>
@@ -50,6 +35,7 @@
         <van-cell v-if="pageUploadFinishList.length">
             <jd-file-list :InitFileList="pageUploadFinishList"></jd-file-list>
         </van-cell>
+        <JdApproveFinishSeal v-if="pageFrom.Status === '63'"></JdApproveFinishSeal>
         <div></div>
     </div>
 </template>
@@ -63,7 +49,8 @@
     import tableList from '../../components/common/table-list';
     import MUtil from '../../util/mm';
     import BizUtil from '../../util/bizUtil';
-    import { Dialog } from 'vant';
+    import statusTextMap from '../../components/common/statusTextMap';
+    import ApproveFinishSeal from '../../components/common/ApproveFinishSeal';
 
     const _mm = new MUtil();
     const _bizUtil = new BizUtil();
@@ -94,9 +81,6 @@
         }, {
             key: 'ExecPersonNames',
             displayName: '审批人',
-        }, {
-            key: 'OperatorTypeText',
-            displayName: '状态',
         }
     ];
 
@@ -138,6 +122,8 @@
             [header.name]: header,
             [fileList.name]: fileList,
             [tableList.name]: tableList,
+            [statusTextMap.name]: statusTextMap,
+            [ApproveFinishSeal.name]: ApproveFinishSeal,
         },
         watch: {
             from(val) {
@@ -187,8 +173,6 @@
             }
         },
         methods: {
-            ...mapActions([
-            ]),
         },
         mounted() {
         }

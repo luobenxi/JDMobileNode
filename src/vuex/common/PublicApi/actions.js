@@ -1,5 +1,5 @@
 import PublicApi from '../../../services/PublicApiService';
-import { SET_ASK_FOR_TYPE_LIST } from '../../mutation-types';
+import { SET_ASK_FOR_TYPE_LIST, SET_OverTimeWork_TYPE_LIST } from '../../mutation-types';
 
 const api = new PublicApi();
 
@@ -25,6 +25,17 @@ const GetAskForLeaveTypeList = (
     });
 });
 
+const GetOverTimeWorkTypeList = (
+    { commit }
+) => new Promise((resolve, reject) => {
+    api.GetOverTimeWorkTypeList().then((res) => {
+        commit(SET_OverTimeWork_TYPE_LIST, res.data);
+        resolve(res.data);
+    }).catch((err) => {
+        reject(err);
+    });
+});
+
 const UploadFileHandle = (
     { commit },
     SubData
@@ -39,5 +50,6 @@ const UploadFileHandle = (
 export default {
     GetDictListByParent,
     GetAskForLeaveTypeList,
+    GetOverTimeWorkTypeList,
     UploadFileHandle,
 };

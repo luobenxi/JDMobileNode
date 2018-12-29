@@ -5,8 +5,8 @@
                 <van-datetime-picker
                     v-model="currentDate"
                     :type="type"
-                    :formatter="formatter"
-                    @cancel="onCancel" @confirm="onConfirm"
+                    @cancel="onCancel"
+                    @confirm="onConfirm"
                 />
             </van-col>
         </van-row>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+    import MUtil from '../../util/mm';
+    const _mm = new MUtil();
     // 不带弹出层的时间选择组件
     export default {
         name: "JdDatetimePicker",
@@ -21,11 +23,22 @@
             type: {
                 type: String,
                 default: () => 'year-month'
+            },
+            defaultDate: {
+                type: String,
+                default: () => ''
             }
         },
         data() {
             return {
                 currentDate: new Date(),
+            }
+        },
+        watch: {
+            defaultDate(val) {
+                if (val) {
+                    this.currentDate = new Date(val);
+                }
             }
         },
         methods: {
@@ -42,6 +55,11 @@
                     return `${value}月`
                 }
                 return value;
+            }
+        },
+        mounted() {
+            if (this.defaultDate) {
+                this.currentDate = new Date(this.defaultDate);
             }
         }
     }

@@ -30,6 +30,18 @@ const GetOutCompanyByKey = (
     })
 });
 
+// 根据流程明细ID获取一条公出备案单详情信息
+const GetOutCompanyByWfDetailId = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.GetOutCompanyByWfDetailId(SubData).then((res) => {
+        resolve(res.data);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
 // 保存公出备案单
 const OutCompanySave = (
     { commit },
@@ -57,6 +69,7 @@ const DeleteOutCompanyByKey = (
 export default {
     GetOutCompanyList,
     GetOutCompanyByKey,
+    GetOutCompanyByWfDetailId,
     OutCompanySave,
     DeleteOutCompanyByKey,
 };

@@ -10,6 +10,9 @@ class OutCompany {
     GetOutCompanyByKey(data) {
         return ajax.requestGet(`${ApiPreFix}/OutCompanyApi/GetOutCompanyByKey?ID=${data}`);
     }
+    GetOutCompanyByWfDetailId(data) {
+        return ajax.requestGet(`${ApiPreFix}/OutCompanyApi/GetOutCompanyByWfDetailId?wfDetailId=${data}`);
+    }
     OutCompanySave(data) {
         return ajax.requestPost(`${ApiPreFix}/OutCompanyApi/OutCompanySave`, data);
     }

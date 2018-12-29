@@ -1,28 +1,9 @@
 <template>
     <div id="OutCompanyList-box">
         <jd-header title="我的公出备案单" :backUrl="backUrl"></jd-header>
-        <van-cell>
-            <van-row gutter="10" type="flex" justify="space-between">
-                <van-col :span="6">
-                    <van-button size="small" @click="chooseDate">选择年份</van-button>
-                </van-col>
-                <van-col class="currentDateStrBox">
-                    {{currentDateStr}}
-                </van-col>
-                <van-col :span="6">
-                    <van-button size="small" type="primary" @click="Add">添加</van-button>
-                </van-col>
-            </van-row>
-        </van-cell>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true" @click-overlay="clickOverlay">
-                <JdDatetimePicker
-                    @onCancel="onCancel"
-                    @onConfirm="onConfirm"
-                >
-                </JdDatetimePicker>
-            </van-popup>
-        </div>
+        <JdDatetimePickerSwitch :showDate="currentDateStr" switchType="year" @changeDate="changeDateHandle">
+            <van-button size="small" slot="rightTopBtn" type="primary" @click="Add">添加</van-button>
+        </JdDatetimePickerSwitch>
         <van-list
             v-model="loading"
             :finished="finished"
@@ -33,8 +14,11 @@
                  :itemList="itemList"
                  :originPaging="OutCompanyList.paging"
                  @clickCallBack="clickItemHandle"
-                 @getData="getTodoList"
+                 @getData="getList"
             >
+                <template slot="handlerColumn" slot-scope="scope">
+                    <JdStatusTextMap :Status="scope.item.Status"></JdStatusTextMap>
+                </template>
             </jd-list>
         </van-list>
         <div v-if="!OutCompanyList.itemList" class="empty">暂无数据</div>
@@ -43,14 +27,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import header from '../../components/common/header.vue';
+import header from '../../components/common/header';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
 import list from '../../components/common/list';
-import JdDatetimePicker from '../../components/common/datetimePicker';
+import statusTextMap from '../../components/common/statusTextMap';
+import JdDatetimePickerSwitch from '../../components/common/datetimePickerSwitch';
 
 const _mm = new MUtil();
-const bizMap = new BizUtil();
+const _bizMap = new BizUtil();
 
 export default {
     data () {
@@ -62,7 +47,7 @@ export default {
             finished: false,
             colNameMap: {
                 key: 'ID',
-                colName: ['Title', 'InsertTime'],
+                colName: ['Title', 'InsertTime']
             }
         }
     },
@@ -77,7 +62,8 @@ export default {
     components: {
         [list.name]: list,
         [header.name]: header,
-        [JdDatetimePicker.name]: JdDatetimePicker,
+        [statusTextMap.name]: statusTextMap,
+        [JdDatetimePickerSwitch.name]: JdDatetimePickerSwitch,
     },
     methods: {
         ...mapActions([
@@ -86,36 +72,39 @@ export default {
         Add() {
             this.$router.push(`/OutCompanyApi/Save`);
         },
-        chooseDate() {
-            this.pickerIsShow = true;
-        },
-        clickOverlay() {
-            this.pickerIsShow = false;
-        },
-        onCancel(val) {
-            this.pickerIsShow = false;
-        },
-        onConfirm(val) {
+        changeDateHandle(val) {
             this.currentDateStr = _mm.formatYear(val);
-            this.pickerIsShow = false;
-            this.$refs.OutCompanyList.queryHandler();
+            this.onLoad(); // 重新请求数据
         },
         formatItemList() {
             if (this.OutCompanyList.itemList) {
-                return this.OutCompanyList.itemList;
+                return this.OutCompanyList.itemList.map(item => {
+                    return Object.assign({}, item, {
+                        InsertTime: _mm.formatDate(item.InsertTime),
+                    })
+                });
             }
         },
         clickItemHandle(item) {
-            this.$router.push(`/OutCompanyApi/Save/${item.ID}`);
+            let Status = parseInt(item.Status);
+            let url = '';
+            if (Status === 61 || Status === 64 || Status === 68) {
+                // 未提交、已拒绝、撤回，跳转到编辑页面
+                url = `/OutCompanyApi/Save/${item.ID}`;
+            } else {
+                // 跳转到查看页面
+                url = `/OutCompanyApi/View/${item.ID}`;
+            }
+            this.$router.push(url);
         },
-        getTodoList(paging) {
-            this.getTodoListHandle(paging);
+        getList(paging) {
+            this.getListHandle(paging);
         },
-        getTodoListHandle(paging) {
+        getListHandle(paging) {
             let condition = {
                 paging: paging,
                 condition: {
-                    YYear: bizMap.SplitDateToArr(this.currentDateStr).YYear,
+                    YYear: _bizMap.SplitDateToArr(this.currentDateStr).YYear,
                 }
             };
             this.GetOutCompanyList(condition).then(() => {

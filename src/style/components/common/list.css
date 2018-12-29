@@ -2,4 +2,9 @@
 #jd-list .cell-item {
   text-align: left;
 }
+#jd-list .row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 /*# sourceMappingURL=list.css.map */
