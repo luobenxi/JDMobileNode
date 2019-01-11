@@ -47,9 +47,21 @@ const UploadFileHandle = (
     });
 });
 
+const GetDateDays = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    api.GetDateDays(SubData).then((res) => {
+        resolve(res);
+    }).catch((err) => {
+        reject(err);
+    });
+});
+
 export default {
     GetDictListByParent,
     GetAskForLeaveTypeList,
     GetOverTimeWorkTypeList,
     UploadFileHandle,
+    GetDateDays
 };

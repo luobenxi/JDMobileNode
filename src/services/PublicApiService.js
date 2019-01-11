@@ -16,6 +16,9 @@ class PublicApi {
     GetOverTimeWorkTypeList() {
         return ajax.requestGet(`${ApiPreFix}/PublicTypeApi/GetOverTimeWorkTypeList`);
     }
+    GetDateDays(data) {
+        return ajax.requestGet(`${ApiPreFix}/PublicApi/GetDateDays?YYear=${data.YYear}&MMonth=${data.MMonth}`);
+    }
 }
 
 export default PublicApi;
