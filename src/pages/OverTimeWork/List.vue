@@ -4,23 +4,17 @@
         <JdDatetimePickerSwitch :showDate="currentDateStr" switchType="year" @changeDate="changeDateHandle">
             <van-button size="small" slot="rightTopBtn" type="primary" @click="Add">添加</van-button>
         </JdDatetimePickerSwitch>
-        <van-list
-            v-model="loading"
-            :finished="finished"
-            @load="onLoad">
-            <jd-list
-                 ref="OverTimeWorkList"
-                 :colNameMap="colNameMap"
-                 :itemList="itemList"
-                 :originPaging="OverTimeWorkList.paging"
-                 @clickCallBack="clickItemHandle"
-                 @getData="getList"
-            >
-                <template slot="handlerColumn" slot-scope="scope">
-                    <JdStatusTextMap :Status="scope.item.Status"></JdStatusTextMap>
-                </template>
-            </jd-list>
-        </van-list>
+        <jd-list
+            ref="OverTimeWorkList"
+            :colNameMap="colNameMap"
+            :itemList="itemList"
+            :originPaging="OverTimeWorkList.paging"
+            @clickCallBack="clickItemHandle"
+            @getData="getList">
+            <template slot="handlerColumn" slot-scope="scope">
+                <JdStatusTextMap :Status="scope.item.Status"></JdStatusTextMap>
+            </template>
+        </jd-list>
         <div v-if="!OverTimeWorkList.itemList" class="empty">暂无数据</div>
     </div>
 </template>
@@ -43,8 +37,6 @@ export default {
             backUrl: _mm.GetEmployeeSelfHelpUrl(),
             currentDateStr: _mm.formatYear(new Date()),
             pickerIsShow: false,
-            loading: false,
-            finished: false,
             colNameMap: {
                 key: 'ID',
                 colName: ['Title', 'InsertTime']
@@ -107,16 +99,14 @@ export default {
                     YYear: _bizMap.SplitDateToArr(this.currentDateStr).YYear,
                 }
             };
-            this.GetOverTimeWorkList(condition).then(() => {
-                this.loading = false;
-                this.finished = true;
-            });
+            this.GetOverTimeWorkList(condition).then(() => {});
         },
         onLoad() {
             this.$refs.OverTimeWorkList.queryHandler();
         },
     },
     mounted() {
+        this.onLoad();
     }
 }
 </script>

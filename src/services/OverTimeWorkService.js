@@ -10,6 +10,9 @@ class OverTimeWork {
     GetOverTimeWorkByKey(data) {
         return ajax.requestGet(`${ApiPreFix}/OverTimeWorkApi/GetOverTimeWorkByKey?ID=${data}`);
     }
+    GetOverTimeWorkByWfDetailId(data) {
+        return ajax.requestGet(`${ApiPreFix}/OverTimeWorkApi/GetOverTimeWorkByWfDetailId?wfDetailId=${data}`);
+    }
     SaveOverTimeWork(data) {
         return ajax.requestPost(`${ApiPreFix}/OverTimeWorkApi/OverTimeWorkSave`, data);
     }

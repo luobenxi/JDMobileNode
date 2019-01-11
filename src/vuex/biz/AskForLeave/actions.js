@@ -101,6 +101,18 @@ const GetAskForLeaveCancelByKey = (
     })
 });
 
+// 根据请假单ID获取对应的销假单
+const GetAskForLeaveCancelByAskForLeaveID = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.GetAskForLeaveCancelByAskForLeaveID(SubData).then((res) => {
+        resolve(res);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
 // 根据流程明细ID获取一条销假单详情信息
 const GetAskForLeaveCancelByWfDetailId = (
     { commit },
@@ -124,5 +136,6 @@ export default {
     AskForLeaveCancelSave,
     AskForLeaveCancelSavePost,
     GetAskForLeaveCancelByKey,
+    GetAskForLeaveCancelByAskForLeaveID,
     GetAskForLeaveCancelByWfDetailId,
 };

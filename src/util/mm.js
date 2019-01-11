@@ -5,7 +5,7 @@ moment.locale('zh-cn');
 class MUtil {
     GetLoginPageUrl() {
         // return '/Mobile/Index/#/login';
-        return '/unLogon/mLogon';
+        return '/UnLogon/Error?msg=退出成功';
     }
 
     // 跳转登录

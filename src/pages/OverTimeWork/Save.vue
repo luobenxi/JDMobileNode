@@ -1,6 +1,6 @@
 <template>
     <div id="OutCompanyAdd-box">
-        <jd-header :title="title" backUrl="/OverTimeWork/PersonOverTimeWorkList"></jd-header>
+        <jd-header :title="title" backUrl="/OverTimeWorkApi/PersonOverTimeWorkList"></jd-header>
         <van-cell-group>
             <van-field v-model="from.FullName" disabled label="姓名" />
             <van-field v-model="from.DepartName" disabled label="部门" />
@@ -27,7 +27,7 @@
             </van-row>
         </van-cell>
         <van-cell v-if="DateDetailArr.length">
-            <van-row type="flex" v-for="(item, index) in DateDetailArr" :key="item.Date" justify="space-around" class="DateArrRow">
+            <van-row type="flex" v-for="(item, index) in DateDetailArr" :key="index" justify="space-around" class="DateArrRow">
                 <van-col span="7">{{item.Date}}</van-col>
                 <van-col span="4">
                     <span class="operationText" @click="detailItem(item, index)">详情</span>
@@ -61,13 +61,24 @@
                         </van-col>
                     </van-row>
                 </van-cell>
-                <van-cell style="margin-bottom: 10px">
+                <van-cell>
                     <van-row gutter="10">
                         <van-col :span="6">公司内/外</van-col>
                         <van-col>
                             <van-radio-group v-model="OutOrIn">
                                 <van-radio v-for="(item, index) in OutOrInOption" :key="index" :name="item.id">{{item.text}}</van-radio>
                             </van-radio-group>
+                        </van-col>
+                    </van-row>
+                </van-cell>
+                <van-cell style="margin-bottom: 10px">
+                    <van-row gutter="10">
+                        <van-col :span="6">工时数</van-col>
+                        <van-col v-if="OutOrIn === '1'">
+                            以打卡时间为准
+                        </van-col>
+                        <van-col v-if="OutOrIn === '0'">
+                            <input type="text" class="OutOrIn-input" v-if="OutOrIn === '0'" v-model="Hours" placeholder="输入工时数" />
                         </van-col>
                     </van-row>
                 </van-cell>
@@ -125,7 +136,9 @@
                 <van-row>
                     <van-col span="8">工时数</van-col>
                     <van-col v-if="itemDetail.OutOrIn === '1'">以打卡时间为准</van-col>
-                    <van-col v-if="itemDetail.OutOrIn === '0'">{{getHours}}小时</van-col>
+                    <van-col v-if="itemDetail.OutOrIn === '0'">
+                        <input type="text" class="OutOrIn-input" v-if="itemDetail.OutOrIn === '0'" v-model="itemDetail.Hours" placeholder="输入工时数" />
+                    </van-col>
                 </van-row>
             </van-cell>
         </JdPopup>
@@ -172,16 +185,8 @@ export default {
             },
             WorkOverTimeTypeID: '1', // 类型
             OutOrIn: '1',
-            OutOrInOption: [
-                {
-                    id: '1',
-                    text: '公司内加班'
-                },
-                {
-                    id: '0',
-                    text: '公司外加班'
-                }
-            ],
+            OutOrInOption: _bizUtil.getOutOrInOption(),
+            Hours: 8,
             DateDetailArr: [],
             DateArr: [],
             pickerIsShow: false,
@@ -207,6 +212,7 @@ export default {
             'OverTimeWorkTypeList',
             'UserInfo',
         ]),
+        // 未使用
         getHours() {
             let date1 = new Date(this.itemDetail.StartTime);
             let date2 = new Date(this.itemDetail.EndTime);
@@ -214,7 +220,7 @@ export default {
             //计算出小时数
             let leave1 = date3 % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数
             return Math.floor(leave1 / (3600 * 1000));
-        }
+        },
     },
     methods: {
         ...mapActions([
@@ -227,7 +233,26 @@ export default {
         chooseDate() {
             this.pickerIsShow = !this.pickerIsShow;
         },
+        // 选择日期取消
         onCancel() {
+            this.pickerIsShow = false;
+        },
+        // 选择日期确认
+        onConfirm(val) {
+            let valStr = _mm.formatDate(val);
+            if (!this.DateArr.includes(valStr)) {
+                this.DateDetailArr.push({
+                    Date: valStr,
+                    WorkOverTimeTypeID: this.WorkOverTimeTypeID,
+                    StartTime: valStr + ' 8:30:00',
+                    StartTimeOnly: '8:30:00',
+                    EndTime: valStr + ' 17:30:00',
+                    EndTimeOnly: '17:30:00',
+                    Hours: this.OutOrIn === '1' ? '' : this.Hours,
+                    OutOrIn: this.OutOrIn,
+                });
+                this.DateArr.push(valStr);
+            }
             this.pickerIsShow = false;
         },
 
@@ -235,6 +260,7 @@ export default {
         editItemDate() {
             this.itemDetailDatePopupIsShow = !this.itemDetailDatePopupIsShow;
         },
+        // 每一项日期确认
         onConfirmItemDate(val) {
             this.itemDetail = Object.assign({}, this.itemDetail, {
                 Date: _mm.formatDate(val),
@@ -249,9 +275,11 @@ export default {
         editItemStartTime() {
             this.itemDetailStartTimePopupIsShow = true;
         },
+        // 开始时间取消
         onCancelItemStartTime() {
             this.itemDetailStartTimePopupIsShow = false;
         },
+        // 开始时间确认
         onConfirmItemStartTime(val) {
             this.itemDetail = Object.assign({}, this.itemDetail, {
                 StartTime: this.itemDetail.Date + ' ' + val + ':00',
@@ -265,9 +293,11 @@ export default {
         editItemEndTime() {
             this.itemDetailEndTimePopupIsShow = true;
         },
+        // 结束时间取消
         onCancelItemEndTime() {
             this.itemDetailEndTimePopupIsShow = false;
         },
+        // 结束时间确认
         onConfirmItemEndTime(val) {
             this.itemDetail = Object.assign({}, this.itemDetail, {
                 EndTime: this.itemDetail.Date + ' ' + val + ':00',
@@ -276,23 +306,12 @@ export default {
             this.DateArr[this.indexDetail] = this.itemDetail.Date;
             this.itemDetailEndTimePopupIsShow = false;
         },
-        itemDetailOnConfirm() {},
-        onConfirm(val) {
-            let valStr = _mm.formatDate(val);
-            if (!this.DateArr.includes(valStr)) {
-                this.DateDetailArr.push({
-                    Date: valStr,
-                    WorkOverTimeTypeID: this.WorkOverTimeTypeID,
-                    StartTime: valStr + ' 8:30:00',
-                    StartTimeOnly: '8:30:00',
-                    EndTime: valStr + ' 17:30:00',
-                    EndTimeOnly: '17:30:00',
-                    OutOrIn: this.OutOrIn,
-                });
-                this.DateArr.push(valStr);
-            }
-            this.pickerIsShow = false;
+        // 每一项确认
+        itemDetailOnConfirm() {
+            this.DateDetailArr.splice(this.indexDetail, 1);
+            this.DateDetailArr.push(this.itemDetail);
         },
+        // 详情
         detailItem(item, index) {
             this.indexDetail = index;
             this.itemDetail = Object.assign({}, item, {
@@ -301,6 +320,7 @@ export default {
             });
             this.itemDetailPopupIsShow = !this.itemDetailPopupIsShow;
         },
+        // 删除每一项
         deleteItem(index) {
             Dialog.confirm({
                 title: '提示',
@@ -311,6 +331,7 @@ export default {
             }).catch(() => {
             });
         },
+        // 保存
         SaveHandle() {
             if (this.from.Reason === '' || this.from.Reason === undefined) {
                 _mm.errorDialog('请输入申请加班事由');
@@ -342,15 +363,16 @@ export default {
                 }
             });
         },
+        // 提交申请
         SubmitApplyHandle() {
             let ID = this.from.ID;
             if (!ID) {
                 _mm.errorDialog('参数为空');
                 return;
             }
-            console.log(ID);
-            // this.$router.push(`/OutCompanyApi/SubmitConfirm/${ID}`);
+            this.$router.push(`/OverTimeWork/SubmitConfirm/${ID}`);
         },
+        // 删除数据
         DeleteHandle() {
             let ID = this.from.ID;
             if (!ID) {
@@ -364,7 +386,7 @@ export default {
                 this.DeleteOverTimeWorkByKey(ID).then((res) => {
                     if (res.success) {
                         _mm.successDialog(res.msg);
-                        this.$router.push(`/OverTimeWork/PersonOverTimeWorkList`);
+                        this.$router.push(`/OverTimeWorkApi/PersonOverTimeWorkList`);
                     } else {
                         _mm.errorDialog(res.msg);
                     }
@@ -388,8 +410,10 @@ export default {
                     ID: res.model.ID,
                     Reason: res.model.Reson,
                 });
+                this.DateArr = []; // 编辑时候数据化data属性数据
                 this.DateDetailArr = [];
                 res.detailList.map((item) => {
+                    this.DateArr.push(_mm.formatStrDate(item.TheDay));
                     this.DateDetailArr.push({
                         Date: _mm.formatStrDate(item.TheDay),
                         WorkOverTimeTypeID: item.WorkOverTimeTypeID,
@@ -397,10 +421,10 @@ export default {
                         StartTimeOnly: _mm.formatTimeOnly(item.StartTime),
                         EndTime: item.EndTime,
                         EndTimeOnly: _mm.formatTimeOnly(item.EndTime),
+                        Hours: item.Hours,
                         OutOrIn: item.OutOrIn === 'True' ? '1' : '0',
                     });
                 });
-                this.oldDateDetailArrLength = this.DateDetailArr.length; //数据备份，为了比对是否有改动
             });
         },
         paramsInit() {
@@ -429,5 +453,10 @@ export default {
     @import "../../style/pages/OutCompany/Add";
     .edit-btn-box {
         margin-left: 20px;
+    }
+    .OutOrIn-input {
+        border: solid 1px #E4E7ED;
+        padding: 1px 5px;
+        font-size: 12px;
     }
 </style>

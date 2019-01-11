@@ -64,13 +64,24 @@
         methods: {
             ...mapActions([
                 'GetAskForLeaveByKey',
+                'GetAskForLeaveCancelByAskForLeaveID',
             ]),
             ApproveCancelHandle() {
                 if (!this.ID) {
                     _mm.errorDialog('参数为空，请联系管理员');
                     return;
                 }
-                this.$router.push(`/AskForLeave/AskForLeaveCancelEdit/${this.ID}`);
+                this.GetAskForLeaveCancelByAskForLeaveID(this.ID).then((res) => {
+                    if (res.success) {
+                        // 如果已经写入了销假单，直接跳转页面
+                        this.$router.push(`/AskForLeave/AskForLeaveCancelEdit/${this.ID}`);
+                    } else {
+                        // 如果没有写入销假单，给个确认提示，用户确认后才跳转，用户取消不跳转
+                        _mm.confirmDialog('你确定要销假吗？', () => {
+                            this.$router.push(`/AskForLeave/AskForLeaveCancelEdit/${this.ID}`);
+                        }, true);
+                    }
+                });
             },
             paramsInit() {
                 let params = this.$route.params;

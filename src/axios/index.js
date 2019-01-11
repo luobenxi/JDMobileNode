@@ -94,8 +94,8 @@ class AjaxUtil {
                     if (isShowLoading) {
                         this.closeAjaxLoading(); // 关闭loading
                     }
-                    _mm.errorDialog(err.statusText || '网络错误');
-                    reject(err.statusText || '网络错误');
+                    _mm.errorDialog(err.statusText || '网络错误Get');
+                    reject(err.statusText || '网络错误Get');
                 });
         });
     }

@@ -156,7 +156,7 @@ export default {
                 this.PageLoading = false;
                 if (res.success) {
                     _mm.confirmDialog(res.msg, () => {
-                        this.$router.push(`/AskForLeaveApi/Save/${res.data}`);
+                        this.$router.push(`/AskForLeave/Save/${res.data}`);
                         this.paramsInit();
                     });
                 } else {

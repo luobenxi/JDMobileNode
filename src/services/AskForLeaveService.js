@@ -29,6 +29,9 @@ class AskForLeave {
     GetAskForLeaveCancelByKey(data) {
         return ajax.requestGet(`${ApiPreFix}/AskForLeaveCancelApi/GetAskForLeaveCancelByKey?cancelForLeaveID=${data}`);
     }
+    GetAskForLeaveCancelByAskForLeaveID(data) {
+        return ajax.requestGet(`${ApiPreFix}/AskForLeaveCancelApi/GetAskForLeaveCancelByAskForLeaveID?AskForLeaveID=${data}`);
+    }
     GetAskForLeaveCancelByWfDetailId(data) {
         return ajax.requestGet(`${ApiPreFix}/AskForLeaveCancelApi/GetAskForLeaveCancelByWfDetailId?wfDetailId=${data}`);
     }

@@ -140,6 +140,20 @@ class BizUtil {
         }
         return text;
     }
+
+    getOutOrInOption() {
+        return [
+            {
+                id: '1',
+                text: '公司内加班'
+            },
+            {
+                id: '0',
+                text: '公司外加班'
+            }
+        ]
+    }
+
 }
 
 export default BizUtil;

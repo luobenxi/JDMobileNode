@@ -30,6 +30,18 @@ const GetOverTimeWorkByKey = (
     })
 });
 
+// 根据流程明细ID获取一条公加班单详情信息
+const GetOverTimeWorkByWfDetailId = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _api.GetOverTimeWorkByWfDetailId(SubData).then((res) => {
+        resolve(res.data);
+    }).catch(err => {
+        reject(err || '');
+    })
+});
+
 // 保存加班
 const SaveOverTimeWork = (
     { commit },
@@ -57,6 +69,7 @@ const DeleteOverTimeWorkByKey = (
 export default {
     GetOverTimeWorkList,
     GetOverTimeWorkByKey,
+    GetOverTimeWorkByWfDetailId,
     SaveOverTimeWork,
 	DeleteOverTimeWorkByKey,
 };

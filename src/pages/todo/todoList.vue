@@ -112,10 +112,10 @@ export default {
             let  wfDetailId = _mm.getSpecialUrlParam(item.TaskUrl, 'wfDetailId');
             let  activeId = _mm.getSpecialUrlParam(item.TaskUrl, 'activeId');
             let  keyId = _mm.getSpecialUrlParam(item.TaskUrl, 'keyId');
-            if (!wfDetailId || !activeId) {
-                _mm.errorDialog('参数为空');
-                return false;
-            }
+            // if (!wfDetailId || !activeId) {
+            //     _mm.errorDialog('参数为空');
+            //     return false;
+            // }
             let data = {
                 wfId,
                 wfDetailId,
@@ -129,7 +129,9 @@ export default {
                     let url = res.data.split('?')[0];
                     let wfDetailId = _mm.getSpecialUrlParam(res.data, 'wfDetailId');
                     let routesArr = this.GetAllRouterListNoParams(router.options.routes || []);
+
                     console.log(`${url}/${wfDetailId}`);
+
                     if (routesArr.indexOf(url) !== -1) {
                         // 找到路由，跳转到vue页面
                         this.$router.push(`${url}/${wfDetailId}`);
@@ -140,12 +142,16 @@ export default {
                         // window.open(item.TaskUrl);
                         window.location.href = item.TaskUrl;
                     }
+                }).catch(err => {
+                    window.location.href = item.TaskUrl;
                 });
             } else {
                 this.GetWorkFlowsViewUrl(data).then(res => {
                     // console.log(res.data);
                     // 跳转到原来的页面
                     // window.open(item.TaskUrl);
+                    window.location.href = item.TaskUrl;
+                }).catch(err => {
                     window.location.href = item.TaskUrl;
                 });
             }

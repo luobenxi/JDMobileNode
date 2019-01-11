@@ -4,23 +4,17 @@
         <JdDatetimePickerSwitch :showDate="currentDateStr" switchType="year" @changeDate="changeDateHandle">
             <van-button size="small" slot="rightTopBtn" type="primary" @click="Add">添加</van-button>
         </JdDatetimePickerSwitch>
-        <van-list
-            v-model="loading"
-            :finished="finished"
-            @load="onLoad">
-            <jd-list
-                ref="AskForLeaveList"
-                :colNameMap="colNameMap"
-                :itemList="itemList"
-                :originPaging="AskForLeaveList.paging"
-                @clickCallBack="clickItemHandle"
-                @getData="getTodoList"
-                >
-                <template slot="handlerColumn" slot-scope="scope">
-                    <JdStatusTextMap :Status="scope.item.Status"></JdStatusTextMap>
-                </template>
-            </jd-list>
-        </van-list>
+        <jd-list
+            ref="AskForLeaveList"
+            :colNameMap="colNameMap"
+            :itemList="itemList"
+            :originPaging="AskForLeaveList.paging"
+            @clickCallBack="clickItemHandle"
+            @getData="getList">
+            <template slot="handlerColumn" slot-scope="scope">
+                <JdStatusTextMap :Status="scope.item.Status"></JdStatusTextMap>
+            </template>
+        </jd-list>
         <div v-if="!AskForLeaveList.itemList" class="empty">暂无数据</div>
     </div>
 </template>
@@ -44,8 +38,6 @@
             return {
                 backUrl: _mm.GetEmployeeSelfHelpUrl(),
                 currentDateStr: _mm.formatYear(new Date()),
-                loading: false,
-                finished: false,
                 colNameMap: {
                     key: 'ID',
                     colName: ['Title', 'InsertTime'], // 'InsertTime', 'StatusText'
@@ -71,7 +63,7 @@
                 'GetAskForLeaveList'
             ]),
             Add() {
-                this.$router.push(`/AskForLeaveApi/Save`);
+                this.$router.push(`/AskForLeave/Save`);
             },
             formatItemList() {
                 if (this.AskForLeaveList.itemList) {
@@ -87,7 +79,7 @@
                 let url = '';
                 if (Status === 61 || Status === 68) {
                     // 未提交或者撤回，跳转到编辑页面
-                    url = `/AskForLeaveApi/Save/${item.ID}`;
+                    url = `/AskForLeave/Save/${item.ID}`;
                 } else if (Status === 63) {
                     // 已通过，跳转到查看页面
                     url = `/AskForLeave/PersonAskForLeaveView/${item.ID}`;
@@ -96,20 +88,17 @@
                 }
                 this.$router.push(url);
             },
-            getTodoList(paging) {
-                this.getTodoListHandle(paging);
+            getList(paging) {
+                this.getListHandle(paging);
             },
-            getTodoListHandle(paging) {
+            getListHandle(paging) {
                 let condition = {
                     paging: paging,
                     condition: {
                         YYear: _bizUtil.SplitDateToArr(this.currentDateStr).YYear,
                     }
                 };
-                this.GetAskForLeaveList(condition).then(() => {
-                    this.loading = false;
-                    this.finished = true;
-                });
+                this.GetAskForLeaveList(condition).then(() => {});
             },
             onLoad() {
                 this.$refs.AskForLeaveList.queryHandler();
@@ -120,12 +109,12 @@
             },
         },
         mounted() {
+            this.onLoad();
         }
     }
 </script>
 
 <style lang="less" scoped>
     @import "../../style/common/common";
-    #AskForLeaveListBox {
-    }
+    #AskForLeaveListBox {}
 </style>

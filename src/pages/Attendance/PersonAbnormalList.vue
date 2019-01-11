@@ -12,7 +12,7 @@
                  :itemList="itemList"
                  :originPaging="AttendanceAbnormalList.paging"
                  @clickCallBack="clickHandle"
-                 @getData="getTodoList"
+                 @getData="getList"
                 >
                 <template slot="handlerColumn" slot-scope="scope">
                     <span  v-if="scope.item.Status === '0'">未确认</span>
@@ -79,10 +79,10 @@ export default {
         clickHandle(item) {
             this.$router.push(`/AttendanceApi/ConfirmAbnormalReason/${item.ID}`);
         },
-        getTodoList(paging) {
-            this.getTodoListHandle(paging);
+        getList(paging) {
+            this.getListHandle(paging);
         },
-        getTodoListHandle(paging) {
+        getListHandle(paging) {
             let condition = {
                 paging: paging,
                 condition: {

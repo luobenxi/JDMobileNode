@@ -79,6 +79,12 @@ const router = new Router({
             path: '/contacts-user/:DepartID',
             component: () => import('../pages/contacts/contacts-user')
         },
+        // 个人档案-已发布
+        {
+            path: '/HRUserFilePersonalApi/GetHRUserFilePersonal',
+            component: () => import('../pages/HRUserFile/HRUserFileList')
+        },
+        // 工资-已发布
         {
             path: '/SalaryApi/SalaryPassValid',
             component: () => import('../pages/Salary/SalaryPassValid')
@@ -91,10 +97,12 @@ const router = new Router({
             path: '/SalaryApi/SalaryBillDetail',
             component: () => import('../pages/Salary/SalaryBillDetail')
         },
+        // 剩余休假-已发布
         {
             path: '/AnnualLeaveApi/AnnualLeaveList',
             component: () => import('../pages/AnnualLeave/AnnualLeaveList')
         },
+        // 考勤异常-已发布
         {
             path: '/AttendanceApi/PersonAbnormalList',
             component: () => import('../pages/Attendance/PersonAbnormalList')
@@ -103,7 +111,8 @@ const router = new Router({
             path: '/AttendanceApi/ConfirmAbnormalReason/:ID',
             component: () => import('../pages/Attendance/ConfirmReason')
         },
-        // 公出相关
+        // 公出相关-未发布
+        // 发布的时候只需要将移动端的权限URL配置为该链接就可以
         {
             path: '/OutCompanyApi/OutCompanyList',
             component: () => import('../pages/OutCompany/List')
@@ -122,24 +131,20 @@ const router = new Router({
         },
         {
             path: '/OutCompany/OutCompanyApproval/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
-            component: () => import('../pages/OutCompany/OutCompanyApproval')
+            component: () => import('../pages/OutCompany/Approval')
         },
-        {
-            path: '/HRUserFilePersonalApi/GetHRUserFilePersonal',
-            component: () => import('../pages/HRUserFile/HRUserFileList')
-        },
-        // 请假相关
+        // 请假相关-未发布
         {
             path: '/AskForLeaveApi/PersonAskForLeaveList',
             component: () => import('../pages/AskForLeave/AskForLeaveList')
         },
         {
-            path: '/AskForLeaveApi/Save/:ID?',
+            path: '/AskForLeave/Save/:ID?',
             component: () => import('../pages/AskForLeave/Save')
         },
         {
             path: '/AskForLeave/PersonAskForLeaveSubmit/:ID?',
-            component: () => import('../pages/AskForLeave/PersonAskForLeaveSubmit') // 提交前确认页面
+            component: () => import('../pages/AskForLeave/PersonAskForLeaveSubmit')
         },
         {
             path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
@@ -153,7 +158,7 @@ const router = new Router({
             path: '/AskForLeave/PersonAskForLeaveView/:ID?',
             component: () => import('../pages/AskForLeave/PersonAskForLeaveView')
         },
-        // 销假相关
+        // 销假相关-未发布
         {
             path: '/AskForLeave/AskForLeaveCancelEdit/:ID?',
             component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelEdit')
@@ -170,14 +175,26 @@ const router = new Router({
             path: '/AskForLeaveCancel/AskForLeaveCancelApprovalHR/:wfDetailId?', // 接口返回的url，所有没有使用 *Api
             component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelApprovalHR')
         },
-        // 加班相关
+        // 加班相关-未发布
         {
-            path: '/OverTimeWork/PersonOverTimeWorkList',
+            path: '/OverTimeWorkApi/PersonOverTimeWorkList',
             component: () => import('../pages/OverTimeWork/List')
         },
         {
             path: '/OverTimeWork/Save/:ID?',
             component: () => import('../pages/OverTimeWork/Save')
+        },
+        {
+            path: '/OverTimeWork/SubmitConfirm/:ID?',
+            component: () => import('../pages/OverTimeWork/SubmitConfirm')
+        },
+        {
+            path: '/OverTimeWork/View/:ID?',
+            component: () => import('../pages/OverTimeWork/View')
+        },
+        {
+            path: '/OverTimeWork/PersonOverTimeWorkApproval/:wfDetailId?', // 加上Api是因为需要发布
+            component: () => import('../pages/OverTimeWork/Approval')
         },
     ],
     // mode: 'history'
