@@ -1,8 +1,14 @@
 <template>
     <div id="home-box">
         <jd-swipe :swipeList="swipeList"></jd-swipe>
+        <van-notice-bar v-if="noticeContent" mode="link" @click="noticeDetail">{{noticeContent}}</van-notice-bar>
         <jd-menu :menuList="menuList"></jd-menu>
-        <jd-news v-if="false" :newsList="newsList"></jd-news>
+        <van-popup v-model="popupIsShow" position="right">
+            <div class="notice-box">
+                <van-button size="small" @click="CloseHandle">关闭</van-button>
+                <div class="notice-content">{{noticeContent}}</div>
+            </div>
+        </van-popup>
     </div>
 </template>
 
@@ -11,10 +17,16 @@ import { mapActions, mapGetters } from 'vuex';
 import swipe from '../../components/biz/home/swipe';
 import menu from '../../components/biz/home/menu';
 import news from '../../components/biz/home/news';
+import Vue from 'vue';
+import { Icon } from 'vant';
+
+Vue.use(Icon);
 export default {
     name: 'home',
     data () {
         return {
+            noticeContent: '',
+            popupIsShow: false,
             swipeList: [
                 {
                     id: 1,
@@ -25,20 +37,6 @@ export default {
                     src: '../../../static/images/swipe/002.jpg'
                 }
             ],
-            newsList: [
-                {
-                    id: 1,
-                    title: '撒欢地阿斯哈覅搜房'
-                },
-                {
-                    id: 2,
-                    title: '撒欢地阿斯搜房省兜兜'
-                },
-                {
-                    id: 3,
-                    title: '撒欢地阿斯哈覅搜房是失该的归试欢地阿...'
-                }
-            ]
         }
     },
     computed: {
@@ -56,16 +54,41 @@ export default {
     },
     methods: {
         ...mapActions([
-            'GetMyAuthList'
+            'GetMyAuthList',
+            'GetNewNoticeInfo',
         ]),
+        noticeDetail() {
+            // this.popupIsShow = true;
+            this.$router.push('/notice/list');
+        },
+        CloseHandle() {
+            this.popupIsShow = false;
+        }
     },
     mounted() {
         this.GetMyAuthList();
+        this.GetNewNoticeInfo().then(res => {
+            if (res.success) {
+                this.noticeContent = res.data;
+            }
+        });
     }
 }
 </script>
 
 <style lang="less" scoped>
+    @import "../../style/common/common";
     #home-box {
+        .notice-box {
+            .minHeight(180);
+            .padding2(15, 7);
+        }
+        .notice-content {
+            .paddingTop(10);
+            text-indent: 30px;
+            .lineHeight(25);
+            .fontSize(15);
+            color: #606266;
+        }
     }
 </style>

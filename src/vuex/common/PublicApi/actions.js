@@ -47,11 +47,11 @@ const UploadFileHandle = (
     });
 });
 
-const GetDateDays = (
-    { commit },
-    SubData
+// 获取最新通知消息
+const GetNewNoticeInfo = (
+    { commit }
 ) => new Promise((resolve, reject) => {
-    api.GetDateDays(SubData).then((res) => {
+    api.GetNewNoticeInfo().then((res) => {
         resolve(res);
     }).catch((err) => {
         reject(err);
@@ -63,5 +63,5 @@ export default {
     GetAskForLeaveTypeList,
     GetOverTimeWorkTypeList,
     UploadFileHandle,
-    GetDateDays
+    GetNewNoticeInfo
 };

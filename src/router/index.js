@@ -79,6 +79,15 @@ const router = new Router({
             path: '/contacts-user/:DepartID',
             component: () => import('../pages/contacts/contacts-user')
         },
+        // 通知
+        {
+            path: '/notice/list',
+            component: () => import('../pages/notice/list')
+        },
+        {
+            path: '/notice/detail/:ID',
+            component: () => import('../pages/notice/detail')
+        },
         // 个人档案-已发布
         {
             path: '/HRUserFilePersonalApi/GetHRUserFilePersonal',

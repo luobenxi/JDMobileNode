@@ -10,30 +10,45 @@
         </van-cell-group>
         <van-cell>
             <van-row gutter="10">
-                <van-col :span="6">请假时间</van-col>
-                <van-col>
-                    <van-button size="small" @click="chooseDate">选择时间</van-button>
+                <van-col :span="6">请假类型</van-col>
+                <van-col :span="18">
+                    <van-radio-group v-model="AskForLeaveTypeID" style="max-height: 120px; overflow: auto">
+                        <van-radio v-for="(item, index) in AskForLeaveTypeList" :key="index" :name="item.id">{{item.text}}</van-radio>
+                    </van-radio-group>
                 </van-col>
             </van-row>
         </van-cell>
-        <van-cell v-if="DateDetailArr.length">
-            <van-row type="flex" v-for="(item, index) in DateDetailArr" :key="item.Date" justify="space-around" class="DateArrRow">
-                <van-col span="6">{{item.Date}}</van-col>
-                <van-col span="6">
-                    <select v-model="item.AskType" class="select-css">
-                        <option v-for="itemOption in AskForLeaveTypeList" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
-                    </select>
+        <van-cell>
+            <van-row gutter="10" class="flex">
+                <van-col span="6">请假时间</van-col>
+                <van-col span="10">
+                    <van-button size="small" @click="chooseDate">添加时间</van-button>
                 </van-col>
-                <van-col span="6">
-                    <select v-model="item.AmPmType" class="select-css">
-                        <option v-for="itemOption in AmPmTypeOption" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
-                    </select>
-                </van-col>
-                <van-col class="deleteText" span="3">
-                    <span @click="deleteItem(index)">删除</span>
+                <van-col class="deleteText" span="8">
+                    <span v-if="DateDetailArr.length" class="deleteText" @click="deleteAll">全部删除({{DateDetailArr.length}})</span>
                 </van-col>
             </van-row>
         </van-cell>
+        <div class="maxHeight300">
+            <van-cell v-if="DateDetailArr.length">
+                <van-row v-for="(item, index) in DateDetailArr" :key="item.Date" class="DateArrRow">
+                    <van-col span="6">{{item.Date}}</van-col>
+                    <van-col span="6">
+                        <select v-model="item.AskType" class="select-css">
+                            <option v-for="itemOption in AskForLeaveTypeList" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
+                        </select>
+                    </van-col>
+                    <van-col span="6">
+                        <select v-model="item.AmPmType" class="select-css">
+                            <option v-for="itemOption in AmPmTypeOption" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
+                        </select>
+                    </van-col>
+                    <van-col class="deleteText" span="3">
+                        <span @click="deleteItem(index)">删除</span>
+                    </van-col>
+                </van-row>
+            </van-cell>
+        </div>
         <van-cell-group>
             <van-field v-model="from.Reason" label="请假原因" type="textarea" placeholder="请输入请假原因" rows="2" autosize />
         </van-cell-group>
@@ -46,11 +61,10 @@
             <van-button type="danger" class="btn-item" v-if="from.ID && ArrowStatus.indexOf(fromStatus) !== -1" plain block @click="DeleteHandle">删 除</van-button>
         </div>
         <van-loading class="loading-box" v-if="PageLoading" color="#909399"/>
-        <JdDatetimePickerPopup
-            :popupIsShow="pickerIsShow"
-            type="date"
-            @onConfirm="onConfirm"
-        ></JdDatetimePickerPopup>
+        <!--时间选择器-->
+        <JdCheckboxDatePopup :popupIsShow="checkBoxDateIsShow" @onConfirm="GetCheckedDate"></JdCheckboxDatePopup>
+        <!--时间范围选择器-->
+        <JdBetweenDatePopup :popupIsShow="betweenDateIsShow" @onConfirm="GetBetweenDate"></JdBetweenDatePopup>
     </div>
 </template>
 
@@ -61,6 +75,8 @@ import {
 } from 'vuex';
 import header from '../../components/common/header';
 import upload from '../../components/common/upload';
+import JdCheckboxDatePopup from '../../components/common/checkboxDatePopup';
+import JdBetweenDatePopup from '../../components/common/dateBetweenPopup';
 import JdDatetimePickerPopup from '../../components/common/datetimePickerPopup';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
@@ -75,21 +91,26 @@ export default {
             title: '填写请假单',
             from: {
                 ID: '',
+                HoursSum: 0, // 总小时数，计算得到
                 Reason: '', // 原因
             },
+            AskForLeaveTypeID: '1', // 请假类型
             ArrowStatus: ['61', '64', '68'], // 未提交、已拒绝、撤回
             fromStatus: '61',
             PageLoading: false,
             UploadFinishList: [],
             DateDetailArr: [],
             DateArr: [],
-            pickerIsShow: false,
+            checkBoxDateIsShow: false, // 复选框时间选择器
+            betweenDateIsShow: false, // 范围时间选择器
             AmPmTypeOption: _bizUtil.GetAmPmTypeOption(),
         }
     },
     components: {
         [header.name]: header,
         [upload.name]: upload,
+        [JdBetweenDatePopup.name]: JdBetweenDatePopup,
+        [JdCheckboxDatePopup.name]: JdCheckboxDatePopup,
         [JdDatetimePickerPopup.name]: JdDatetimePickerPopup,
     },
     computed: {
@@ -109,19 +130,53 @@ export default {
             this.UploadFinishList = list;
         },
         chooseDate() {
-            this.pickerIsShow = !this.pickerIsShow;
-        },
-        onConfirm(val) {
-            let valStr = _mm.formatDate(val);
-            // includes 用来判断一个数组是否包含一个指定的值，返回 true或 false
-            if (!this.DateArr.includes(valStr)) {
-                this.DateDetailArr.push({
-                    Date: valStr,
-                    AskType: 1,
-                    AmPmType: 1,
-                });
-                this.DateArr.push(valStr);
+            let needBetweenList = _bizUtil.GetNeedDateBetweenAskTypeIdList();
+            let needBetweenIdList = needBetweenList.map(item => item.id); // ID 数组
+            if (needBetweenIdList.indexOf(parseInt(this.AskForLeaveTypeID)) !== -1) {
+                // 在数组中找到说明需要弹出范围时间选择器
+                // 需要弹出范围时间选择器
+                this.betweenDateIsShow = !this.betweenDateIsShow;
+            } else {
+                // 弹出复选框时间选择器
+                this.checkBoxDateIsShow = !this.checkBoxDateIsShow;
             }
+        },
+        // 选择日期确认
+        GetCheckedDate(val) {
+            if (!val.length) {
+                _mm.errorTips('未选择日期');
+                return;
+            }
+            val.map((item) => {
+                let valStr = item;
+                // includes 用来判断一个数组是否包含一个指定的值，返回 true或 false
+                if (!this.DateArr.includes(valStr)) {
+                    this.DateDetailArr.push({
+                        Date: valStr,
+                        AskType: parseInt(this.AskForLeaveTypeID),
+                        AmPmType: 1,
+                        Hours: 8,
+                    });
+                    this.DateArr.push(valStr);
+                }
+            });
+        },
+        GetBetweenDate(val) {
+            // 处理时间范围，遍历后显示
+            let allDateList = _mm.DateBetweenForeach(val.beginDate, val.endDate);
+            allDateList.map((item) => {
+                let valStr = item;
+                // includes 用来判断一个数组是否包含一个指定的值，返回 true或 false
+                if (!this.DateArr.includes(valStr)) {
+                    this.DateDetailArr.push({
+                        Date: valStr,
+                        AskType: parseInt(this.AskForLeaveTypeID),
+                        AmPmType: 1,
+                        Hours: parseInt(this.AskForLeaveTypeID) === 18 ? 1 : 8, // 哺乳假的时候请假时间为1小时，请假时间较长(半年)
+                    });
+                    this.DateArr.push(valStr);
+                }
+            });
         },
         deleteItem(index) {
             Dialog.confirm({
@@ -130,6 +185,16 @@ export default {
             }).then(() => {
                 this.DateArr.splice(index, 1); // 从下标为index删除，删除一个元素
                 this.DateDetailArr.splice(index, 1);
+            }).catch(() => {
+            });
+        },
+        deleteAll() {
+            Dialog.confirm({
+                title: '提示',
+                message: '你确认要全部删除吗？'
+            }).then(() => {
+                this.DateArr = [];
+                this.DateDetailArr = [];
             }).catch(() => {
             });
         },
@@ -142,11 +207,14 @@ export default {
                 _mm.errorDialog('请输入请假原因');
                 return;
             }
+            let HoursSum = 0;
             let DateDetailArrTemp = this.DateDetailArr.map((item) => {
+                HoursSum += item.Hours;
                 return Object.assign({}, item, {
                     AskType: parseInt(item.AskType)
                 });
             });
+            this.from.HoursSum = HoursSum;
             let subData = Object.assign({}, this.from, {
                 DateDetailArr: DateDetailArrTemp,
                 UploadFinishList: this.UploadFinishList
@@ -226,7 +294,10 @@ export default {
                             AskType: parseInt(item.AskForLeaveTypeID),
                             AmPmType: parseInt(item.AMPM)
                         });
+                        this.DateArr.push(_mm.formatStrDate(item.TheDay));
                     });
+                    // 请假类型赋值，不是必须的
+                    this.AskForLeaveTypeID = res.detailList[0].AskForLeaveTypeID;
                     // 请假单附件列表
                     this.UploadFinishList = [];
                     res.attachList.map((item) => {

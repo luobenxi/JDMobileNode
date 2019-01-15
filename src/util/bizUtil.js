@@ -65,6 +65,32 @@ class BizUtil {
         });
     }
 
+    // 需要选择日期区间的请假类型，其余的均为正常选择时间
+    GetNeedDateBetweenAskTypeIdList() {
+        return [
+            {
+                id: 3,
+                text: '婚假'
+            },
+            {
+                id: 6,
+                text: '产假'
+            },
+            {
+                id: 10,
+                text: '计划生育假'
+            },
+            {
+                id: 14,
+                text: '陪产假'
+            },
+            {
+                id: 18,
+                text: '哺乳假'
+            },
+        ];
+    }
+
     GetAmPmTypeOption() {
         return [
             {

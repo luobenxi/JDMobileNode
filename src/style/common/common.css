@@ -45,4 +45,15 @@ table tr td {
 .operationText {
   color: #409EFF;
 }
+.deleteText {
+  color: red;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.maxHeight300 {
+  max-height: 8rem;
+  overflow: auto;
+}
 /*# sourceMappingURL=common.css.map */

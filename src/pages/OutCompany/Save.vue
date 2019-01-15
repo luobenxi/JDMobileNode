@@ -24,51 +24,40 @@
             </van-row>
         </van-cell>
         <van-cell>
-            <van-row gutter="10">
+            <van-row gutter="10" class="flex">
                 <van-col :span="6">公出时间</van-col>
-                <van-col>
-                    <van-button size="small" @click="chooseDate">选择时间</van-button>
+                <van-col span="10">
+                    <van-button size="small" @click="chooseDate">添加时间</van-button>
+                </van-col>
+                <van-col class="deleteText" span="8">
+                    <span v-if="DateDetailArr.length" class="deleteText" @click="deleteAll">全部删除({{DateDetailArr.length}})</span>
                 </van-col>
             </van-row>
         </van-cell>
-        <van-cell v-if="DateDetailArr.length">
-            <van-row type="flex" v-for="(item,index) in DateDetailArr" :key="item.Date" justify="space-around" class="DateArrRow">
-                <van-col span="6">{{item.Date}}</van-col>
-                <van-col span="6">
-                    <select v-model="item.AmPmType" class="select-css">
-                        <option v-for="itemOption in AmPmTypeOption" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
-                    </select>
-                </van-col>
-                <van-col class="deleteText" span="6">
-                    <span @click="deleteItem(index)">删除</span>
-                </van-col>
-            </van-row>
-        </van-cell>
+        <div class="maxHeight300">
+            <van-cell v-if="DateDetailArr.length">
+                <van-row v-for="(item,index) in DateDetailArr" :key="item.Date" class="DateArrRow">
+                    <van-col span="6">{{item.Date}}</van-col>
+                    <van-col span="6">
+                        <select v-model="item.AmPmType" class="select-css">
+                            <option v-for="itemOption in AmPmTypeOption" :key="itemOption.id" :value="itemOption.id">{{itemOption.text}}</option>
+                        </select>
+                    </van-col>
+                    <van-col class="deleteText" span="6">
+                        <span @click="deleteItem(index)">删除</span>
+                    </van-col>
+                </van-row>
+            </van-cell>
+        </div>
         <van-cell-group>
-            <van-field
-                v-model="from.Remark"
-                label="备注"
-                type="textarea"
-                placeholder="请输入备注"
-                rows="2"
-                autosize
-            />
+            <van-field v-model="from.Remark" label="备注" type="textarea" placeholder="请输入备注" rows="2" autosize />
         </van-cell-group>
         <div class="sub-btn">
             <van-button type="primary" class="btn-item" block @click="SaveHandle">保 存</van-button>
             <van-button type="primary" class="btn-item" v-if="from.ID" plain block @click="SubmitApplyHandle">提交申请</van-button>
             <van-button type="danger" class="btn-item" v-if="from.ID" plain block @click="DeleteHandle">删 除</van-button>
         </div>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true" @click-overlay="clickOverlay">
-                <JdDatetimePicker
-                    @onCancel="onCancel"
-                    @onConfirm="onConfirm"
-                    type="date"
-                >
-                </JdDatetimePicker>
-            </van-popup>
-        </div>
+        <JdCheckboxDatePopup :popupIsShow="pickerIsShow" @onConfirm="GetCheckedDate"></JdCheckboxDatePopup>
     </div>
 </template>
 
@@ -77,7 +66,7 @@ import {
     mapActions
 } from 'vuex';
 import header from '../../components/common/header.vue';
-import JdDatetimePicker from '../../components/common/datetimePicker';
+import JdCheckboxDatePopup from '../../components/common/checkboxDatePopup';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
 import statusTextMap from '../../components/common/statusTextMap';
@@ -111,7 +100,7 @@ export default {
     components: {
         [header.name]: header,
         [statusTextMap.name]: statusTextMap,
-        [JdDatetimePicker.name]: JdDatetimePicker,
+        [JdCheckboxDatePopup.name]: JdCheckboxDatePopup,
     },
     computed: {
     },
@@ -123,25 +112,34 @@ export default {
             'DeleteOutCompanyByKey',
         ]),
         chooseDate() {
-            this.pickerIsShow = true;
+            this.pickerIsShow = !this.pickerIsShow;
         },
-        clickOverlay() {
-            this.pickerIsShow = false;
-        },
-        onCancel() {
-            this.pickerIsShow = false;
-        },
-        onConfirm(val) {
-            let valStr = _mm.formatDate(val);
-            // includes 用来判断一个数组是否包含一个指定的值，返回 true或 false
-            if (!this.DateArr.includes(valStr)) {
-                this.DateDetailArr.push({
-                    Date: valStr,
-                    AmPmType: 1
-                });
-                this.DateArr.push(valStr);
+        GetCheckedDate(val) {
+            if (!val.length) {
+                _mm.errorTips('未选择日期');
+                return;
             }
-            this.pickerIsShow = false;
+            val.map((item) => {
+                let valStr = item;
+                // includes 用来判断一个数组是否包含一个指定的值，返回 true或 false
+                if (!this.DateArr.includes(valStr)) {
+                    this.DateDetailArr.push({
+                        Date: valStr,
+                        AmPmType: 1
+                    });
+                    this.DateArr.push(valStr);
+                }
+            });
+        },
+        deleteAll() {
+            Dialog.confirm({
+                title: '提示',
+                message: '你确认要全部删除吗？'
+            }).then(() => {
+                this.DateArr = [];
+                this.DateDetailArr = [];
+            }).catch(() => {
+            });
         },
         deleteItem(index) {
             Dialog.confirm({
@@ -258,6 +256,7 @@ export default {
                         Date: _mm.formatStrDate(item.TheDay),
                         AmPmType: parseInt(item.AMPM)
                     });
+                    this.DateArr.push(_mm.formatStrDate(item.TheDay));
                 });
                 this.oldDateDetailArrLength = this.DateDetailArr.length; //数据备份，为了比对是否有改动
             });

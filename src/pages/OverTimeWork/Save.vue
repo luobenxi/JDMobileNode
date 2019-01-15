@@ -19,71 +19,67 @@
             </van-row>
         </van-cell>
         <van-cell>
-            <van-row gutter="10">
+            <van-row gutter="10" class="flex">
                 <van-col :span="6">加班时间</van-col>
-                <van-col>
-                    <van-button size="small" @click="chooseDate">选择时间</van-button>
+                <van-col span="10">
+                    <van-button size="small" @click="chooseDate">添加时间</van-button>
+                </van-col>
+                <van-col class="deleteText" span="8">
+                    <span v-if="DateDetailArr.length" class="deleteText" @click="deleteAll">全部删除({{DateDetailArr.length}})</span>
                 </van-col>
             </van-row>
         </van-cell>
-        <van-cell v-if="DateDetailArr.length">
-            <van-row type="flex" v-for="(item, index) in DateDetailArr" :key="index" justify="space-around" class="DateArrRow">
-                <van-col span="7">{{item.Date}}</van-col>
-                <van-col span="4">
-                    <span class="operationText" @click="detailItem(item, index)">详情</span>
-                </van-col>
-                <van-col span="4">
-                    <span class="deleteText" @click="deleteItem(index)">删除</span>
-                </van-col>
-            </van-row>
-        </van-cell>
+        <div class="maxHeight300">
+            <van-cell v-if="DateDetailArr.length">
+                <van-row v-for="(item, index) in DateDetailArr" :key="index" class="DateArrRow">
+                    <van-col span="7">{{item.Date}}</van-col>
+                    <van-col span="4">
+                        <span class="operationText" @click="detailItem(item, index)">详情</span>
+                    </van-col>
+                    <van-col span="4">
+                        <span class="deleteText" @click="deleteItem(index)">删除</span>
+                    </van-col>
+                </van-row>
+            </van-cell>
+        </div>
         <div class="sub-btn">
             <van-button type="primary" class="btn-item" block @click="SaveHandle">保 存</van-button>
             <van-button type="primary" class="btn-item" v-if="from.ID" plain block @click="SubmitApplyHandle">提交申请</van-button>
             <van-button type="danger" class="btn-item" v-if="from.ID" plain block @click="DeleteHandle">删 除</van-button>
         </div>
-        <div>
-            <van-popup v-model="pickerIsShow" position="bottom" :overlay="true">
-                <JdDatetimePicker
-                    @onCancel="onCancel"
-                    @onConfirm="onConfirm"
-                    type="date"
-                >
-                </JdDatetimePicker>
-                <van-cell></van-cell>
-                <van-cell>
-                    <van-row gutter="10">
-                        <van-col :span="6">加班类型</van-col>
-                        <van-col>
-                            <van-radio-group v-model="WorkOverTimeTypeID">
-                                <van-radio v-for="(item, index) in OverTimeWorkTypeList" :key="index" :name="item.id">{{item.text}}</van-radio>
-                            </van-radio-group>
-                        </van-col>
-                    </van-row>
-                </van-cell>
-                <van-cell>
-                    <van-row gutter="10">
-                        <van-col :span="6">公司内/外</van-col>
-                        <van-col>
-                            <van-radio-group v-model="OutOrIn">
-                                <van-radio v-for="(item, index) in OutOrInOption" :key="index" :name="item.id">{{item.text}}</van-radio>
-                            </van-radio-group>
-                        </van-col>
-                    </van-row>
-                </van-cell>
-                <van-cell style="margin-bottom: 10px">
-                    <van-row gutter="10">
-                        <van-col :span="6">工时数</van-col>
-                        <van-col v-if="OutOrIn === '1'">
-                            以打卡时间为准
-                        </van-col>
-                        <van-col v-if="OutOrIn === '0'">
-                            <input type="text" class="OutOrIn-input" v-if="OutOrIn === '0'" v-model="Hours" placeholder="输入工时数" />
-                        </van-col>
-                    </van-row>
-                </van-cell>
-            </van-popup>
-        </div>
+        <JdCheckboxDatePopup :popupIsShow="pickerIsShow" @onConfirm="GetCheckedDate">
+            <van-cell>
+                <van-row gutter="10">
+                    <van-col :span="6">加班类型</van-col>
+                    <van-col>
+                        <van-radio-group v-model="WorkOverTimeTypeID">
+                            <van-radio v-for="(item, index) in OverTimeWorkTypeList" :key="index" :name="item.id">{{item.text}}</van-radio>
+                        </van-radio-group>
+                    </van-col>
+                </van-row>
+            </van-cell>
+            <van-cell>
+                <van-row gutter="10">
+                    <van-col :span="6">公司内/外</van-col>
+                    <van-col>
+                        <van-radio-group v-model="OutOrIn">
+                            <van-radio v-for="(item, index) in OutOrInOption" :key="index" :name="item.id">{{item.text}}</van-radio>
+                        </van-radio-group>
+                    </van-col>
+                </van-row>
+            </van-cell>
+            <van-cell style="margin-bottom: 10px">
+                <van-row gutter="10">
+                    <van-col :span="6">工时数</van-col>
+                    <van-col v-if="OutOrIn === '1'">
+                        以打卡时间为准
+                    </van-col>
+                    <van-col v-if="OutOrIn === '0'">
+                        <input type="text" class="OutOrIn-input" v-if="OutOrIn === '0'" v-model="Hours" placeholder="输入工时数" />
+                    </van-col>
+                </van-row>
+            </van-cell>
+        </JdCheckboxDatePopup>
         <JdPopup :popupIsShow="itemDetailPopupIsShow" @onConfirm="itemDetailOnConfirm">
             <van-cell>
                 <van-row>
@@ -162,8 +158,8 @@ import {
 } from 'vuex';
 import header from '../../components/common/header';
 import popup from '../../components/common/popup';
-import JdDatetimePicker from '../../components/common/datetimePicker';
 import datetimePickerPopup from '../../components/common/datetimePickerPopup';
+import JdCheckboxDatePopup from '../../components/common/checkboxDatePopup';
 import MUtil from '../../util/mm';
 import BizUtil from '../../util/bizUtil';
 import statusTextMap from '../../components/common/statusTextMap';
@@ -183,7 +179,7 @@ export default {
                 WorkPlace: '', // 工作地点
                 Remark: '',
             },
-            WorkOverTimeTypeID: '1', // 类型
+            WorkOverTimeTypeID: '1', // 加班类型
             OutOrIn: '1',
             OutOrInOption: _bizUtil.getOutOrInOption(),
             Hours: 8,
@@ -204,23 +200,14 @@ export default {
         [header.name]: header,
         [popup.name]: popup,
         [statusTextMap.name]: statusTextMap,
-        [JdDatetimePicker.name]: JdDatetimePicker,
         [datetimePickerPopup.name]: datetimePickerPopup,
+        [JdCheckboxDatePopup.name]: JdCheckboxDatePopup,
     },
     computed: {
         ...mapGetters([
             'OverTimeWorkTypeList',
             'UserInfo',
         ]),
-        // 未使用
-        getHours() {
-            let date1 = new Date(this.itemDetail.StartTime);
-            let date2 = new Date(this.itemDetail.EndTime);
-            let date3 = date2.getTime() - date1.getTime();   //时间差的毫秒数
-            //计算出小时数
-            let leave1 = date3 % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数
-            return Math.floor(leave1 / (3600 * 1000));
-        },
     },
     methods: {
         ...mapActions([
@@ -233,27 +220,29 @@ export default {
         chooseDate() {
             this.pickerIsShow = !this.pickerIsShow;
         },
-        // 选择日期取消
-        onCancel() {
-            this.pickerIsShow = false;
-        },
         // 选择日期确认
-        onConfirm(val) {
-            let valStr = _mm.formatDate(val);
-            if (!this.DateArr.includes(valStr)) {
-                this.DateDetailArr.push({
-                    Date: valStr,
-                    WorkOverTimeTypeID: this.WorkOverTimeTypeID,
-                    StartTime: valStr + ' 8:30:00',
-                    StartTimeOnly: '8:30:00',
-                    EndTime: valStr + ' 17:30:00',
-                    EndTimeOnly: '17:30:00',
-                    Hours: this.OutOrIn === '1' ? '' : this.Hours,
-                    OutOrIn: this.OutOrIn,
-                });
-                this.DateArr.push(valStr);
+        GetCheckedDate(val) {
+            if (!val.length) {
+                _mm.errorTips('未选择日期');
+                return;
             }
-            this.pickerIsShow = false;
+            val.map((item) => {
+                let valStr = item;
+                // includes 用来判断一个数组是否包含一个指定的值，返回 true或 false
+                if (!this.DateArr.includes(valStr)) {
+                    this.DateDetailArr.push({
+                        Date: valStr,
+                        WorkOverTimeTypeID: this.WorkOverTimeTypeID,
+                        StartTime: valStr + ' 8:30:00',
+                        StartTimeOnly: '8:30:00',
+                        EndTime: valStr + ' 17:30:00',
+                        EndTimeOnly: '17:30:00',
+                        Hours: this.OutOrIn === '1' ? '' : this.Hours,
+                        OutOrIn: this.OutOrIn,
+                    });
+                    this.DateArr.push(valStr);
+                }
+            });
         },
 
         // 每一项日期修改
@@ -328,6 +317,16 @@ export default {
             }).then(() => {
                 this.DateArr.splice(index, 1); // 从下标为index删除，删除一个元素
                 this.DateDetailArr.splice(index, 1);
+            }).catch(() => {
+            });
+        },
+        deleteAll() {
+            Dialog.confirm({
+                title: '提示',
+                message: '你确认要全部删除吗？'
+            }).then(() => {
+                this.DateArr = [];
+                this.DateDetailArr = [];
             }).catch(() => {
             });
         },

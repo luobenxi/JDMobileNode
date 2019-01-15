@@ -19,7 +19,7 @@
 import { Dialog } from 'vant';
 import { mapActions, mapGetters } from 'vuex';
 import header from '../../components/common/header';
-import MUtil from '../../util/mm.js';
+import MUtil from '../../util/mm';
 
 const _mm = new MUtil();
 

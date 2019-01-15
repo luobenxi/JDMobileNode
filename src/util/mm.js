@@ -283,6 +283,23 @@ class MUtil {
         }
         return arr;
     }
+
+    DateBetweenForeach(begin, end) {
+        let date1 = begin;
+        let date2 = end;
+        let d1 = new Date(date1.replace(/[- ]/g, ","));
+        let d2 = new Date(date2.replace(/[- ]/g, ","));
+        let d = d1;
+        let arr = [];
+        while (d <= d2) {
+            let month = (d.getMonth() + 1) < 10 ? `0${(d.getMonth() + 1)}` : (d.getMonth() + 1);
+            let day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
+            let temp = d.getFullYear() + '-' + month + '-' + day;
+            arr.push(temp);
+            d.setDate(d.getDate() + 1);
+        }
+        return arr;
+    }
 }
 
 export default MUtil;

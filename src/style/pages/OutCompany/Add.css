@@ -3,12 +3,17 @@
   margin-bottom: 0.13333333rem;
 }
 #OutCompanyAdd-box .DateArrRow {
+  padding: 0.05333333rem;
   text-align: center;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-bottom: solid 1px #f8f8f8;
 }
 #OutCompanyAdd-box .DateArrRow .select-css {
   width: 100%;
   border: solid 1px #c9c9c9;
-  height: 0.69333333rem;
+  height: 0.64rem;
   padding: 0.02666667rem;
   border-radius: 0.08rem;
   font-size: 0.32rem;
