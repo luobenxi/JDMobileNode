@@ -27,6 +27,9 @@ class User {
     UpdateUserSalaryPwd(data) {
         return ajax.requestPost(`${ApiPreFix}/UserSystemApi/UpdateUserSalaryPwd`, data);
     }
+    ResetUserSalaryPwd(data) {
+        return ajax.requestPost(`${ApiPreFix}/UserSystemApi/ResetUserSalaryPwd`, data);
+    }
     GetAllUerList() {
         return ajax.requestGet(`${ApiPreFix}/UserContactsApi/GetAllUerList`);
     }

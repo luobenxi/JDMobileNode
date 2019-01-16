@@ -3,6 +3,8 @@ const fs = require("fs");
 const encoding = require("encoding");
 let readFilePath = path.resolve(__dirname, '../dist/static/');
 let readFilePathIndexHtml = path.resolve(__dirname, '../dist/index.html');
+// 写在当前路径
+let writeFilePathIndexHtmlCureent = path.resolve(__dirname, '../dist/index.cshtml');
 let writeFilePathPublic = 'D:\\VS2012Projects\\SVN\\JDHR\\JDCRM.Web\\';
 let writeFilePath = writeFilePathPublic + 'static\\';
 let writeFileBakPath = writeFilePathPublic + 'static-bak\\';
@@ -17,58 +19,66 @@ let filePath = date.getTime();
 let bakPath = writeFileBakPath + filePath;
 let bakPathHtml = writeFileBakPathHtml + filePath;
 
+// 自动发布
+// AuthPublish();
+// 写入index.cshtml文件
+AddIndexHtml();
+
+// 自动发布
+function AuthPublish() {
 // **************开始发布**************
 // 备份原来的文件
 // 备份static
-fs.exists(writeFileBakPath, function (exists) {
-    if (!exists) {
-        fs.mkdir(writeFileBakPath);
-    }
-    fs.exists(bakPath, function (exists) {
+    fs.exists(writeFileBakPath, function (exists) {
         if (!exists) {
-            fs.mkdir(bakPath);
+            fs.mkdir(writeFileBakPath);
         }
-        // copy static Folder
-        copyFolder(writeFilePath, bakPath, function(err) {
-            if (!err) {
-                console.log('bak static Folder ok');
-                // 备份index.cshtml文件
-                fs.exists(writeFileBakPathHtml, function (exists) {
-                    if (!exists) {
-                        fs.mkdir(writeFileBakPathHtml);
-                    }
-                    fs.exists(bakPathHtml, function (exists) {
+        fs.exists(bakPath, function (exists) {
+            if (!exists) {
+                fs.mkdir(bakPath);
+            }
+            // copy static Folder
+            copyFolder(writeFilePath, bakPath, function(err) {
+                if (!err) {
+                    console.log('bak static Folder ok');
+                    // 备份index.cshtml文件
+                    fs.exists(writeFileBakPathHtml, function (exists) {
                         if (!exists) {
-                            fs.mkdir(bakPathHtml);
+                            fs.mkdir(writeFileBakPathHtml);
                         }
-                        // copy Mobile Folder
-                        copyFolder(writeFilePathIndexHtml, bakPathHtml, function (err) {
-                            if (!err) {
-                                console.log('bak Mobile Folder ok');
-                                // 删除原来的文件
-                                deleteFolder(writeFilePath);
-                                // 判断项目部署路径是否存在，不存在则创建，并复制文件及文件夹
-                                fs.exists(writeFilePath, function (exists) {
-                                    if (!exists) {
-                                        fs.mkdir(writeFilePath);
-                                        // 复制打包后的文件至项目部署路径
-                                        copyFolder(readFilePath, writeFilePath, function(err) {
-                                            if (!err) {
-                                                console.log('copy static Folder success');
-                                                // 写入index.cshtml文件
-                                                AddIndexHtml();
-                                            }
-                                        });
-                                    }
-                                });
+                        fs.exists(bakPathHtml, function (exists) {
+                            if (!exists) {
+                                fs.mkdir(bakPathHtml);
                             }
+                            // copy Mobile Folder
+                            copyFolder(writeFilePathIndexHtml, bakPathHtml, function (err) {
+                                if (!err) {
+                                    console.log('bak Mobile Folder ok');
+                                    // 删除原来的文件
+                                    deleteFolder(writeFilePath);
+                                    // 判断项目部署路径是否存在，不存在则创建，并复制文件及文件夹
+                                    fs.exists(writeFilePath, function (exists) {
+                                        if (!exists) {
+                                            fs.mkdir(writeFilePath);
+                                            // 复制打包后的文件至项目部署路径
+                                            copyFolder(readFilePath, writeFilePath, function(err) {
+                                                if (!err) {
+                                                    console.log('copy static Folder success');
+                                                    // 写入index.cshtml文件
+                                                    AddIndexHtml();
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
                         });
                     });
-                });
-            }
+                }
+            });
         });
     });
-});
+}
 
 // 写入index.cshtml文件
 function AddIndexHtml() {
@@ -79,7 +89,7 @@ function AddIndexHtml() {
         console.log("index.html读取成功");
         console.log("index.cshtml开始写入...");
         var resultBuffer = encoding.convert(data, "GBK"); // GB2312
-        fs.writeFile(writeFilePathIndexHtml + 'index.cshtml', resultBuffer, function (err) {
+        fs.writeFile(writeFilePathIndexHtmlCureent, resultBuffer, function (err) {
             if (err) {
                 return console.error(err);
             }

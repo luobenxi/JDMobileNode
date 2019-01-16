@@ -16,8 +16,11 @@ class PublicApi {
     GetOverTimeWorkTypeList() {
         return ajax.requestGet(`${ApiPreFix}/PublicTypeApi/GetOverTimeWorkTypeList`);
     }
-    GetNewNoticeInfo() {
-        return ajax.requestGet(`${ApiPreFix}/PublicApi/GetNewNoticeInfo`);
+    GetNoticeListTop10() {
+        return ajax.requestGet(`${ApiPreFix}/PublicApi/GetNoticeListTop10`);
+    }
+    GetArticleByKey(ID) {
+        return ajax.requestGet(`${ApiPreFix}/ArtSys/ArticleSystem/GetArticleByKey?ID=${ID}`);
     }
 }
 

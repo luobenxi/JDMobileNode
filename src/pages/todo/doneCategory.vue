@@ -14,7 +14,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import header from '../../components/common/header';
-import MUtil from '../../util/mm.js';
+import MUtil from '../../util/mm';
 
 const _mm = new MUtil();
 
@@ -35,6 +35,10 @@ export default {
     },
     methods: {
         categoryClickHandle(item) {
+            if (item.CategoryKey && item.CategoryKey === '1') {
+                window.location.href = item.ListPageUrl;
+                return;
+            }
             this.$router.push(`/todoList/${item.CategoryName}/1`); // 1 = 已办
         }
     }

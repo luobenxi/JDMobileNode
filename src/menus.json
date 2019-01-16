@@ -42,6 +42,12 @@
               "subMenu": []
             },
             {
+                "displayName": "系统通知",
+                "icon": "",
+                "key": "notice/list",
+                "subMenu": []
+            },
+            {
                 "displayName": "个人中心",
                 "icon": "",
                 "key": "user-info",

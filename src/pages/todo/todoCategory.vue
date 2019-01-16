@@ -17,7 +17,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import header from '../../components/common/header';
-import MUtil from '../../util/mm.js';
+import MUtil from '../../util/mm';
 
 const _mm = new MUtil();
 
@@ -38,6 +38,10 @@ export default {
     },
     methods: {
         categoryClickHandle(item) {
+            if (item.CategoryKey && item.CategoryKey === '1') {
+                window.location.href = item.ListPageUrl;
+                return;
+            }
             let url = `/todoList/${item.CategoryName}/0`; // 0 = 待办
             _mm.setStorage(_mm.GetCurrentToDoCategoryUrlKey(), url); // 将当前处理的URL存入localStorage中
             this.$router.push(url);

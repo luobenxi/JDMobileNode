@@ -1,14 +1,11 @@
 <template>
-    <div id="home-box">
+    <div class="home-box">
+        <!--轮播-->
         <jd-swipe :swipeList="swipeList"></jd-swipe>
+        <!--通知-->
         <van-notice-bar v-if="noticeContent" mode="link" @click="noticeDetail">{{noticeContent}}</van-notice-bar>
+        <!--菜单-->
         <jd-menu :menuList="menuList"></jd-menu>
-        <van-popup v-model="popupIsShow" position="right">
-            <div class="notice-box">
-                <van-button size="small" @click="CloseHandle">关闭</van-button>
-                <div class="notice-content">{{noticeContent}}</div>
-            </div>
-        </van-popup>
     </div>
 </template>
 
@@ -26,7 +23,6 @@ export default {
     data () {
         return {
             noticeContent: '',
-            popupIsShow: false,
             swipeList: [
                 {
                     id: 1,
@@ -42,6 +38,7 @@ export default {
     computed: {
         ...mapGetters([
             'MyAuthList',
+            'NoticeListTop10',
         ]),
         menuList() {
             return this.MyAuthList || [];
@@ -55,40 +52,23 @@ export default {
     methods: {
         ...mapActions([
             'GetMyAuthList',
-            'GetNewNoticeInfo',
+            'GetNoticeListTop10',
         ]),
         noticeDetail() {
-            // this.popupIsShow = true;
             this.$router.push('/notice/list');
         },
-        CloseHandle() {
-            this.popupIsShow = false;
-        }
     },
     mounted() {
         this.GetMyAuthList();
-        this.GetNewNoticeInfo().then(res => {
-            if (res.success) {
-                this.noticeContent = res.data;
-            }
-        });
+        // this.GetNoticeListTop10().then(res => {
+        //     if (res.success) {
+        //         this.noticeContent = this.NoticeListTop10.length ? this.NoticeListTop10[0].Title : '';
+        //     }
+        // });
     }
 }
 </script>
 
 <style lang="less" scoped>
     @import "../../style/common/common";
-    #home-box {
-        .notice-box {
-            .minHeight(180);
-            .padding2(15, 7);
-        }
-        .notice-content {
-            .paddingTop(10);
-            text-indent: 30px;
-            .lineHeight(25);
-            .fontSize(15);
-            color: #606266;
-        }
-    }
 </style>

@@ -99,6 +99,21 @@ const UpdateUserSalaryPwd = (
     });
 });
 
+const ResetUserSalaryPwd = (
+    { commit },
+    SubData
+) => new Promise((resolve, reject) => {
+    _user.ResetUserSalaryPwd(SubData).then((res) => {
+        if (res.success) {
+            resolve(res);
+        } else {
+            reject(res.msg);
+        }
+    }).catch((err) => {
+        reject(err);
+    });
+});
+
 const GetAllUerList = (
     { commit },
     SubData
@@ -152,6 +167,7 @@ export default {
     GetMyAuthList,
     UpdateUserPwd,
     UpdateUserSalaryPwd,
+    ResetUserSalaryPwd,
     GetAllUerList,
     GetDepartTreeByParentID,
     GetUserListByDepartID,

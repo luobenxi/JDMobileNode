@@ -24,40 +24,36 @@
     export default {
         data () {
             return {
-                itemList: [
-                    {
-                        ID: 1,
-                        Title: '哈登57+9 卡佩拉伤停 康利14+7 火箭大胜灰熊',
-                        IsRead: false
-                    },
-                    {
-                        ID: 2,
-                        Title: '拉塞尔34+7塔图姆34分 送绿军3连败篮网送绿',
-                        IsRead: true
-                    },
-                    {
-                        ID: 3,
-                        Title: '韧带受损 卡佩拉因右拇指受伤将休战4-6周',
-                        IsRead: true
-                    }
-                ]
             }
         },
         computed: {
             ...mapGetters([
+                'NoticeListTop10'
             ]),
+            itemList() {
+                return this.itemListFormat();
+            }
         },
         components: {
             [header.name]: header
         },
         methods: {
             ...mapActions([
+                'GetNoticeListTop10'
             ]),
+            itemListFormat() {
+                return this.NoticeListTop10.map((item) => {
+                    return Object.assign({}, item, {
+                        IsRead: false
+                    });
+                })
+            },
             clickItem(item) {
                 this.$router.push(`/notice/detail/${item.ID}`);
             },
         },
         mounted() {
+            // this.GetNoticeListTop10();
         }
     }
 </script>

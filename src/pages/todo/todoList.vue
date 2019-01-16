@@ -123,7 +123,7 @@ export default {
                 keyId
             };
             this.AllRouterList = []; // 每次清空路由列表
-            if (item.Status === '62') {
+            if (item.Status === '62' || item.Status === '审核中') {
                 // 流程处理
                 this.GetWorkFlowsDoUrl(data).then(res => {
                     let url = res.data.split('?')[0];

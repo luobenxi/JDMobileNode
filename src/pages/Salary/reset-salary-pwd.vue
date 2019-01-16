@@ -1,15 +1,15 @@
 <template>
     <div class="change-pwd-box">
-        <jd-header title="修改工资查询密码"></jd-header>
+        <jd-header title="重置工资查询密码"></jd-header>
         <div class="input-box">
             <van-cell-group>
-                <van-field v-model="from.password_old" :icon="passwordIconOld" @click-icon="passwordIconClickOld" :type="passwordTypeOLd" placeholder="请输入原密码" />
+                <van-field v-model="from.cardId" placeholder="请输入身份证号" />
                 <van-field v-model="from.password_new" :icon="passwordIconNew" @click-icon="passwordIconClickNew" :type="passwordTypeNew" placeholder="请输入新密码" />
                 <van-field v-model="from.password_new2" :icon="passwordIconNew2" @click-icon="passwordIconClickNew2" :type="passwordTypeNew2" placeholder="请输入确认密码" />
             </van-cell-group>
         </div>
         <div class="btn-box">
-            <van-button type="danger" block @click="changeHandle">确认修改</van-button>
+            <van-button type="primary" block @click="changeHandle">提交保存</van-button>
         </div>
     </div>
 </template>
@@ -24,31 +24,24 @@ import MUtil from '../../util/mm';
 const _mm = new MUtil();
 
 export default {
-    name: 'JdChangeSalaryPwd',
+    name: 'JdResetSalaryPwd',
     data () {
         return {
-            passwordIsSeeOld: false,
             passwordIsSeeNew: false,
             passwordIsSeeNew2: false,
             from: {
-                password_old: '',
+                cardId: '', // 身份证号
                 password_new: '',
                 password_new2: '',
             }
         }
     },
     computed: {
-        passwordIconOld() {
-            return this.passwordIsSeeOld ? 'password-view' : 'password-not-view';
-        },
         passwordIconNew() {
             return this.passwordIsSeeNew ? 'password-view' : 'password-not-view';
         },
         passwordIconNew2() {
             return this.passwordIsSeeNew2 ? 'password-view' : 'password-not-view';
-        },
-        passwordTypeOLd() {
-            return this.passwordIsSeeOld ? 'text' : 'password';
         },
         passwordTypeNew() {
             return this.passwordIsSeeNew ? 'text' : 'password';
@@ -62,7 +55,7 @@ export default {
     },
     methods: {
         ...mapActions([
-            'UpdateUserSalaryPwd',
+            'ResetUserSalaryPwd',
         ]),
         passwordIconClickOld() {
             this.passwordIsSeeOld = !this.passwordIsSeeOld;
@@ -74,8 +67,8 @@ export default {
             this.passwordIsSeeNew2 = !this.passwordIsSeeNew2;
         },
         changeHandle() {
-            if (this.from.password_old === '') {
-                _mm.errorDialog('请输入原密码');
+            if (this.from.cardId === '') {
+                _mm.errorDialog('请输入身份证号');
                 return false;
             }
             if (this.from.password_new === '') {
@@ -90,9 +83,10 @@ export default {
                 _mm.errorDialog('新密码和确认密码不一致');
                 return false;
             }
-            this.UpdateUserSalaryPwd(this.from).then((res) => {
-                _mm.successDialog(res.msg);
-                this.$router.history.go(-1);
+            this.ResetUserSalaryPwd(this.from).then((res) => {
+                _mm.confirmDialog(res.msg, () => {
+                    this.$router.history.go(-1);
+                });
             }).catch(err => {
                 _mm.errorDialog(err);
             });

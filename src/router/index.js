@@ -72,6 +72,10 @@ const router = new Router({
             component: () => import('../pages/Salary/change-salary-pwd')
         },
         {
+            path: '/reset-salary-pwd',
+            component: () => import('../pages/Salary/reset-salary-pwd')
+        },
+        {
             path: '/my-contacts',
             component: () => import('../pages/contacts/my-contacts')
         },
@@ -143,6 +147,7 @@ const router = new Router({
             component: () => import('../pages/OutCompany/Approval')
         },
         // 请假相关-未发布
+        // 发布的时候只需要将移动端的权限URL配置为该链接就可以
         {
             path: '/AskForLeaveApi/PersonAskForLeaveList',
             component: () => import('../pages/AskForLeave/AskForLeaveList')
@@ -185,6 +190,7 @@ const router = new Router({
             component: () => import('../pages/AskForLeaveCancel/AskForLeaveCancelApprovalHR')
         },
         // 加班相关-未发布
+        // 发布的时候只需要将移动端的权限URL配置为该链接就可以
         {
             path: '/OverTimeWorkApi/PersonOverTimeWorkList',
             component: () => import('../pages/OverTimeWork/List')
@@ -202,7 +208,7 @@ const router = new Router({
             component: () => import('../pages/OverTimeWork/View')
         },
         {
-            path: '/OverTimeWork/PersonOverTimeWorkApproval/:wfDetailId?', // 加上Api是因为需要发布
+            path: '/OverTimeWork/PersonOverTimeWorkApproval/:wfDetailId?',
             component: () => import('../pages/OverTimeWork/Approval')
         },
     ],

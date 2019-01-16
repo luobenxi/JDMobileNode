@@ -17,8 +17,8 @@
     import {
         mapActions, mapGetters
     } from 'vuex';
-    import header from '../../components/common/header.vue';
-    import MUtil from '../../util/mm.js';
+    import header from '../../components/common/header';
+    import MUtil from '../../util/mm';
 
     const _mm = new MUtil();
 
@@ -64,6 +64,13 @@
                 this.salaryPassCheck(this.from).then(() => {
                     this.$router.push('/SalaryApi/SalaryBill');
                 }).catch(err => {
+                    if (err.code === 30002) {
+                        // code=30002表示查询密码为空，需要设置查询密码
+                        _mm.confirmDialog(err.msg, () => {
+                            this.$router.push('/reset-salary-pwd');
+                        });
+                        return;
+                    }
                     _mm.errorDialog(err.msg || '操作错误');
                 });
             }

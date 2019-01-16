@@ -1,5 +1,5 @@
 import PublicApi from '../../../services/PublicApiService';
-import { SET_ASK_FOR_TYPE_LIST, SET_OverTimeWork_TYPE_LIST } from '../../mutation-types';
+import { SET_ASK_FOR_TYPE_LIST, SET_OverTimeWork_TYPE_LIST, NEW_NOTICE_LIST_TOP_10 } from '../../mutation-types';
 
 const api = new PublicApi();
 
@@ -47,11 +47,24 @@ const UploadFileHandle = (
     });
 });
 
-// 获取最新通知消息
-const GetNewNoticeInfo = (
+// 获取最新通知消息列表
+const GetNoticeListTop10 = (
     { commit }
 ) => new Promise((resolve, reject) => {
-    api.GetNewNoticeInfo().then((res) => {
+    api.GetNoticeListTop10().then((res) => {
+        commit(NEW_NOTICE_LIST_TOP_10, res.data);
+        resolve(res);
+    }).catch((err) => {
+        reject(err);
+    });
+});
+
+// GetArticleByKey
+const GetArticleByKey = (
+    { commit },
+    ID
+) => new Promise((resolve, reject) => {
+    api.GetArticleByKey(ID).then((res) => {
         resolve(res);
     }).catch((err) => {
         reject(err);
@@ -63,5 +76,6 @@ export default {
     GetAskForLeaveTypeList,
     GetOverTimeWorkTypeList,
     UploadFileHandle,
-    GetNewNoticeInfo
+    GetNoticeListTop10,
+    GetArticleByKey,
 };
