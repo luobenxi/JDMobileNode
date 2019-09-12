@@ -143,7 +143,7 @@ const router = new Router({
             component: () => import('../pages/OutCompany/View')
         },
         {
-            path: '/OutCompany/OutCompanyApproval/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
+            path: '/OutCompanyApi/OutCompanyApproval/:wfDetailId?', // 加上Api是因为要发布
             component: () => import('../pages/OutCompany/Approval')
         },
         // 请假相关-未发布
@@ -161,15 +161,15 @@ const router = new Router({
             component: () => import('../pages/AskForLeave/PersonAskForLeaveSubmit')
         },
         {
-            path: '/AskForLeave/PersonAskForLeaveApproval/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
+            path: '/AskForLeaveApi/PersonAskForLeaveApproval/:wfDetailId?', // 加上Api是因为要发布
             component: () => import('../pages/AskForLeave/PersonAskForLeaveApproval')
         },
         {
-            path: '/AskForLeave/PersonAskForLeaveApprovalHR/:wfDetailId?', // 接口返回的url，所以没有使用 *Api
+            path: '/AskForLeaveApi/PersonAskForLeaveApprovalHR/:wfDetailId?', // 加上Api是因为要发布
             component: () => import('../pages/AskForLeave/PersonAskForLeaveApprovalHR')
         },
         {
-            path: '/AskForLeave/PersonAskForLeaveView/:ID?',
+            path: '/AskForLeaveApi/PersonAskForLeaveView/:ID?', // 加上Api是因为要发布
             component: () => import('../pages/AskForLeave/PersonAskForLeaveView')
         },
         // 销假相关-未发布
@@ -204,11 +204,11 @@ const router = new Router({
             component: () => import('../pages/OverTimeWork/SubmitConfirm')
         },
         {
-            path: '/OverTimeWork/View/:ID?',
+            path: '/OverTimeWorkApi/View/:ID?', // 加上Api是因为要发布
             component: () => import('../pages/OverTimeWork/View')
         },
         {
-            path: '/OverTimeWork/PersonOverTimeWorkApproval/:wfDetailId?',
+            path: '/OverTimeWorkApi/PersonOverTimeWorkApproval/:wfDetailId?', // 加上Api是因为要发布
             component: () => import('../pages/OverTimeWork/Approval')
         },
     ],

@@ -21,7 +21,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     res => {
         // 成功第一步执行
-        if (res.status === 200) {
+        if (res.status && res.status == 200) {
             if (res.data.code === 401) {
                 // 未登录
                 window.location.href = _mm.GetLoginPageUrl();
@@ -31,7 +31,7 @@ axios.interceptors.response.use(
             }
             return Promise.resolve(res.data); // 返回http响应体中的data
         } else {
-            return Promise.reject(res.statusText || '网络错误');
+            return Promise.resolve(res.data || null);
         }
     },
     err => {
@@ -44,7 +44,13 @@ axios.interceptors.response.use(
 );
 
 class AjaxUtil {
-    // 通用请求，暂未使用
+
+    /* 通用请求，暂未使用
+     参数说明：url 请求方法地址
+     type 请求方法类型 默认为get
+     dataType 数据格式 默认为json
+     data 数据 默认为null
+    */
     request(params, isShowLoading = true) {
         if (isShowLoading !== false) {
             this.openAjaxLoading(); // 打开loading
@@ -56,21 +62,21 @@ class AjaxUtil {
                 dataType: params.dataType || 'json',
                 data: params.data || null
             })
-                .then((res) => {
-                    if (isShowLoading !== false) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    // 成功第二步执行
-                    resolve(res);
-                })
-                .catch((err) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    _mm.errorDialog(err.statusText || '网络错误');
-                    // 失败第二步执行
-                    reject(err.statusText || '网络错误');
-                });
+            .then((res) => {
+                if (isShowLoading !== false) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                // 成功第二步执行
+                resolve(res);
+            })
+            .catch((err) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                _mm.errorDialog(err.statusText || '网络错误');
+                // 失败第二步执行
+                reject(err.statusText || '网络错误');
+            });
         });
     }
 
@@ -82,21 +88,21 @@ class AjaxUtil {
         }
         return new Promise((resolve, reject) => {
             axios.get(url)
-                .then((res) => {
-                    // 请求成功
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    resolve(res);
-                })
-                .catch((err) => {
-                    // 请求失败
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    _mm.errorDialog(err.statusText || '网络错误Get');
-                    reject(err.statusText || '网络错误Get');
-                });
+            .then((res) => {
+                // 请求成功
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                resolve(res);
+            })
+            .catch((err) => {
+                // 请求失败
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                _mm.errorDialog(err.statusText || '网络错误，请重新进入');
+                reject(err.statusText || '网络错误');
+            });
         });
     }
 
@@ -107,19 +113,19 @@ class AjaxUtil {
         }
         return new Promise((resolve, reject) => {
             axios.post(url, data)
-                .then((res) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    resolve(res);
-                })
-                .catch((err) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    _mm.errorDialog(err.statusText || '网络错误');
-                    reject(err.statusText || '网络错误');
-                });
+            .then((res) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                resolve(res);
+            })
+            .catch((err) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                _mm.errorDialog(err.statusText || '网络错误');
+                reject(err.statusText || '网络错误');
+            });
         });
     }
 
@@ -130,19 +136,19 @@ class AjaxUtil {
         }
         return new Promise((resolve, reject) => {
             axios.put(url, data)
-                .then((res) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    resolve(res);
-                })
-                .catch((err) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    _mm.errorDialog(err.statusText || '网络错误');
-                    reject(err.statusText || '网络错误');
-                });
+            .then((res) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                resolve(res);
+            })
+            .catch((err) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                _mm.errorDialog(err.statusText || '网络错误');
+                reject(err.statusText || '网络错误');
+            });
         });
     }
 
@@ -153,19 +159,19 @@ class AjaxUtil {
         }
         return new Promise((resolve, reject) => {
             axios.delete(url)
-                .then((res) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    resolve(res);
-                })
-                .catch((err) => {
-                    if (isShowLoading) {
-                        this.closeAjaxLoading(); // 关闭loading
-                    }
-                    _mm.errorDialog(err.statusText || '网络错误');
-                    reject(err.statusText || '网络错误');
-                });
+            .then((res) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                resolve(res);
+            })
+            .catch((err) => {
+                if (isShowLoading) {
+                    this.closeAjaxLoading(); // 关闭loading
+                }
+                _mm.errorDialog(err.statusText || '网络错误');
+                reject(err.statusText || '网络错误');
+            });
         });
     }
 

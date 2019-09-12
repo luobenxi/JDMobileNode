@@ -140,6 +140,16 @@
                     </van-cell>
                 </van-collapse-item>
             </van-collapse>
+            <van-collapse v-model="activeNamesCutMoney">
+                <van-collapse-item title="扣款">
+                    <van-cell>
+                        <van-row gutter="10">
+                            <van-col :span="6">其他扣款</van-col>
+                            <van-col>{{from.DebitOther}}</van-col>
+                        </van-row>
+                    </van-cell>
+                </van-collapse-item>
+            </van-collapse>
             <van-collapse v-model="activeNamesJia">
                 <van-collapse-item title="事假病假">
                     <van-cell>
@@ -201,6 +211,50 @@
                     </van-cell>
                 </van-collapse-item>
             </van-collapse>
+            <van-collapse v-model="activeNamesAdd">
+                <van-collapse-item title="专项附加采集信息反馈">
+                    <van-cell>
+                        <van-row gutter="10">
+                            <van-col :span="12">子女教育</van-col>
+                            <van-col>{{from.DeductChildEdu}}</van-col>
+                        </van-row>
+                        <van-row gutter="10">
+                            <van-col :span="12">赡养老人</van-col>
+                            <van-col>{{from.DeductSupportElderly}}</van-col>
+                        </van-row>
+                        <van-row gutter="10">
+                            <van-col :span="12">住房贷款利息</van-col>
+                            <van-col>{{from.DeductHouseLoanInterest}}</van-col>
+                        </van-row>
+                        <van-row gutter="10">
+                            <van-col :span="12">继续教育</van-col>
+                            <van-col>{{from.DeductAdultEdu}}</van-col>
+                        </van-row>
+                        <van-row gutter="10">
+                            <van-col :span="12">住房租金</van-col>
+                            <van-col>{{from.DeductHouseRent}}</van-col>
+                        </van-row>
+                    </van-cell>
+                </van-collapse-item>
+            </van-collapse>
+            <van-collapse v-model="activeNamesOther">
+                <van-collapse-item title="其他">
+                    <van-cell>
+                        <van-row gutter="10">
+                            <van-col :span="12">工会会费</van-col>
+                            <van-col>{{from.Dues}}</van-col>
+                        </van-row>
+                        <van-row gutter="10">
+                            <van-col :span="12">医疗互助</van-col>
+                            <van-col>{{from.MedicalAssistance}}</van-col>
+                        </van-row>
+                        <van-row gutter="10">
+                            <van-col :span="12">代扣税</van-col>
+                            <van-col>{{from.TaxPer}}</van-col>
+                        </van-row>
+                    </van-cell>
+                </van-collapse-item>
+            </van-collapse>
             <van-cell>
                 <van-row gutter="10">
                     <van-col :span="6">备注</van-col>
@@ -210,7 +264,7 @@
             <van-cell>
                 <van-row gutter="10">
                     <van-col :span="6">计算公式</van-col>
-                    <van-col>实发合计=计时工资+津贴+补贴+加班工资+应发奖金+补发工资+病假应扣+事假应扣-扣款合计</van-col>
+                    <van-col>实发合计=计时工资+津贴+补贴+加班工资+应发奖金+补发工资+病假应扣+事假应扣+其他扣款-扣款合计</van-col>
                 </van-row>
             </van-cell>
         </van-cell-group>
@@ -233,8 +287,11 @@ export default {
             activeNamesJintie: [],
             activeNamesButie: [],
             activeNamesJiaBanJiangjin: [],
+            activeNamesCutMoney: [],
             activeNamesJia: [],
             activeNamesCut: [],
+            activeNamesAdd: [],
+            activeNamesOther: [],
             currentDateStr: '',
             from: {},
         }

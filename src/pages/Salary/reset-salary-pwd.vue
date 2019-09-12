@@ -3,7 +3,6 @@
         <jd-header title="重置工资查询密码"></jd-header>
         <div class="input-box">
             <van-cell-group>
-                <van-field v-model="from.cardId" placeholder="请输入身份证号" />
                 <van-field v-model="from.password_new" :icon="passwordIconNew" @click-icon="passwordIconClickNew" :type="passwordTypeNew" placeholder="请输入新密码" />
                 <van-field v-model="from.password_new2" :icon="passwordIconNew2" @click-icon="passwordIconClickNew2" :type="passwordTypeNew2" placeholder="请输入确认密码" />
             </van-cell-group>
@@ -30,7 +29,6 @@ export default {
             passwordIsSeeNew: false,
             passwordIsSeeNew2: false,
             from: {
-                cardId: '', // 身份证号
                 password_new: '',
                 password_new2: '',
             }
@@ -67,10 +65,6 @@ export default {
             this.passwordIsSeeNew2 = !this.passwordIsSeeNew2;
         },
         changeHandle() {
-            if (this.from.cardId === '') {
-                _mm.errorDialog('请输入身份证号');
-                return false;
-            }
             if (this.from.password_new === '') {
                 _mm.errorDialog('请输入新密码');
                 return false;

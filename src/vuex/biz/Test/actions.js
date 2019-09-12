@@ -1,4 +1,5 @@
 import Test from '../../../services/TestService';
+import { TEST_LIST } from '../../mutation-types';
 
 const _api = new Test();
 
@@ -8,7 +9,8 @@ const GetTestList = (
     SubData
 ) => new Promise((resolve, reject) => {
     _api.GetTestList(SubData).then((res) => {
-        resolve(res);
+        commit(TEST_LIST, res.result);
+        resolve(res.result);
     }).catch(err => {
         reject(err || '');
     })

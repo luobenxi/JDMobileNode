@@ -21,13 +21,16 @@
             }
         },
         computed: {
+            ...mapGetters([
+                // 'testList'
+            ])
         },
         components: {
             [JdCheckboxDatePopup.name]: JdCheckboxDatePopup,
         },
         methods: {
             ...mapActions([
-                'GetTestList',
+                // 'GetTestList',
             ]),
             chooseDate() {
                 this.popupIsShow = !this.popupIsShow;
@@ -37,6 +40,14 @@
             },
         },
         mounted() {
+            // 访问方式1，需要在...mapActions和...mapGetters中先注册
+            // this.GetTestList().then(res => {
+            //     console.log(this.testList);
+            // });
+            // 访问方式2，直接访问
+            // this.$store.dispatch('GetTestList').then(res => {
+            //     console.log(this.$store.state.TestStore.testList);
+            // });
         }
     }
 </script>

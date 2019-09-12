@@ -112,10 +112,6 @@ export default {
             let  wfDetailId = _mm.getSpecialUrlParam(item.TaskUrl, 'wfDetailId');
             let  activeId = _mm.getSpecialUrlParam(item.TaskUrl, 'activeId');
             let  keyId = _mm.getSpecialUrlParam(item.TaskUrl, 'keyId');
-            // if (!wfDetailId || !activeId) {
-            //     _mm.errorDialog('参数为空');
-            //     return false;
-            // }
             let data = {
                 wfId,
                 wfDetailId,
@@ -137,7 +133,6 @@ export default {
                         this.$router.push(`${url}/${wfDetailId}`);
                     } else {
                         // 未找到路由，跳转到原来的页面
-                        // console.log('未找到路由');
                         // console.log(item.TaskUrl);
                         // window.open(item.TaskUrl);
                         window.location.href = item.TaskUrl;

@@ -35,3 +35,6 @@ export const TASK_LIST = 'TASK_LIST';
 
 // 通知
 export const NEW_NOTICE_LIST_TOP_10 = 'NEW_NOTICE_LIST_TOP_10';
+
+// 测试
+export const TEST_LIST = 'TEST_LIST';
